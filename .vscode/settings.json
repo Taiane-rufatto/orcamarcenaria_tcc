@@ -1,0 +1,28 @@
+{
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "editor.formatOnSave": true,
+  "editor.rulers": [100],
+  "editor.tabSize": 2,
+  "[markdown]": {
+    "editor.wordWrap": "on",
+    "editor.trimAutoWhitespace": false,
+    "files.trimTrailingWhitespace": false
+  },
+  "[sql]": {
+    "editor.tabSize": 2
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/coverage": true,
+    "**/documentacao/fontes": true
+  },
+  "files.exclude": {
+    "**/.gitkeep": true
+  },
+  "typescript.tsdk": "backend/node_modules/typescript/lib",
+  "typescript.preferences.importModuleSpecifier": "relative",
+  "cSpell.language": "pt,en"
+}

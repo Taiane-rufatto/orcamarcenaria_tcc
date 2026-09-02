@@ -1,0 +1,14 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "editorconfig.editorconfig",
+    "vitest.explorer",
+    "ckolkman.vscode-postgres",
+    "humao.rest-client",
+    "yzhang.markdown-all-in-one",
+    "bierner.markdown-mermaid",
+    "streetsidesoftware.code-spell-checker-portuguese-brazilian",
+    "eamodio.gitlens"
+  ]
+}

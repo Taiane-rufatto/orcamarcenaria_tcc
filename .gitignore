@@ -1,0 +1,29 @@
+# dependências
+node_modules/
+
+# variáveis de ambiente (nunca versionar)
+.env
+.env.*
+!.env.example
+
+# builds
+dist/
+build/
+.vite/
+
+# testes e cobertura
+coverage/
+
+# logs e temporários
+*.log
+npm-debug.log*
+.tmp/
+
+# sistema operacional / editor
+.DS_Store
+Thumbs.db
+.idea/
+
+# saídas locais que não são evidência
+backend/saida/
+*.pdf.local
