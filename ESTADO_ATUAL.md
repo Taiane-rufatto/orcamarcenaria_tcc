@@ -26,6 +26,8 @@ Baseline documental concluída e estrutura de desenvolvimento criada. **Nenhuma 
 
 ## Em andamento — incremento 000
 
+> Passo a passo detalhado: `documentacao/guia-incremento-000.md`
+
 - [ ] Criar o repositório no GitHub e commitar a linha de base
 - [ ] Inicializar o projeto `backend/` (dependências, TypeScript, scripts `dev`, `test`, `migrar`)
 - [ ] Inicializar o projeto `frontend/` (Vite + React + TypeScript)

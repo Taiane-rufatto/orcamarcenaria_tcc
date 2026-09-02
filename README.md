@@ -30,6 +30,7 @@ Baseline de engenharia concluída; desenvolvimento ainda não iniciado. Ver `EST
 | [documentacao/roadmap.md](documentacao/roadmap.md) | Marcos, 11 incrementos e calendário até a defesa |
 | [documentacao/decisoes.md](documentacao/decisoes.md) | Decisões (D001–D008) e questões em aberto |
 | [documentacao/roteiro-entrevista.md](documentacao/roteiro-entrevista.md) | Roteiro da entrevista de levantamento (OE1) |
+| [documentacao/guia-incremento-000.md](documentacao/guia-incremento-000.md) | Passo a passo para colocar backend, frontend e banco para rodar |
 
 ## Governança do trabalho com IA
 
