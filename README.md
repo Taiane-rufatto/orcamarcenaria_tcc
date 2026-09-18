@@ -15,7 +15,7 @@ O marceneiro cadastra uma vez seus materiais e serviços com os respectivos cust
 
 ## Estado
 
-Baseline de engenharia concluída; desenvolvimento ainda não iniciado. Ver `ESTADO_ATUAL.md`.
+Incremento 000 concluído: backend, frontend e banco local foram integrados e verificados. A abertura formal do incremento 001 aguarda a instalação do Spec Kit (B03). Ver `ESTADO_ATUAL.md`.
 
 ## Documentação
 
@@ -70,15 +70,14 @@ Cada pasta principal tem um README explicando o que vai — e o que não vai —
 
 ## Stack
 
-Node.js + TypeScript (backend), React + TypeScript com Vite (frontend), PostgreSQL. Decisão registrada em D007. Bibliotecas específicas são escolhidas no incremento que as exigir.
+Node.js + TypeScript (backend), React + TypeScript com Vite (frontend), PostgreSQL; Express, decimal.js e Vitest no backend. Decisões registradas em D007 e D010.
 
 ## Como começar (para a autora)
 
-1. Criar o repositório no GitHub e commitar esta documentação **antes de qualquer código** — ela é a linha de base a ser comparada ao final do projeto.
-2. Abrir a pasta no VS Code e instalar as extensões recomendadas (o editor sugere ao abrir).
-3. Realizar a entrevista com o roteiro e responder Q1–Q10 em `decisoes.md`.
-4. Instalar o Spec Kit (D008) e inicializar os projetos `backend/` e `frontend/` — incremento 000.
-5. Abrir a Spec 001 com a rotina `abrir-incremento` e rodar o primeiro ciclo completo.
+1. Abrir a pasta no VS Code e instalar as extensões recomendadas (o editor sugere ao abrir).
+2. Instalar o Spec Kit e escrever a constitution (D008/B03).
+3. Abrir a Spec 001 com a rotina `abrir-incremento` e rodar o primeiro ciclo completo.
+4. Realizar a entrevista com o roteiro e responder Q1–Q10 em `decisoes.md`.
 
 ## Referências da proposta
 

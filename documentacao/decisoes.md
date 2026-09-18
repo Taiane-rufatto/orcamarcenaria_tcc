@@ -107,6 +107,17 @@ Formato: contexto → decisão → consequência → situação (`provisória` e
 
 ---
 
+## D010 — Bibliotecas e módulo do backend inicial
+**Data:** 2026-09-18 · **Situação:** firme
+
+**Contexto.** O incremento 000 precisava tornar executável a arquitetura aprovada em D007, preservando uma fronteira explícita entre HTTP, banco e o futuro domínio de cálculo.
+
+**Decisão.** Usar Express para a API HTTP, `pg` para PostgreSQL, `decimal.js` para operações decimais exatas, Vitest para os testes e CommonJS como formato de módulos do backend. O `tsconfig` usa a resolução `node16`, compatível com TypeScript 7, enquanto o `type: "commonjs"` do pacote preserva a saída CommonJS. `tsx` executa TypeScript no desenvolvimento, sem introduzir uma etapa manual de compilação.
+
+**Consequência.** A rota `/saude` verifica conjuntamente API e banco; valores `NUMERIC` do PostgreSQL permanecem texto na fronteira de infraestrutura até serem tratados pelo domínio em decimal exato. Os futuros cálculos continuam proibidos de usar `Number`.
+
+---
+
 ## Questões em aberto (entrevista de levantamento — OE1)
 
 Enquanto não respondidas, valem as decisões provisórias acima. Espelhadas em `BLOQUEIOS.md`.

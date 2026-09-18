@@ -27,13 +27,18 @@ Formatação é responsabilidade da tela; cálculo não é. Exibir `R$ 1.234,56`
 - Utilizável a partir de 1366×768 sem rolagem horizontal (RNF05).
 - Verificar em Chrome e Firefox antes de fechar qualquer spec de tela (RNF24).
 
-## Começando (a preencher no incremento 000)
+## Executar localmente
 
 ```bash
 cd frontend
 npm install
-cp .env.example .env      # apontar VITE_API_URL para o backend local
+copy .env.example .env    # no Windows; aponta VITE_API_URL para o backend local
 npm run dev
 ```
 
-Os scripts serão criados no incremento 000; atualizar este README com os comandos reais quando existirem.
+Abra `http://localhost:5173`. Com o backend em execução, a tela inicial mostra o estado da API e do banco.
+
+```bash
+npm run build
+npm run lint
+```

@@ -1,10 +1,10 @@
 # Estado Atual
 
-**Atualizado em:** 2026-09-02
+**Atualizado em:** 2026-09-18
 
 ## Onde o projeto está
 
-Baseline documental concluída e estrutura de desenvolvimento criada. **Nenhuma linha de código de aplicação escrita ainda.** O projeto está no incremento 000 (Preparação), marco M0.
+Incremento 000 (Preparação) concluído: backend, frontend e PostgreSQL local estão integrados. O próximo incremento formal (001 — conta e acesso) aguarda somente a instalação do Spec Kit, registrada em B03.
 
 ## Pronto
 
@@ -23,29 +23,27 @@ Baseline documental concluída e estrutura de desenvolvimento criada. **Nenhuma 
 - [x] **Configuração do VS Code:** settings, extensões recomendadas e configurações de depuração
 - [x] **Skills do projeto:** `abrir-incremento`, `verificar-calculo`, `fechar-spec`
 - [x] `.editorconfig`, `.gitignore` e `.env.example` de backend e frontend
+- [x] Repositório criado e publicado no GitHub, com a linha de base preservada
+- [x] Backend Node.js + TypeScript inicializado, com Express, PostgreSQL, decimal.js, testes Vitest e rota `GET /saude`
+- [x] PostgreSQL local configurado e validado pela rota `/saude` (`banco: "ok"`)
+- [x] Frontend React + TypeScript (Vite) inicializado, com tela de saúde que consulta a API por `src/servicos/api.ts`
+- [x] Teste inicial do backend aprovado: 2 testes Vitest
+- [x] READMEs de backend e frontend atualizados com os comandos executáveis
 
-## Em andamento — incremento 000
+## Pendente antes do incremento 001
 
-> Passo a passo detalhado: `documentacao/guia-incremento-000.md`
-
-- [ ] Criar o repositório no GitHub e commitar a linha de base
-- [ ] Inicializar o projeto `backend/` (dependências, TypeScript, scripts `dev`, `test`, `migrar`)
-- [ ] Inicializar o projeto `frontend/` (Vite + React + TypeScript)
-- [ ] Subir o PostgreSQL local e validar a conexão
 - [ ] Instalar o Spec Kit e escrever a constitution do projeto (D008)
-- [ ] Atualizar `backend/README.md` e `frontend/README.md` com os comandos reais
 
 ## Próximo passo (nesta ordem)
 
-1. Commitar esta linha de base **antes de qualquer código** — é ela que será comparada com a documentação final.
-2. Realizar a entrevista com o proprietário (`documentacao/roteiro-entrevista.md`) e responder Q1–Q10 em `decisoes.md`.
-3. Concluir os itens do incremento 000 acima.
-4. Abrir a Spec 001 (conta e acesso) com a rotina `abrir-incremento`.
-5. Implementar, verificar e fechar com a rotina `fechar-spec`.
+1. Instalar o Spec Kit e escrever a constitution do projeto (D008/B03).
+2. Abrir a Spec 001 (conta e acesso) com a rotina `abrir-incremento`.
+3. Realizar a entrevista com o proprietário (`documentacao/roteiro-entrevista.md`) e responder Q1–Q10 em `decisoes.md`.
+4. Implementar, verificar e fechar cada incremento com as rotinas do projeto.
 
 ## Não fazer agora
 
-- Escrever código de funcionalidade antes de fechar o incremento 000.
+- Abrir ou implementar o incremento 001 sem instalar o Spec Kit e criar sua Spec.
 - Começar pelo cálculo sem antes ter conta e catálogo — a ordem do roadmap existe para que cada incremento seja demonstrável.
 - Implementar qualquer item da lista de evolução pós-TCC (`documentacao/roadmap.md` §5).
 - Criar pastas de spec antecipadamente: cada uma nasce quando o incremento entra no ciclo.

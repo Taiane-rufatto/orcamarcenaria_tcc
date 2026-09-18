@@ -30,14 +30,20 @@ O critério de aprovação do TCC é diferença nula entre o cálculo manual e o
 3. Sem exclusão física de registros: cadastros são inativados (RNF10).
 4. Segredos só em variáveis de ambiente; `.env` nunca é versionado.
 
-## Começando (a preencher no incremento 000)
+## Executar localmente
 
 ```bash
 cd backend
 npm install
-cp .env.example .env      # preencher DATABASE_URL e JWT_SECRET
-npm run migrar
+copy .env.example .env    # no Windows; preencher DATABASE_URL e JWT_SECRET
 npm run dev
 ```
 
-Os scripts acima ainda não existem — criá-los faz parte do incremento 000 (`documentacao/roadmap.md`). Ao criá-los, atualizar este README com os comandos reais.
+Com a API em execução, acesse `http://localhost:3333/saude`. A resposta esperada contém `api: "ok"` e `banco: "ok"`.
+
+```bash
+npm test
+npm run build
+```
+
+Os scripts de migração serão adicionados no incremento que introduzir o esquema de dados.
