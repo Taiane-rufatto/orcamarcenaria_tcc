@@ -34,7 +34,7 @@
 
 - [x] T013 Executar migração, testes e builds; registrar em `evidencias/testes/`.
 - [x] T014 Executar `quickstart.md` com dados fictícios e registrar validação manual.
-- [ ] T015 Atualizar documentos de estado e fechar a Spec após revisão. *(documentos atualizados; falta a revisão humana do diff, B12)*
+- [x] T015 Atualizar documentos de estado e fechar a Spec após revisão.
 
 > Nota T005/T011: os casos de uso ficaram nas próprias rotas + repositório (não há regra de negócio além de validar e gravar); a pasta `aplicacao/catalogo/` não foi criada para não gerar camada decorativa.
 

@@ -2,7 +2,7 @@
 
 **Branch:** `spec/002-catalogo-materiais`  
 **Data:** 2026-09-19  
-**Status:** implementada e validada — aguarda revisão humana do diff para fechamento (B12)
+**Status:** fechada em 2026-09-19
 
 ## Clarificações
 

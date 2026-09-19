@@ -1,8 +1,8 @@
 # Handoff
 
-**Atualizado em:** 2026-09-19 · Última sessão: implementação, reativação (D015), visual (D014) e fechamento da Spec 002 (catálogo).
+**Atualizado em:** 2026-09-19 · Última sessão: implementação, reativação (D015), visual (D014) e fechamento da Spec 002 (catálogo), integrada em `main`.
 
-> **Próxima sessão:** a autora revisa o diff da Spec 002 (B12); depois integra a branch e abre o incremento 003. Estado detalhado em `ESTADO_ATUAL.md`.
+> **Próxima sessão:** decidir sobre a entrevista com o proprietário (B01) e abrir o incremento 003 a partir de `main`. Estado detalhado em `ESTADO_ATUAL.md`.
 
 Para qualquer nova sessão, agente ou ferramenta assumir o trabalho sem reconstruir contexto pelo histórico de conversa.
 
@@ -28,7 +28,6 @@ Decisões firmes: D001, D004, D005, D007–D016. Provisórias, aguardando a entr
 - Entrevista de levantamento não realizada (B01).
 - Nenhuma regra de cálculo implementada. A rotina `verificar-calculo` **não pôde ser executada**: não há módulo de domínio nem os dez casos rodando. A Spec 002 só armazena e exibe valores como texto decimal; a verificação real acontece no incremento 003 e a validação formal no 008.
 - Casos de teste do cálculo ainda não conferidos em planilha pela autora (B08).
-- Revisão humana do diff da Spec 002 (B12).
 - RF14 (custo editado não altera orçamento registrado) segue no incremento 003 (D013); RF16 é pós-TCC.
 
 ## Contexto que não está óbvio nos arquivos

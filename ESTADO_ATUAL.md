@@ -2,7 +2,7 @@
 
 **Atualizado em:** 2026-09-19
 
-> **Incremento corrente:** 002 — Catálogo de materiais e serviços, na branch `spec/002-catalogo-materiais`. Implementado, testado (25 testes de backend, TI01, builds e lint) e validado manualmente pela autora. **Falta somente a revisão humana do diff (Definição de Pronto §7.3, bloqueio B12)** para declarar a Spec fechada e integrar a branch.
+> **Incremento 002 — Catálogo de materiais e serviços: fechado em 2026-09-19** (25 testes de backend, TI01, builds, lint, validação manual e revisão do diff pela autora). Nenhum incremento está aberto: o próximo é o 003.
 
 ## Onde o projeto está
 
@@ -38,10 +38,9 @@ Incrementos 000 (preparação), 001 (conta e acesso) e 002 (catálogo) entregues
 
 ## Próximo passo (nesta ordem)
 
-1. A autora revisa o diff da Spec 002 (`git diff main...spec/002-catalogo-materiais`) e confirma o fechamento (B12).
-2. Abrir o Pull Request e integrar a branch em `main`.
-3. Recomendado antes do 003: realizar a entrevista com o proprietário (`documentacao/roteiro-entrevista.md`, B01) e responder Q1–Q10 em `decisoes.md`. D002, D003 e D006 (margem/markup, arredondamento, lucro sobre custos adicionais) são provisórias e o 003 as implementa; se a entrevista não puder vir antes, seguir com elas e registrar o risco.
-4. Abrir o incremento 003 com a rotina `abrir-incremento`.
+1. Recomendado antes do 003: realizar a entrevista com o proprietário (`documentacao/roteiro-entrevista.md`, B01) e responder Q1–Q10 em `decisoes.md`. D002, D003 e D006 (margem/markup, arredondamento, lucro sobre custos adicionais) são provisórias e o 003 as implementa; se a entrevista não puder vir antes, seguir com elas e registrar o risco.
+2. Conferir em planilha os valores de referência dos 10 casos (B08), no mais tardar antes do incremento 008.
+3. Abrir o incremento 003 (composição e cálculo do orçamento) com a rotina `abrir-incremento`, a partir de `main` atualizada.
 
 ## Não fazer agora
 
