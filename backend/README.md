@@ -2,6 +2,10 @@
 
 API HTTP/JSON em Node.js com TypeScript e PostgreSQL. É aqui que vive **toda** a regra de cálculo do orçamento (RNF08): a interface nunca calcula preço.
 
+## Spec 001 — conta e acesso
+
+Use `npm run migrar` para aplicar a migração de conta e acesso. O comando `npm test` inclui integração no banco isolado com sufixo `_teste`; ele não usa o banco principal.
+
 ## Estrutura
 
 | Pasta | O que vai aqui | O que **não** vai |

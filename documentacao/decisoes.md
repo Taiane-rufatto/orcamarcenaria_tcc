@@ -6,6 +6,17 @@ Formato: contexto → decisão → consequência → situação (`provisória` e
 
 ---
 
+## D013 — RF14 permanece no incremento 003
+**Data:** 2026-09-19 · **Situação:** firme
+
+**Contexto.** O roadmap posicionava RF14 no incremento 002, mas `requisitos.md` o posiciona no 003. RF14 exige garantir que a edição de custo não altere valores de orçamentos já registrados, entidade ainda inexistente no catálogo.
+
+**Decisão.** A Spec 002 cobre RF11–RF13, RF15, RF17 e RF18. RF14 permanece no incremento 003, junto à composição e aos primeiros itens de orçamento.
+
+**Consequência.** O catálogo entrega cadastro e manutenção sem antecipar dados de orçamento; o congelamento de valores será implementado e testado quando houver orçamento para preservar.
+
+---
+
 ## D001 — Multi-tenant simples, um usuário por marcenaria
 **Data:** 2026-09-02 · **Situação:** firme
 
@@ -132,6 +143,23 @@ TI02 e TI03 no incremento que introduzir cada entidade e reexecutar os quatro te
 **Consequência.** Cada teste de isolamento permanece vinculado à funcionalidade que consegue
 exercitá-lo de verdade, sem postergar a proteção de rotas nem criar funcionalidade de negócio
 antecipada.
+
+---
+
+## D012 — Autenticação por JWT com sessão persistida
+**Data:** 2026-09-19 · **Situação:** firme
+
+**Contexto.** RF02 e RF03 exigem que a sessão permaneça válida até expirar ou receber logout. Um
+JWT sem estado pode ser descartado no navegador, mas continua aceito pelo servidor até expirar.
+
+**Decisão.** Usar JWT assinado e verificado, associado a uma sessão persistida. O token contém
+somente identificadores de usuário, marcenaria e sessão; o middleware também confirma que a sessão
+está ativa. Logout marca a sessão como encerrada. Senhas usam bcrypt assíncrono, e Zod valida as
+entradas antes dos casos de uso.
+
+**Consequência.** O logout invalida o acesso atual no servidor e a troca de senha pode encerrar
+sessões anteriores. A implementação adiciona a entidade `sessao`, mas não adiciona papéis, múltiplos
+usuários ou recuperação de senha.
 
 ---
 

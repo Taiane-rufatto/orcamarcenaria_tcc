@@ -1,6 +1,8 @@
 # Handoff
 
-**Atualizado em:** 2026-09-18 · Última sessão: abertura da Spec 001 (conta e acesso).
+> Atualização de 2026-09-19: cadastro, entrada, saída, troca de senha, JWT/sessão e TI04 foram implementados e validados; consultar `evidencias/testes/001-conta-acesso-2026-09-19.md`. Falta apenas a evidência automatizada contra `DATABASE_URL_TESTE` para fechar a Spec 001.
+
+**Atualizado em:** 2026-09-19 · Última sessão: planejamento da Spec 001 (conta e acesso).
 
 Para qualquer nova sessão, agente ou ferramenta assumir o trabalho sem reconstruir contexto pelo histórico de conversa.
 
@@ -17,9 +19,9 @@ Para qualquer nova sessão, agente ou ferramenta assumir o trabalho sem reconstr
 
 1. Incremento 000 concluído e publicado no GitHub: backend Express/TypeScript, frontend React/Vite e PostgreSQL local configurados.
 2. A Spec 001 foi criada na branch `spec/001-conta-acesso`, em `specs/001-conta-acesso/spec.md`, cobrindo US01, US02, RF01–RF04, RF06 e RNF11–RNF13.
-3. Clarificação da Spec 001 concluída: TI04 será verificado neste incremento; TI01–TI03 serão executados com material, orçamento e cliente nos incrementos correspondentes e consolidados no 010 (D011).
+3. Clarificação e planejamento da Spec 001 concluídos: TI04 será verificado neste incremento; TI01–TI03 serão executados com material, orçamento e cliente nos incrementos correspondentes e consolidados no 010 (D011). O plano, contratos, modelo de dados, pesquisa e roteiro ficam em `specs/001-conta-acesso/`.
 
-Decisões firmes: D001, D004, D005, D007, D008, D009 e D010. Provisórias, aguardando a entrevista: D002, D003 e D006.
+Decisões firmes: D001, D004, D005, D007, D008, D009, D010, D011 e D012. Provisórias, aguardando a entrevista: D002, D003 e D006.
 
 ## O que **não** foi feito
 

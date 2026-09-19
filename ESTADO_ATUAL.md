@@ -1,5 +1,7 @@
 # Estado Atual
 
+> Atualização de 2026-09-19: a implementação e a validação manual da Spec 001 foram concluídas. O fechamento formal aguarda somente a execução dos testes de integração em banco exclusivo configurado por `DATABASE_URL_TESTE` (B11).
+
 **Atualizado em:** 2026-09-18
 
 ## Onde o projeto está
@@ -36,10 +38,11 @@ Incremento 000 (Preparação) está concluído. O incremento 001 (Conta e acesso
 - [x] Branch `spec/001-conta-acesso` criada
 - [x] Spec e checklist de qualidade criados em `specs/001-conta-acesso/`
 - [x] Clarificação concluída: TI04 será verificado nesta Spec; TI01–TI03 nos incrementos das entidades correspondentes
+- [x] Plano técnico, pesquisa, modelo de dados, contrato HTTP e roteiro de validação criados
 
 ## Próximo passo (nesta ordem)
 
-1. Executar o planejamento da Spec 001.
+1. Gerar as tarefas ordenadas da Spec 001.
 2. Realizar a entrevista com o proprietário (`documentacao/roteiro-entrevista.md`) e responder Q1–Q10 em `decisoes.md`.
 3. Implementar, verificar e fechar cada incremento com as rotinas do projeto.
 

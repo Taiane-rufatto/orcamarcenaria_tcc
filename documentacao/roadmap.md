@@ -22,8 +22,8 @@ Prioridade e dependência definem a ordem. Um incremento só é aberto quando o 
 |---|---|---|---|---|---|
 | 000 | Baseline e ambiente: repositório, documentação, governança, escolha da stack e projeto vazio executável | M0 | — | — | RNF20, RNF23 |
 | 001 | Conta e acesso isolados: cadastro de marcenaria, login, logout, troca de senha, isolamento multi-tenant | M1 | 000 | US01, US02 | RF01–RF04, RF06, RNF11–RNF13 |
-| 002 | Catálogo de materiais e serviços: cadastro, listagem, busca, edição e inativação | M1 | 001 | US03, US04, US05 | RF11–RF18 |
-| 003 | Composição e cálculo do orçamento: itens, custos adicionais, lucro, memorial de cálculo | M2 | 002 | US07, US08, US09, US10, US11 | RF23–RF31, RN01–RN11 |
+| 002 | Catálogo de materiais e serviços: cadastro, listagem, busca, edição e inativação | M1 | 001 | US03, US04, US05 | RF11–RF13, RF15, RF17–RF18 |
+| 003 | Composição e cálculo do orçamento: itens, custos adicionais, lucro, memorial de cálculo | M2 | 002 | US07, US08, US09, US10, US11 | RF14, RF23–RF31, RN01–RN11 |
 | 004 | Registro e acompanhamento: número, situações, validade, listagem e consulta | M2 | 003 | US12, US13 | RF32, RF34–RF39 |
 | 005 | Clientes: cadastro, busca, inativação e vínculo com o orçamento | M2 | 001 | US06 | RF08–RF10 |
 | 006 | Orçamento em PDF para o cliente | M3 | 004 | US14 | RF41–RF43, RNF19 |

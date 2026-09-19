@@ -2,6 +2,10 @@
 
 Aplicação React com TypeScript (Vite). Responsável por coletar dados e **exibir** os valores que o backend calculou.
 
+## Spec 001 — conta e acesso
+
+Abra `/cadastro` para criar uma conta ou `/entrar` para entrar. A rota `/orcamentos` exige sessão válida. Execute `npm test` para verificar a proteção da rota.
+
 ## Estrutura
 
 | Pasta | O que vai aqui |
