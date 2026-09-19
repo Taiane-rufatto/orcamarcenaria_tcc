@@ -1,8 +1,8 @@
 # Handoff
 
-> Atualização de 2026-09-19: cadastro, entrada, saída, troca de senha, JWT/sessão e TI04 foram implementados e validados; consultar `evidencias/testes/001-conta-acesso-2026-09-19.md`. Falta apenas a evidência automatizada contra `DATABASE_URL_TESTE` para fechar a Spec 001.
+**Atualizado em:** 2026-09-19 · Última sessão: implementação, reativação (D015), visual (D014) e fechamento da Spec 002 (catálogo), integrada em `main`.
 
-**Atualizado em:** 2026-09-19 · Última sessão: planejamento da Spec 001 (conta e acesso).
+> **Próxima sessão:** decidir sobre a entrevista com o proprietário (B01) e abrir o incremento 003 a partir de `main`. Estado detalhado em `ESTADO_ATUAL.md`.
 
 Para qualquer nova sessão, agente ou ferramenta assumir o trabalho sem reconstruir contexto pelo histórico de conversa.
 
@@ -17,16 +17,18 @@ Para qualquer nova sessão, agente ou ferramenta assumir o trabalho sem reconstr
 
 ## O que foi feito na última sessão
 
-1. Incremento 000 concluído e publicado no GitHub: backend Express/TypeScript, frontend React/Vite e PostgreSQL local configurados.
-2. A Spec 001 foi criada na branch `spec/001-conta-acesso`, em `specs/001-conta-acesso/spec.md`, cobrindo US01, US02, RF01–RF04, RF06 e RNF11–RNF13.
-3. Clarificação e planejamento da Spec 001 concluídos: TI04 será verificado neste incremento; TI01–TI03 serão executados com material, orçamento e cliente nos incrementos correspondentes e consolidados no 010 (D011). O plano, contratos, modelo de dados, pesquisa e roteiro ficam em `specs/001-conta-acesso/`.
+1. **Spec 002 implementada:** API de materiais e serviços (cadastro, busca, filtro de situação, edição, inativação e reativação), telas correspondentes, 25 testes de backend, TI01 e validação manual da autora. Evidência: `evidencias/testes/002-catalogo-2026-09-19.md`.
+2. **Decisões novas:** D014 (identidade visual), D015 (reativação, incluída na Spec após uso real) e D016 (custo do catálogo > 0, divergência com a RN10 resolvida pela autora).
+3. **Documentação canônica ajustada:** RN10, US03–US05, modelo de dados, roadmap, matriz de verificação (RF01–RF04 e RF06 e RF11–RF13, RF15, RF17, RF18 verificados) e README.
 
-Decisões firmes: D001, D004, D005, D007, D008, D009, D010, D011 e D012. Provisórias, aguardando a entrevista: D002, D003 e D006.
+Decisões firmes: D001, D004, D005, D007–D016. Provisórias, aguardando a entrevista: D002, D003 e D006.
 
 ## O que **não** foi feito
 
-- Entrevista de levantamento não realizada — por isso a §4 de `requisitos.md` existe.
-- Casos de teste calculados por script de referência, mas ainda não conferidos em planilha pela autora (exigência do método da proposta).
+- Entrevista de levantamento não realizada (B01).
+- Nenhuma regra de cálculo implementada. A rotina `verificar-calculo` **não pôde ser executada**: não há módulo de domínio nem os dez casos rodando. A Spec 002 só armazena e exibe valores como texto decimal; a verificação real acontece no incremento 003 e a validação formal no 008.
+- Casos de teste do cálculo ainda não conferidos em planilha pela autora (B08).
+- RF14 (custo editado não altera orçamento registrado) segue no incremento 003 (D013); RF16 é pós-TCC.
 
 ## Contexto que não está óbvio nos arquivos
 
@@ -35,6 +37,13 @@ Decisões firmes: D001, D004, D005, D007, D008, D009, D010, D011 e D012. Provis�
 - A proposta já foi defendida em banca. Mudar tema, pergunta central, escopo declarado ou critérios de validação exige reavaliação com o orientador — não é decisão de sessão.
 - O prazo é curto e a equipe é de uma pessoa: a regra prática é sempre entregar a fatia menor que ainda seja demonstrável.
 - A autora precisa entender e defender cada parte do que for gerado. Ao produzir código, explique a lógica em português junto com a entrega.
+- **Banco de testes:** o `.env` não tem `DATABASE_URL_TESTE`; o teste de integração deriva `<nome do banco>_teste` de `DATABASE_URL` com as mesmas credenciais. `npm run migrar` usa `DATABASE_URL` (banco principal): para migrar o de teste, aponte `DATABASE_URL` para ele só naquele comando.
+- **Toda Spec com migração exige `npm run migrar` também no banco principal** antes de usar o app. Foi exatamente isso que causou o "Ocorreu um erro interno" ao cadastrar o primeiro material (tabelas inexistentes no banco principal).
+- **`NUMERIC` do PostgreSQL chega como texto** (`types.setTypeParser(1700, …)` em `backend/src/infra/banco/pool.ts`), e a vírgula decimal é convertida por texto na validação do servidor. Nada passa por `Number`; o 003 deve manter isso.
+- **Testes de navegador (Playwright + Edge):** o react-router troca de tela numa *transition*, então `waitForURL` resolve antes de a tela nova existir e o `fill` cai na tela antiga. Esperar o título (`h1`) da página de destino.
+- **Frontend:** cores e espaçamentos estão só em variáveis de `frontend/src/index.css` (D014). Telas novas reutilizam `pagina`, `folha`, `campos`, `alerta`, `selo`, sem estilo próprio.
+- **Regra RN10 esclarecida (D016):** zero é válido no valor unitário de *item de orçamento*, mas não no catálogo.
+
 
 ## Perguntas a fazer à autora antes de avançar
 

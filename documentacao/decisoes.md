@@ -6,6 +6,45 @@ Formato: contexto → decisão → consequência → situação (`provisória` e
 
 ---
 
+## D016 — Custo e valor unitário do catálogo devem ser maiores que zero
+**Data:** 2026-09-19 · **Situação:** firme
+
+**Contexto.** Ao fechar a Spec 002 apareceu uma divergência entre fontes: a RN10 (`regras-de-calculo.md`) exige valor unitário "maior ou igual a zero" e a US03 rejeitava apenas custo negativo ou vazio, mas a Spec 002, a validação do servidor e a restrição do banco (`CHECK > 0`) já recusavam também o zero. A autora foi consultada.
+
+**Decisão.** No catálogo (material e serviço), custo e valor unitário devem ser **maiores que zero**. O "maior ou igual a zero" da RN10 passa a valer para o valor unitário de **item de orçamento**, onde zero é legítimo (cortesia, item ajustado apenas naquele orçamento; RF24 e RF26).
+
+**Consequência.** Nenhuma alteração de código nem de banco: o comportamento implementado já era esse. Ajustados RN10 e US03. O caso negativo CN03 (valor negativo) não muda. O incremento 003 deve aceitar zero no item de orçamento sem exigir zero no catálogo.
+
+---
+
+## D015 — Reativação de material e serviço inativados
+**Data:** 2026-09-19 · **Situação:** firme
+
+**Contexto.** RF15 e RF18 tratam de inativar, sem mencionar reverter; RF11 e RF17 incluem "situação (ativo/inativo)" e RF13 filtra por situação. Durante o uso, a autora percebeu que a inativação era irreversível pela interface. Como o nome é único por marcenaria (inclusive entre inativos), também não era possível recadastrar o item, e uma inativação por engano só se desfazia direto no banco. Nenhum documento previa reativação, nem como evolução pós-TCC.
+
+**Decisão.** Incluir a reativação na Spec 002, como parte de US04 e US05: `POST /materiais/:id/reativar` e `POST /servicos/:id/reativar`, sempre restritas à marcenaria da sessão (D001). O registro volta ao estado ativo com os mesmos dados; nada é recriado nem excluído (RNF10).
+
+**Consequência.** Escopo da Spec 002 ampliado em três tarefas (T016–T018), sem regra de cálculo e sem tocar em orçamento. Orçamentos futuros continuam usando valores congelados no item (D004), portanto reativar não altera orçamentos já registrados. `requisitos.md` não foi alterado: a reativação é tratada como parte da manutenção da situação prevista em RF11, RF13 e RF17.
+
+---
+
+## D014 — Identidade visual e padrão de interface do frontend
+**Data:** 2026-09-19 · **Situação:** firme
+
+**Contexto.** As telas da Spec 001 e as primeiras da Spec 002 usavam o CSS de exemplo do Vite (tudo centralizado, roxo, título de 56 px), sem identidade própria e sem layout adequado a listas. A autora pediu um visual em verde e laranja, fora do padrão genérico, seguindo boas práticas de UX/UI. Não há requisito funcional novo: RNF05 e RNF26 (português do Brasil) seguem valendo.
+
+**Decisão.** Adotar um único sistema visual, definido em `frontend/src/index.css` por variáveis CSS:
+- **Cores:** papel kraft claro (`#f3eee3`) como fundo, verde musgo (`#1e4d38`) para estrutura e navegação, laranja de cedro (`#e8722d`) reservado às ações primárias e destaques, vermelho (`#9e2a1d`) só para erro.
+- **Assinatura:** régua/trena no cabeçalho e no painel de acesso.
+- **Tipografia:** Young Serif (títulos) e Figtree (texto), carregadas do Google Fonts, com fontes do sistema como reserva.
+- **Estrutura:** cabeçalho comum às telas internas (`Layout`), moldura de entrada/cadastro (`PainelAcesso`), catálogo em tabela e, abaixo de 760 px, em blocos empilhados que mantêm Editar/Inativar à vista.
+- **Acessibilidade:** texto escuro sobre o laranja (contraste ≈ 5:1), alvos de toque de 44 px, foco visível, rótulos em todos os campos, `role="alert"` nos erros.
+- **Limites:** somente tema claro; nenhuma lógica de negócio nem cálculo no frontend (D005 preservada); valores exibidos como recebidos da API, só trocando `.` por `,`.
+
+**Consequência.** Telas novas reutilizam as classes existentes (`pagina`, `folha`, `campos`, `alerta`, `selo`) em vez de criar estilo próprio. Trocar a paleta exige alterar apenas as variáveis de `:root`. Verificação: lint, build e teste do frontend, mais percurso completo do catálogo em 1280 px e 390 px sem rolagem horizontal (`evidencias/testes/002-catalogo-2026-09-19.md`). Fica pendente a avaliação de uso com o proprietário (OE7), que pode ajustar cores e textos.
+
+---
+
 ## D013 — RF14 permanece no incremento 003
 **Data:** 2026-09-19 · **Situação:** firme
 

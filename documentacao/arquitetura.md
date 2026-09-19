@@ -81,9 +81,9 @@ erDiagram
 
 **cliente** — `id`, `marcenaria_id`, `nome`, `telefone?`, `email?`, `endereco?`, `ativo`, `criado_em`
 
-**material** — `id`, `marcenaria_id`, `nome`, `descricao?`, `unidade`, `custo_unitario` NUMERIC(12,4), `ativo`, `criado_em`, `atualizado_em`
+**material** — `id`, `marcenaria_id`, `nome` (único por marcenaria, inclusive entre inativos), `descricao?` (até 300), `unidade` (`un`, `m`, `m²`, `ml`, `ch`, `kg`, `L`, `pç`), `custo_unitario` NUMERIC(12,4), `ativo`, `criado_em`, `atualizado_em`
 
-**servico** — `id`, `marcenaria_id`, `nome`, `descricao?`, `tipo_cobranca` (`hora` | `unidade`), `valor_unitario` NUMERIC(12,4), `ativo`, `criado_em`, `atualizado_em`
+**servico** — `id`, `marcenaria_id`, `nome` (único por marcenaria, inclusive entre inativos), `descricao?` (até 300), `tipo_cobranca` (`hora` | `unidade`), `valor_unitario` NUMERIC(12,4), `ativo`, `criado_em`, `atualizado_em`
 
 **orcamento** — `id`, `marcenaria_id`, `numero` INT, `cliente_id`, `descricao_projeto`, `data_emissao`, `data_validade`, `situacao`, `modo_lucro`, `percentual_lucro` NUMERIC(5,2), `regra_arredondamento`, `subtotal_materiais` NUMERIC(12,2), `subtotal_servicos` NUMERIC(12,2), `total_adicionais` NUMERIC(12,2), `custo_direto_total` NUMERIC(12,2), `valor_lucro` NUMERIC(12,2), `ajuste_arredondamento` NUMERIC(12,2), `preco_final` NUMERIC(12,2), `observacoes?`, `criado_em`, `atualizado_em`
 - Único: (`marcenaria_id`, `numero`)

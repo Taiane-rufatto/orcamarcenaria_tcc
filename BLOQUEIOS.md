@@ -1,10 +1,8 @@
 # Bloqueios
 
-> **B11 — resolvido em 2026-09-19:** `orcamarcenaria_teste` foi criado e recebeu permissão de uso e criação no schema `public` para o usuário da aplicação. A migração e a integração foram executadas nesse banco, sem usar o banco principal.
-
 Itens que dependem de decisão humana, acesso ou ação externa. Um agente **não** deve resolver nada desta lista por conta própria.
 
-**Atualizado em:** 2026-09-18
+**Atualizado em:** 2026-09-19
 
 | # | Bloqueio | Bloqueia | Responsável | Situação |
 |---|---|---|---|---|
@@ -29,3 +27,5 @@ Itens que dependem de decisão humana, acesso ou ação externa. Um agente **nã
 | B09 | PostgreSQL local ainda não instalado/configurado | 2026-09-18 | Rota `GET /saude` validada com `api: "ok"` e `banco: "ok"`. |
 | B03 | Spec Kit ainda não instalado no repositório (D008) | 2026-09-18 | CLI oficial `specify` 1.0.8 instalado com integração Codex; infraestrutura `.specify/` e constitution 1.0.0 criadas. |
 | B10 | TI01–TI03 exigem material, orçamento e cliente, entregues apenas nos incrementos 002–005 | 2026-09-18 | Confirmado pela autora: TI04 será executado na Spec 001; TI01–TI03 serão executados com as entidades correspondentes e consolidados no incremento 010. Registrado em D011. |
+| B11 | Faltava banco exclusivo de testes de integração (`DATABASE_URL_TESTE`) | 2026-09-19 | `orcamarcenaria_teste` criado e liberado ao usuário da aplicação. Migrações e integração executadas nele, sem usar o banco principal. |
+| B12 | Revisão humana do diff da Spec 002 (DoD §7.3) | 2026-09-19 | A autora informou que revisou o diff (`git diff main...spec/002-catalogo-materiais`) e autorizou o fechamento, o PR e o merge. |
