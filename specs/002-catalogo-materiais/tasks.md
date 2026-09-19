@@ -24,14 +24,20 @@
 - [x] T011 [US05] Implementar casos de uso e rotas autenticadas de serviço.
 - [x] T012 [US05] Criar tela e fluxo de serviços no frontend.
 
+## Fase 4b — Reativação (D015)
+
+- [x] T016 [P] [US04, US05] Estender a integração: reativar material e serviço, voltar à listagem de ativos e negar reativação de registro de outra marcenaria (TI01) em `backend/tests/integracao/catalogo.test.ts`.
+- [x] T017 [US04, US05] Implementar `POST /materiais/:id/reativar` e `POST /servicos/:id/reativar` filtrados por `marcenaria_id` da sessão.
+- [x] T018 [US04, US05] Exibir "Reativar" nas linhas inativas das telas de materiais e serviços.
+
 ## Fase 5 — Evidências
 
 - [x] T013 Executar migração, testes e builds; registrar em `evidencias/testes/`.
-- [ ] T014 Executar `quickstart.md` com dados fictícios e registrar validação manual.
-- [ ] T015 Atualizar documentos de estado e fechar a Spec após revisão.
+- [x] T014 Executar `quickstart.md` com dados fictícios e registrar validação manual.
+- [ ] T015 Atualizar documentos de estado e fechar a Spec após revisão. *(documentos atualizados; falta a revisão humana do diff, B12)*
 
 > Nota T005/T011: os casos de uso ficaram nas próprias rotas + repositório (não há regra de negócio além de validar e gravar); a pasta `aplicacao/catalogo/` não foi criada para não gerar camada decorativa.
 
 ## Ordem
 
-T001–T003 bloqueiam as histórias. US03 precede US04; US05 pode seguir após a fundação. T013–T015 dependem de todas as histórias.
+T001–T003 bloqueiam as histórias. US03 precede US04; US05 pode seguir após a fundação. T016–T018 dependem de US04 e US05. T013–T015 dependem de todas as histórias, inclusive T016–T018 (T013 e T014 precisam ser reexecutados após a reativação).

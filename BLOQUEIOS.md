@@ -1,10 +1,8 @@
 # Bloqueios
 
-> **B11 — resolvido em 2026-09-19:** `orcamarcenaria_teste` foi criado e recebeu permissão de uso e criação no schema `public` para o usuário da aplicação. A migração e a integração foram executadas nesse banco, sem usar o banco principal.
-
 Itens que dependem de decisão humana, acesso ou ação externa. Um agente **não** deve resolver nada desta lista por conta própria.
 
-**Atualizado em:** 2026-09-18
+**Atualizado em:** 2026-09-19
 
 | # | Bloqueio | Bloqueia | Responsável | Situação |
 |---|---|---|---|---|
@@ -13,6 +11,7 @@ Itens que dependem de decisão humana, acesso ou ação externa. Um agente **nã
 | B06 | Termo de consentimento do participante (RNF16) não elaborado | Entrevista (OE1) e avaliação exploratória de uso (OE7) | Taiane | Aberto — verificar exigência com o orientador |
 | B07 | Data da apresentação de andamento não confirmada com a coordenação | Ajuste fino do calendário do `roadmap.md` §3 | Taiane | Aberto |
 | B08 | Valores de referência dos 10 casos de teste ainda não conferidos em planilha pela autora | Uso dos casos como evidência formal (o método da proposta exige cálculo prévio em planilha) | Taiane | Aberto — conferir antes do incremento 008 |
+| B12 | Revisão humana do diff da Spec 002 (Definição de Pronto §7.3: "revisado por uma pessoa, não apenas o resumo do agente") | Declarar a Spec 002 fechada, integrar a branch e abrir o incremento 003 | Taiane | Aberto — revisar `git diff main...spec/002-catalogo-materiais` |
 
 ## Como usar este arquivo
 
@@ -29,3 +28,4 @@ Itens que dependem de decisão humana, acesso ou ação externa. Um agente **nã
 | B09 | PostgreSQL local ainda não instalado/configurado | 2026-09-18 | Rota `GET /saude` validada com `api: "ok"` e `banco: "ok"`. |
 | B03 | Spec Kit ainda não instalado no repositório (D008) | 2026-09-18 | CLI oficial `specify` 1.0.8 instalado com integração Codex; infraestrutura `.specify/` e constitution 1.0.0 criadas. |
 | B10 | TI01–TI03 exigem material, orçamento e cliente, entregues apenas nos incrementos 002–005 | 2026-09-18 | Confirmado pela autora: TI04 será executado na Spec 001; TI01–TI03 serão executados com as entidades correspondentes e consolidados no incremento 010. Registrado em D011. |
+| B11 | Faltava banco exclusivo de testes de integração (`DATABASE_URL_TESTE`) | 2026-09-19 | `orcamarcenaria_teste` criado e liberado ao usuário da aplicação. Migrações e integração executadas nele, sem usar o banco principal. |

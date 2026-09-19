@@ -1,14 +1,12 @@
 # Estado Atual
 
-> **Incremento corrente:** 002 — Catálogo de materiais e serviços, na branch `spec/002-catalogo-materiais`. Implementação concluída (T001–T013) com testes automáticos aprovados; falta a validação manual (T014) e o fechamento (T015). Identidade visual (verde/laranja) aplicada às telas e registrada em D014. Evidência: `evidencias/testes/002-catalogo-2026-09-19.md`.
+**Atualizado em:** 2026-09-19
 
-> Atualização de 2026-09-19: a implementação e a validação manual da Spec 001 foram concluídas. O fechamento formal aguarda somente a execução dos testes de integração em banco exclusivo configurado por `DATABASE_URL_TESTE` (B11).
-
-**Atualizado em:** 2026-09-18
+> **Incremento corrente:** 002 — Catálogo de materiais e serviços, na branch `spec/002-catalogo-materiais`. Implementado, testado (25 testes de backend, TI01, builds e lint) e validado manualmente pela autora. **Falta somente a revisão humana do diff (Definição de Pronto §7.3, bloqueio B12)** para declarar a Spec fechada e integrar a branch.
 
 ## Onde o projeto está
 
-Incremento 000 (Preparação) está concluído. O incremento 001 (Conta e acesso) está aberto na branch `spec/001-conta-acesso`, com a especificação clarificada e pronta para planejamento.
+Incrementos 000 (preparação), 001 (conta e acesso) e 002 (catálogo) entregues. O próximo é o 003 — composição e cálculo do orçamento, o núcleo do TCC. Ainda não existe nenhuma regra de cálculo implementada (`backend/src/dominio/orcamento/` está vazio).
 
 ## Pronto
 
@@ -34,23 +32,19 @@ Incremento 000 (Preparação) está concluído. O incremento 001 (Conta e acesso
 - [x] Teste inicial do backend aprovado: 2 testes Vitest
 - [x] READMEs de backend e frontend atualizados com os comandos executáveis
 - [x] Spec Kit instalado com integração Codex e constitution do projeto criada em `.specify/memory/constitution.md`
-
-## Em andamento — incremento 001 (Conta e acesso)
-
-- [x] Branch `spec/001-conta-acesso` criada
-- [x] Spec e checklist de qualidade criados em `specs/001-conta-acesso/`
-- [x] Clarificação concluída: TI04 será verificado nesta Spec; TI01–TI03 nos incrementos das entidades correspondentes
-- [x] Plano técnico, pesquisa, modelo de dados, contrato HTTP e roteiro de validação criados
+- [x] **Incremento 001 — Conta e acesso** (RF01–RF04, RF06): cadastro, entrada, saída, troca de senha, JWT com sessão persistida, isolamento por marcenaria; TI04 verificado (`evidencias/testes/001-conta-acesso-2026-09-19.md`)
+- [x] **Incremento 002 — Catálogo de materiais e serviços** (RF11–RF13, RF15, RF17, RF18): cadastro, busca, filtro de situação, edição, inativação e reativação (D015); custo/valor decimal exato com até 4 casas (D016); TI01 verificado (`evidencias/testes/002-catalogo-2026-09-19.md`)
+- [x] **Identidade visual do frontend** (D014): verde musgo, laranja de cedro, layout responsivo
 
 ## Próximo passo (nesta ordem)
 
-1. Gerar as tarefas ordenadas da Spec 001.
-2. Realizar a entrevista com o proprietário (`documentacao/roteiro-entrevista.md`) e responder Q1–Q10 em `decisoes.md`.
-3. Implementar, verificar e fechar cada incremento com as rotinas do projeto.
+1. A autora revisa o diff da Spec 002 (`git diff main...spec/002-catalogo-materiais`) e confirma o fechamento (B12).
+2. Abrir o Pull Request e integrar a branch em `main`.
+3. Recomendado antes do 003: realizar a entrevista com o proprietário (`documentacao/roteiro-entrevista.md`, B01) e responder Q1–Q10 em `decisoes.md`. D002, D003 e D006 (margem/markup, arredondamento, lucro sobre custos adicionais) são provisórias e o 003 as implementa; se a entrevista não puder vir antes, seguir com elas e registrar o risco.
+4. Abrir o incremento 003 com a rotina `abrir-incremento`.
 
 ## Não fazer agora
 
-- Abrir ou implementar o incremento 001 sem instalar o Spec Kit e criar sua Spec.
-- Começar pelo cálculo sem antes ter conta e catálogo — a ordem do roadmap existe para que cada incremento seja demonstrável.
-- Implementar qualquer item da lista de evolução pós-TCC (`documentacao/roadmap.md` §5).
+- Começar o cálculo sem abrir a Spec 003 pela rotina.
+- Implementar qualquer item da lista de evolução pós-TCC (`documentacao/roadmap.md` §5), inclusive histórico de custo (RF16).
 - Criar pastas de spec antecipadamente: cada uma nasce quando o incremento entra no ciclo.

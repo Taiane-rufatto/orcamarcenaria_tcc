@@ -6,6 +6,28 @@ Formato: contexto → decisão → consequência → situação (`provisória` e
 
 ---
 
+## D016 — Custo e valor unitário do catálogo devem ser maiores que zero
+**Data:** 2026-09-19 · **Situação:** firme
+
+**Contexto.** Ao fechar a Spec 002 apareceu uma divergência entre fontes: a RN10 (`regras-de-calculo.md`) exige valor unitário "maior ou igual a zero" e a US03 rejeitava apenas custo negativo ou vazio, mas a Spec 002, a validação do servidor e a restrição do banco (`CHECK > 0`) já recusavam também o zero. A autora foi consultada.
+
+**Decisão.** No catálogo (material e serviço), custo e valor unitário devem ser **maiores que zero**. O "maior ou igual a zero" da RN10 passa a valer para o valor unitário de **item de orçamento**, onde zero é legítimo (cortesia, item ajustado apenas naquele orçamento; RF24 e RF26).
+
+**Consequência.** Nenhuma alteração de código nem de banco: o comportamento implementado já era esse. Ajustados RN10 e US03. O caso negativo CN03 (valor negativo) não muda. O incremento 003 deve aceitar zero no item de orçamento sem exigir zero no catálogo.
+
+---
+
+## D015 — Reativação de material e serviço inativados
+**Data:** 2026-09-19 · **Situação:** firme
+
+**Contexto.** RF15 e RF18 tratam de inativar, sem mencionar reverter; RF11 e RF17 incluem "situação (ativo/inativo)" e RF13 filtra por situação. Durante o uso, a autora percebeu que a inativação era irreversível pela interface. Como o nome é único por marcenaria (inclusive entre inativos), também não era possível recadastrar o item, e uma inativação por engano só se desfazia direto no banco. Nenhum documento previa reativação, nem como evolução pós-TCC.
+
+**Decisão.** Incluir a reativação na Spec 002, como parte de US04 e US05: `POST /materiais/:id/reativar` e `POST /servicos/:id/reativar`, sempre restritas à marcenaria da sessão (D001). O registro volta ao estado ativo com os mesmos dados; nada é recriado nem excluído (RNF10).
+
+**Consequência.** Escopo da Spec 002 ampliado em três tarefas (T016–T018), sem regra de cálculo e sem tocar em orçamento. Orçamentos futuros continuam usando valores congelados no item (D004), portanto reativar não altera orçamentos já registrados. `requisitos.md` não foi alterado: a reativação é tratada como parte da manutenção da situação prevista em RF11, RF13 e RF17.
+
+---
+
 ## D014 — Identidade visual e padrão de interface do frontend
 **Data:** 2026-09-19 · **Situação:** firme
 

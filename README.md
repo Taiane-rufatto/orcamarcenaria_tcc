@@ -15,7 +15,7 @@ O marceneiro cadastra uma vez seus materiais e serviços com os respectivos cust
 
 ## Estado
 
-Incremento 000 concluído: backend, frontend e banco local foram integrados e verificados. Spec Kit e constitution estão instalados; o próximo passo é abrir formalmente o incremento 001. Ver `ESTADO_ATUAL.md`.
+Incrementos 000 (preparação) e 001 (conta e acesso) concluídos. O incremento 002 (catálogo de materiais e serviços) está implementado e verificado; o próximo é o 003 (composição e cálculo do orçamento). Ver `ESTADO_ATUAL.md`.
 
 ## Documentação
 
@@ -28,7 +28,7 @@ Incremento 000 concluído: backend, frontend e banco local foram integrados e ve
 | [documentacao/arquitetura.md](documentacao/arquitetura.md) | Diagramas C4, modelo de dados, multi-tenant e riscos |
 | [documentacao/qualidade-e-testes.md](documentacao/qualidade-e-testes.md) | Estratégia de testes, os 10 casos de validação e a matriz de verificação |
 | [documentacao/roadmap.md](documentacao/roadmap.md) | Marcos, 11 incrementos e calendário até a defesa |
-| [documentacao/decisoes.md](documentacao/decisoes.md) | Decisões (D001–D008) e questões em aberto |
+| [documentacao/decisoes.md](documentacao/decisoes.md) | Decisões (D001–D015) e questões em aberto |
 | [documentacao/roteiro-entrevista.md](documentacao/roteiro-entrevista.md) | Roteiro da entrevista de levantamento (OE1) |
 | [documentacao/guia-incremento-000.md](documentacao/guia-incremento-000.md) | Passo a passo para colocar backend, frontend e banco para rodar |
 
@@ -76,7 +76,7 @@ Node.js + TypeScript (backend), React + TypeScript com Vite (frontend), PostgreS
 ## Como começar (para a autora)
 
 1. Abrir a pasta no VS Code e instalar as extensões recomendadas (o editor sugere ao abrir).
-2. Abrir a Spec 001 com a rotina `abrir-incremento` e rodar o primeiro ciclo completo.
+2. Ler `ESTADO_ATUAL.md` e seguir o próximo passo indicado, abrindo cada incremento com a rotina `abrir-incremento`.
 3. Realizar a entrevista com o roteiro e responder Q1–Q10 em `decisoes.md`.
 
 ## Referências da proposta

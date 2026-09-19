@@ -101,7 +101,8 @@ rascunho ──enviar──▶ enviado ──aprovar──▶ aprovado
 | Campo | Regra |
 |---|---|
 | Quantidade | maior que zero |
-| Valor unitário | maior ou igual a zero |
+| Valor unitário de item de orçamento | maior ou igual a zero (permite, por exemplo, cortesia ou item ajustado a zero naquele orçamento) |
+| Custo unitário de material e valor unitário de serviço no catálogo | maior que zero (D016) |
 | Custo adicional | maior que zero |
 | Margem | 0 ≤ m < 100 |
 | Markup | ≥ 0 |

@@ -7,12 +7,16 @@ paths:
   /materiais/{id}:
     put: { summary: Edita material próprio, security: [{ bearerAuth: [] }] }
     delete: { summary: Inativa material próprio, security: [{ bearerAuth: [] }] }
+  /materiais/{id}/reativar:
+    post: { summary: Reativa material próprio inativo, security: [{ bearerAuth: [] }] }
   /servicos:
     get: { summary: Lista serviços da sessão, security: [{ bearerAuth: [] }] }
     post: { summary: Cria serviço, security: [{ bearerAuth: [] }] }
   /servicos/{id}:
     put: { summary: Edita serviço próprio, security: [{ bearerAuth: [] }] }
     delete: { summary: Inativa serviço próprio, security: [{ bearerAuth: [] }] }
+  /servicos/{id}/reativar:
+    post: { summary: Reativa serviço próprio inativo, security: [{ bearerAuth: [] }] }
 components:
   securitySchemes:
     bearerAuth: { type: http, scheme: bearer }

@@ -91,7 +91,7 @@ Casos reprovados geram correção e **reexecução completa da tabela**, não ap
 
 **Execução por incremento.** TI04 é verificado na Spec 001, que cria a autenticação. TI01 é
 verificado quando o catálogo de materiais existir; TI02, quando houver orçamento; e TI03, quando
-houver cliente. Os quatro testes são reexecutados e consolidados no incremento 010.
+houver cliente. Os quatro testes são reexecutados e consolidados no incremento 010. TI01 foi executado na Spec 002 (`backend/tests/integracao/catalogo.test.ts`), cobrindo listagem, edição, inativação e reativação de material e de serviço.
 
 ## 5. Avaliação exploratória de uso (OE7)
 
@@ -123,8 +123,11 @@ Preenchida ao fim de cada incremento e consolidada antes da defesa.
 
 | Requisito | Incremento | Forma de verificação | Situação |
 |---|---|---|---|
-| RF01–RF06 | 001 | Teste manual + teste de integração de autenticação | pendente |
-| RF11–RF18 | 002 | Teste manual + integração dos cadastros | pendente |
+| RF01–RF04, RF06 | 001 | Teste manual + teste de integração de autenticação | verificado em 2026-09-19 (`evidencias/testes/001-conta-acesso-2026-09-19.md`) |
+| RF05 | 007 | Teste manual das configurações | pendente |
+| RF11–RF13, RF15, RF17, RF18 | 002 | Teste manual + integração dos cadastros | verificado em 2026-09-19 (`evidencias/testes/002-catalogo-2026-09-19.md`) |
+| RF14 | 003 | Teste de integração com orçamento registrado (D013) | pendente |
+| RF16 | pós-TCC | — | fora do escopo |
 | RF23–RF31 | 003 | CT01–CT10 + testes de unidade do domínio | pendente |
 | RF32–RF39 | 004 | Teste manual do ciclo de vida + CN05, CN06 | pendente |
 | RF08–RF10 | 005 | Teste manual dos cadastros de cliente | pendente |
@@ -132,7 +135,7 @@ Preenchida ao fim de cada incremento e consolidada antes da defesa.
 | RF05, RF19–RF22 | 007 | Teste manual das configurações + CT03/CT04/CT06 | pendente |
 | RNF06, RNF21 | 008 | Execução completa dos casos de teste | pendente |
 | RNF01 | 009 | Avaliação exploratória de uso | pendente |
-| RNF12, RNF13 | 001–005 e 010 | TI04 na Spec 001; TI01–TI03 quando suas entidades existirem; reexecução completa no 010 | pendente |
+| RNF12, RNF13 | 001–005 e 010 | TI04 na Spec 001; TI01–TI03 quando suas entidades existirem; reexecução completa no 010 | parcial: TI04 (001) e TI01 (002) verificados; TI02 e TI03 pendentes |
 
 ## 7. Definição de pronto (Definition of Done)
 

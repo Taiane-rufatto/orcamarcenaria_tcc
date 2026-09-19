@@ -33,7 +33,7 @@ Ator padrão: **marceneiro** (proprietário da marcenaria, usuário único da co
 `RF11, RF12`
 
 - **Dado** nome, unidade e custo unitário válidos, **quando** salvo, **então** o material aparece na listagem como ativo.
-- **Dado** custo unitário negativo ou vazio, **quando** salvo, **então** o campo é sinalizado e o registro não é gravado.
+- **Dado** custo unitário negativo, zero ou vazio, **quando** salvo, **então** o campo é sinalizado e o registro não é gravado.
 - **Dado** um custo com quatro casas decimais (1,2350), **quando** salvo e reabro, **então** o valor é exibido sem perda de precisão.
 
 ### US04 — Manter o catálogo atualizado
@@ -42,12 +42,15 @@ Ator padrão: **marceneiro** (proprietário da marcenaria, usuário único da co
 
 - **Dado** um material usado em um orçamento já registrado, **quando** altero seu custo, **então** o orçamento anterior mantém o valor original e apenas novos itens usam o valor novo.
 - **Dado** um material que não uso mais, **quando** o inativo, **então** ele deixa de aparecer na seleção de itens, mas continua visível nos orçamentos antigos.
+- **Dado** um material inativo, **quando** o reativo, **então** ele volta à lista de ativos com os mesmos dados (D015).
+- **Dado** muitos materiais cadastrados, **quando** busco por parte do nome ou filtro por situação (ativos, inativos ou todos), **então** vejo apenas os da minha marcenaria que correspondem (RF13).
 
 ### US05 — Cadastrar serviços e mão de obra
 **Como** marceneiro, **quero** cadastrar serviços por hora ou por unidade com seu valor, **para** incluir a mão de obra no orçamento sem calcular de cabeça.
 `RF17, RF18`
 
 - **Dado** um serviço com cobrança por hora e valor R$ 45,00, **quando** o uso em um orçamento com 8 horas, **então** a linha resulta em R$ 360,00.
+- **Dado** um serviço cadastrado, **quando** busco, edito, inativo ou reativo, **então** valem as mesmas regras de isolamento e preservação dos materiais (RF18, D015).
 
 ---
 
