@@ -1,6 +1,6 @@
 # Estado Atual
 
-> **Incremento corrente:** 002 — Catálogo de materiais e serviços, na branch `spec/002-catalogo-materiais`. A Spec foi aberta em `specs/002-catalogo-materiais/spec.md` e aguarda clarificação antes do planejamento.
+> **Incremento corrente:** 002 — Catálogo de materiais e serviços, na branch `spec/002-catalogo-materiais`. Implementação concluída (T001–T013) com testes automáticos aprovados; falta a validação manual (T014) e o fechamento (T015). Identidade visual (verde/laranja) aplicada às telas e registrada em D014. Evidência: `evidencias/testes/002-catalogo-2026-09-19.md`.
 
 > Atualização de 2026-09-19: a implementação e a validação manual da Spec 001 foram concluídas. O fechamento formal aguarda somente a execução dos testes de integração em banco exclusivo configurado por `DATABASE_URL_TESTE` (B11).
 

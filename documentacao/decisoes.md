@@ -6,6 +6,23 @@ Formato: contexto → decisão → consequência → situação (`provisória` e
 
 ---
 
+## D014 — Identidade visual e padrão de interface do frontend
+**Data:** 2026-09-19 · **Situação:** firme
+
+**Contexto.** As telas da Spec 001 e as primeiras da Spec 002 usavam o CSS de exemplo do Vite (tudo centralizado, roxo, título de 56 px), sem identidade própria e sem layout adequado a listas. A autora pediu um visual em verde e laranja, fora do padrão genérico, seguindo boas práticas de UX/UI. Não há requisito funcional novo: RNF05 e RNF26 (português do Brasil) seguem valendo.
+
+**Decisão.** Adotar um único sistema visual, definido em `frontend/src/index.css` por variáveis CSS:
+- **Cores:** papel kraft claro (`#f3eee3`) como fundo, verde musgo (`#1e4d38`) para estrutura e navegação, laranja de cedro (`#e8722d`) reservado às ações primárias e destaques, vermelho (`#9e2a1d`) só para erro.
+- **Assinatura:** régua/trena no cabeçalho e no painel de acesso.
+- **Tipografia:** Young Serif (títulos) e Figtree (texto), carregadas do Google Fonts, com fontes do sistema como reserva.
+- **Estrutura:** cabeçalho comum às telas internas (`Layout`), moldura de entrada/cadastro (`PainelAcesso`), catálogo em tabela e, abaixo de 760 px, em blocos empilhados que mantêm Editar/Inativar à vista.
+- **Acessibilidade:** texto escuro sobre o laranja (contraste ≈ 5:1), alvos de toque de 44 px, foco visível, rótulos em todos os campos, `role="alert"` nos erros.
+- **Limites:** somente tema claro; nenhuma lógica de negócio nem cálculo no frontend (D005 preservada); valores exibidos como recebidos da API, só trocando `.` por `,`.
+
+**Consequência.** Telas novas reutilizam as classes existentes (`pagina`, `folha`, `campos`, `alerta`, `selo`) em vez de criar estilo próprio. Trocar a paleta exige alterar apenas as variáveis de `:root`. Verificação: lint, build e teste do frontend, mais percurso completo do catálogo em 1280 px e 390 px sem rolagem horizontal (`evidencias/testes/002-catalogo-2026-09-19.md`). Fica pendente a avaliação de uso com o proprietário (OE7), que pode ajustar cores e textos.
+
+---
+
 ## D013 — RF14 permanece no incremento 003
 **Data:** 2026-09-19 · **Situação:** firme
 

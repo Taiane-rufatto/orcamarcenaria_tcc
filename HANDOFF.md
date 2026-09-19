@@ -1,7 +1,6 @@
 # Handoff
 
-> **Próxima sessão:** esclarecer as três perguntas da Spec 002 e seguir Specify → Clarify → Plan → Tasks. RF14 foi transferido formalmente para o incremento 003 pela D013.
-
+> **Próxima sessão:** a autora executa a validação manual do `specs/002-catalogo-materiais/quickstart.md` (T014); depois, `fechar-spec` (T015). O código da Spec 002 está pronto: 21 testes de backend, builds e TI01 aprovados. O visual do frontend foi redefinido em D014 (variáveis em `frontend/src/index.css`; componentes `Layout`, `Marca`, `PainelAcesso`); telas novas devem reutilizar essas classes. RF14 segue no incremento 003 (D013).
 > Atualização de 2026-09-19: cadastro, entrada, saída, troca de senha, JWT/sessão e TI04 foram implementados e validados; consultar `evidencias/testes/001-conta-acesso-2026-09-19.md`. Falta apenas a evidência automatizada contra `DATABASE_URL_TESTE` para fechar a Spec 001.
 
 **Atualizado em:** 2026-09-19 · Última sessão: planejamento da Spec 001 (conta e acesso).
