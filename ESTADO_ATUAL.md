@@ -1,5 +1,7 @@
 # Estado Atual
 
+> Atualização de 2026-09-19: a implementação e a validação manual da Spec 001 foram concluídas. O fechamento formal aguarda somente a execução dos testes de integração em banco exclusivo configurado por `DATABASE_URL_TESTE` (B11).
+
 **Atualizado em:** 2026-09-18
 
 ## Onde o projeto está

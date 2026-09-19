@@ -13,4 +13,6 @@ export const ambiente = {
   porta: Number(process.env.PORT ?? 3333),
   urlBanco: obrigatoria('DATABASE_URL'),
   origemPermitida: process.env.CORS_ORIGIN ?? 'http://localhost:5173',
+  segredoJwt: obrigatoria('JWT_SECRET'),
+  expiracaoJwt: process.env.JWT_EXPIRACAO ?? '8h',
 }

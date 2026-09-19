@@ -1,5 +1,7 @@
 # Bloqueios
 
+> **B11 — resolvido em 2026-09-19:** `orcamarcenaria_teste` foi criado e recebeu permissão de uso e criação no schema `public` para o usuário da aplicação. A migração e a integração foram executadas nesse banco, sem usar o banco principal.
+
 Itens que dependem de decisão humana, acesso ou ação externa. Um agente **não** deve resolver nada desta lista por conta própria.
 
 **Atualizado em:** 2026-09-18

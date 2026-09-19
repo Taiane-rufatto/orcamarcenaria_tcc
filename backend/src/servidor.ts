@@ -2,11 +2,14 @@ import express from 'express'
 import cors from 'cors'
 import { ambiente } from './config/ambiente'
 import { pool } from './infra/banco/pool'
+import { rotasAutenticacao } from './api/rotas/autenticacao'
+import { tratamentoDeErros } from './api/middlewares/tratamento-de-erros'
 
-const app = express()
+export const app = express()
 
 app.use(cors({ origin: ambiente.origemPermitida }))
 app.use(express.json())
+app.use('/auth', rotasAutenticacao)
 
 app.get('/saude', async (_requisicao, resposta) => {
   try {
@@ -25,6 +28,10 @@ app.get('/saude', async (_requisicao, resposta) => {
   }
 })
 
-app.listen(ambiente.porta, () => {
-  console.log(`API ouvindo em http://localhost:${ambiente.porta}`)
-})
+app.use(tratamentoDeErros)
+
+if (require.main === module) {
+  app.listen(ambiente.porta, () => {
+    console.log(`API ouvindo em http://localhost:${ambiente.porta}`)
+  })
+}

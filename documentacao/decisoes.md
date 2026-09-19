@@ -6,6 +6,17 @@ Formato: contexto → decisão → consequência → situação (`provisória` e
 
 ---
 
+## D013 — RF14 permanece no incremento 003
+**Data:** 2026-09-19 · **Situação:** firme
+
+**Contexto.** O roadmap posicionava RF14 no incremento 002, mas `requisitos.md` o posiciona no 003. RF14 exige garantir que a edição de custo não altere valores de orçamentos já registrados, entidade ainda inexistente no catálogo.
+
+**Decisão.** A Spec 002 cobre RF11–RF13, RF15, RF17 e RF18. RF14 permanece no incremento 003, junto à composição e aos primeiros itens de orçamento.
+
+**Consequência.** O catálogo entrega cadastro e manutenção sem antecipar dados de orçamento; o congelamento de valores será implementado e testado quando houver orçamento para preservar.
+
+---
+
 ## D001 — Multi-tenant simples, um usuário por marcenaria
 **Data:** 2026-09-02 · **Situação:** firme
 

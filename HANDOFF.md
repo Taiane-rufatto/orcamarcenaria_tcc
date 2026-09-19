@@ -1,5 +1,7 @@
 # Handoff
 
+> Atualização de 2026-09-19: cadastro, entrada, saída, troca de senha, JWT/sessão e TI04 foram implementados e validados; consultar `evidencias/testes/001-conta-acesso-2026-09-19.md`. Falta apenas a evidência automatizada contra `DATABASE_URL_TESTE` para fechar a Spec 001.
+
 **Atualizado em:** 2026-09-19 · Última sessão: planejamento da Spec 001 (conta e acesso).
 
 Para qualquer nova sessão, agente ou ferramenta assumir o trabalho sem reconstruir contexto pelo histórico de conversa.
