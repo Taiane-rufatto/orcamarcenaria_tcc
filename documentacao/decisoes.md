@@ -135,6 +135,23 @@ antecipada.
 
 ---
 
+## D012 — Autenticação por JWT com sessão persistida
+**Data:** 2026-09-19 · **Situação:** firme
+
+**Contexto.** RF02 e RF03 exigem que a sessão permaneça válida até expirar ou receber logout. Um
+JWT sem estado pode ser descartado no navegador, mas continua aceito pelo servidor até expirar.
+
+**Decisão.** Usar JWT assinado e verificado, associado a uma sessão persistida. O token contém
+somente identificadores de usuário, marcenaria e sessão; o middleware também confirma que a sessão
+está ativa. Logout marca a sessão como encerrada. Senhas usam bcrypt assíncrono, e Zod valida as
+entradas antes dos casos de uso.
+
+**Consequência.** O logout invalida o acesso atual no servidor e a troca de senha pode encerrar
+sessões anteriores. A implementação adiciona a entidade `sessao`, mas não adiciona papéis, múltiplos
+usuários ou recuperação de senha.
+
+---
+
 ## Questões em aberto (entrevista de levantamento — OE1)
 
 Enquanto não respondidas, valem as decisões provisórias acima. Espelhadas em `BLOQUEIOS.md`.

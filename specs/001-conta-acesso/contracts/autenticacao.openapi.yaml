@@ -1,0 +1,122 @@
+openapi: 3.0.3
+info:
+  title: OrçaMarcenaria — Autenticação
+  version: 1.0.0
+paths:
+  /auth/cadastro:
+    post:
+      summary: Cria marcenaria, usuário e sessão
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cadastro'
+      responses:
+        '201':
+          description: Conta criada e autenticada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Autenticacao'
+        '400':
+          $ref: '#/components/responses/EntradaInvalida'
+        '409':
+          description: E-mail já usado
+  /auth/entrar:
+    post:
+      summary: Inicia uma sessão
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Entrar'
+      responses:
+        '200':
+          description: Sessão iniciada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Autenticacao'
+        '400':
+          $ref: '#/components/responses/EntradaInvalida'
+        '401':
+          description: E-mail ou senha inválidos
+  /auth/sair:
+    post:
+      security:
+        - bearerAuth: []
+      summary: Encerra a sessão atual
+      responses:
+        '204':
+          description: Sessão encerrada
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+  /auth/senha:
+    put:
+      security:
+        - bearerAuth: []
+      summary: Altera a senha e emite nova sessão
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlterarSenha'
+      responses:
+        '200':
+          description: Senha alterada e nova sessão iniciada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Autenticacao'
+        '400':
+          $ref: '#/components/responses/EntradaInvalida'
+        '401':
+          description: Senha atual inválida ou sessão inválida
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    EntradaInvalida:
+      description: Campos inválidos, com mensagens em português
+    NaoAutenticado:
+      description: Sessão ausente, expirada ou encerrada
+  schemas:
+    Cadastro:
+      type: object
+      required: [nomeMarcenaria, nomeResponsavel, email, senha]
+      properties:
+        nomeMarcenaria: { type: string, minLength: 1 }
+        nomeResponsavel: { type: string, minLength: 1 }
+        email: { type: string, format: email }
+        senha: { type: string, minLength: 8 }
+    Entrar:
+      type: object
+      required: [email, senha]
+      properties:
+        email: { type: string, format: email }
+        senha: { type: string, minLength: 1 }
+    AlterarSenha:
+      type: object
+      required: [senhaAtual, novaSenha]
+      properties:
+        senhaAtual: { type: string, minLength: 1 }
+        novaSenha: { type: string, minLength: 8 }
+    Autenticacao:
+      type: object
+      required: [token, usuario]
+      properties:
+        token: { type: string }
+        usuario:
+          type: object
+          required: [id, nome, email, marcenariaId]
+          properties:
+            id: { type: string }
+            nome: { type: string }
+            email: { type: string, format: email }
+            marcenariaId: { type: string }
