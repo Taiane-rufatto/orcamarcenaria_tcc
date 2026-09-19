@@ -4,12 +4,14 @@ import { ambiente } from './config/ambiente'
 import { pool } from './infra/banco/pool'
 import { rotasAutenticacao } from './api/rotas/autenticacao'
 import { tratamentoDeErros } from './api/middlewares/tratamento-de-erros'
+import { rotasCatalogo } from './api/rotas/catalogo'
 
 export const app = express()
 
 app.use(cors({ origin: ambiente.origemPermitida }))
 app.use(express.json())
 app.use('/auth', rotasAutenticacao)
+app.use(rotasCatalogo)
 
 app.get('/saude', async (_requisicao, resposta) => {
   try {
