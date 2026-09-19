@@ -118,6 +118,23 @@ Formato: contexto → decisão → consequência → situação (`provisória` e
 
 ---
 
+## D011 — Execução progressiva dos testes de isolamento
+**Data:** 2026-09-18 · **Situação:** firme
+
+**Contexto.** TI01, TI02 e TI03 exigem, respectivamente, material, orçamento e cliente. Essas
+entidades são entregues apenas nos incrementos 002, 004 e 005; criar dados equivalentes na Spec
+001 só para executar os testes ampliaria artificialmente seu escopo.
+
+**Decisão.** Executar TI04 na Spec 001, pois a autenticação existe nesta etapa. Executar TI01,
+TI02 e TI03 no incremento que introduzir cada entidade e reexecutar os quatro testes no incremento
+010, como consolidação final.
+
+**Consequência.** Cada teste de isolamento permanece vinculado à funcionalidade que consegue
+exercitá-lo de verdade, sem postergar a proteção de rotas nem criar funcionalidade de negócio
+antecipada.
+
+---
+
 ## Questões em aberto (entrevista de levantamento — OE1)
 
 Enquanto não respondidas, valem as decisões provisórias acima. Espelhadas em `BLOQUEIOS.md`.

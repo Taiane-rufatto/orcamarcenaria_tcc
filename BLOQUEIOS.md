@@ -26,3 +26,4 @@ Itens que dependem de decisão humana, acesso ou ação externa. Um agente **nã
 | B04 | Repositório GitHub não criado | 2026-09-18 | Repositório confirmado em `origin` e ramo `main` publicado no GitHub. |
 | B09 | PostgreSQL local ainda não instalado/configurado | 2026-09-18 | Rota `GET /saude` validada com `api: "ok"` e `banco: "ok"`. |
 | B03 | Spec Kit ainda não instalado no repositório (D008) | 2026-09-18 | CLI oficial `specify` 1.0.8 instalado com integração Codex; infraestrutura `.specify/` e constitution 1.0.0 criadas. |
+| B10 | TI01–TI03 exigem material, orçamento e cliente, entregues apenas nos incrementos 002–005 | 2026-09-18 | Confirmado pela autora: TI04 será executado na Spec 001; TI01–TI03 serão executados com as entidades correspondentes e consolidados no incremento 010. Registrado em D011. |

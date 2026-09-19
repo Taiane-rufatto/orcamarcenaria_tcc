@@ -1,6 +1,6 @@
 # Handoff
 
-**Atualizado em:** 2026-09-18 · Última sessão: encerramento técnico do incremento 000.
+**Atualizado em:** 2026-09-18 · Última sessão: abertura da Spec 001 (conta e acesso).
 
 Para qualquer nova sessão, agente ou ferramenta assumir o trabalho sem reconstruir contexto pelo histórico de conversa.
 
@@ -16,8 +16,8 @@ Para qualquer nova sessão, agente ou ferramenta assumir o trabalho sem reconstr
 ## O que foi feito na última sessão
 
 1. Incremento 000 concluído e publicado no GitHub: backend Express/TypeScript, frontend React/Vite e PostgreSQL local configurados.
-2. A rota `GET /saude` respondeu `api: "ok"` e `banco: "ok"`; o backend executou 2 testes Vitest aprovados. A tela do frontend consulta essa rota exclusivamente pelo serviço `src/servicos/api.ts`.
-3. Bibliotecas iniciais registradas em D010; `.env` e `node_modules` foram conferidos como ignorados pelo Git. Spec Kit 1.0.8 foi inicializado para Codex e a constitution 1.0.0 está em `.specify/memory/constitution.md`.
+2. A Spec 001 foi criada na branch `spec/001-conta-acesso`, em `specs/001-conta-acesso/spec.md`, cobrindo US01, US02, RF01–RF04, RF06 e RNF11–RNF13.
+3. Clarificação da Spec 001 concluída: TI04 será verificado neste incremento; TI01–TI03 serão executados com material, orçamento e cliente nos incrementos correspondentes e consolidados no 010 (D011).
 
 Decisões firmes: D001, D004, D005, D007, D008, D009 e D010. Provisórias, aguardando a entrevista: D002, D003 e D006.
 
