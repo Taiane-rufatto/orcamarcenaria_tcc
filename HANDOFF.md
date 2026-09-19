@@ -17,7 +17,7 @@ Para qualquer nova sessão, agente ou ferramenta assumir o trabalho sem reconstr
 
 1. Incremento 000 concluído e publicado no GitHub: backend Express/TypeScript, frontend React/Vite e PostgreSQL local configurados.
 2. A Spec 001 foi criada na branch `spec/001-conta-acesso`, em `specs/001-conta-acesso/spec.md`, cobrindo US01, US02, RF01–RF04, RF06 e RNF11–RNF13.
-3. A clarificação está bloqueada por B10: TI01–TI03 citam entidades que só existirão nos incrementos 002–005. A autora precisa escolher a estratégia antes do planejamento.
+3. Clarificação da Spec 001 concluída: TI04 será verificado neste incremento; TI01–TI03 serão executados com material, orçamento e cliente nos incrementos correspondentes e consolidados no 010 (D011).
 
 Decisões firmes: D001, D004, D005, D007, D008, D009 e D010. Provisórias, aguardando a entrevista: D002, D003 e D006.
 
@@ -25,7 +25,6 @@ Decisões firmes: D001, D004, D005, D007, D008, D009 e D010. Provisórias, aguar
 
 - Entrevista de levantamento não realizada — por isso a §4 de `requisitos.md` existe.
 - Casos de teste calculados por script de referência, mas ainda não conferidos em planilha pela autora (exigência do método da proposta).
-- B10 precisa ser resolvido antes de executar o planejamento da Spec 001.
 
 ## Contexto que não está óbvio nos arquivos
 
@@ -37,6 +36,5 @@ Decisões firmes: D001, D004, D005, D007, D008, D009 e D010. Provisórias, aguar
 
 ## Perguntas a fazer à autora antes de avançar
 
-1. TI01–TI03 devem aguardar os incrementos que introduzem as entidades citadas, ou a Spec 001 deve criar dados equivalentes apenas para executá-los?
-2. A entrevista com o proprietário já ocorreu? Em caso afirmativo, onde estão as notas?
-3. Há prazo definido pela coordenação para a apresentação de andamento?
+1. A entrevista com o proprietário já ocorreu? Em caso afirmativo, onde estão as notas?
+2. Há prazo definido pela coordenação para a apresentação de andamento?

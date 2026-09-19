@@ -4,7 +4,7 @@
 
 ## Onde o projeto está
 
-Incremento 000 (Preparação) está concluído. O incremento 001 (Conta e acesso) foi aberto na branch `spec/001-conta-acesso`; sua especificação aguarda apenas a decisão de método registrada em B10 antes do planejamento.
+Incremento 000 (Preparação) está concluído. O incremento 001 (Conta e acesso) está aberto na branch `spec/001-conta-acesso`, com a especificação clarificada e pronta para planejamento.
 
 ## Pronto
 
@@ -35,14 +35,13 @@ Incremento 000 (Preparação) está concluído. O incremento 001 (Conta e acesso
 
 - [x] Branch `spec/001-conta-acesso` criada
 - [x] Spec e checklist de qualidade criados em `specs/001-conta-acesso/`
-- [ ] Resolver B10 e concluir a clarificação antes do planejamento
+- [x] Clarificação concluída: TI04 será verificado nesta Spec; TI01–TI03 nos incrementos das entidades correspondentes
 
 ## Próximo passo (nesta ordem)
 
-1. Decidir B10 e atualizar a Spec 001 com o critério de isolamento aplicável.
-2. Executar o planejamento da Spec 001.
-3. Realizar a entrevista com o proprietário (`documentacao/roteiro-entrevista.md`) e responder Q1–Q10 em `decisoes.md`.
-4. Implementar, verificar e fechar cada incremento com as rotinas do projeto.
+1. Executar o planejamento da Spec 001.
+2. Realizar a entrevista com o proprietário (`documentacao/roteiro-entrevista.md`) e responder Q1–Q10 em `decisoes.md`.
+3. Implementar, verificar e fechar cada incremento com as rotinas do projeto.
 
 ## Não fazer agora
 

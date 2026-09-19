@@ -23,6 +23,14 @@ tentando uma credencial inválida e confirmando que uma conta não lê dados da 
 serão testes de integração de autenticação e isolamento, teste manual das telas e registro em
 `evidencias/testes/`.
 
+## Clarificações
+
+### Sessão 2026-09-18
+
+- P: TI01–TI03 devem aguardar os incrementos que introduzem as entidades citadas, ou a Spec 001
+  deve criar dados equivalentes apenas para executá-los? → R: TI01–TI03 serão executados nos
+  incrementos que introduzirem material, orçamento e cliente; TI04 será executado na Spec 001.
+
 ## Cenários de Usuário e Testes *(obrigatório)*
 
 ### História de Usuário 1 — Criar a conta da marcenaria (Prioridade: P1)
@@ -146,10 +154,9 @@ nova senha válida; sair e entrar somente com a nova senha.
   em uma única tentativa, sem ajuda técnica.
 - **SC-002**: 100% dos testes de integração de cadastro, entrada, saída, alteração de senha e
   acesso sem sessão passam antes do encerramento da Spec.
-- **SC-003**: [NEEDS CLARIFICATION: TI01–TI03 dependem de material, orçamento e cliente, que só
-  serão introduzidos nos incrementos 002–005. Eles devem ser executados integralmente já no
-  fechamento da Spec 001, ou devem ser executados quando cada tipo de dado existir, mantendo TI04
-  nesta Spec?]
+- **SC-003**: o teste TI04 comprova nesta Spec que qualquer acesso interno sem sessão é
+  redirecionado à entrada; TI01, TI02 e TI03 serão executados nos incrementos que introduzirem,
+  respectivamente, material, orçamento e cliente, e consolidados no incremento 010.
 - **SC-004**: em 100% das tentativas com credenciais inválidas, a mensagem apresentada não revela
   se o e-mail ou a senha é o dado incorreto.
 - **SC-005**: a revisão do banco e do código confirma que nenhuma senha fictícia é armazenada em
@@ -163,8 +170,3 @@ nova senha válida; sair e entrar somente com a nova senha.
   entregues em incrementos posteriores.
 - Recuperação de senha por e-mail permanece fora do escopo, como evolução pós-TCC (RF07).
 - Dados e credenciais usados em testes e evidências serão fictícios.
-
-## Perguntas em Aberto
-
-1. A execução dos testes TI01–TI03 de isolamento deve aguardar os incrementos que criam material,
-   orçamento e cliente, ou a Spec 001 deve criar dados equivalentes somente para exercitá-los?

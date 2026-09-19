@@ -15,7 +15,7 @@
 
 ## Completude dos Requisitos
 
-- [ ] Há uma decisão pendente sobre a execução de TI01–TI03; ver SC-003 e B10.
+- [x] Há uma decisão pendente sobre a execução de TI01–TI03; ver SC-003 e B10.
 - [x] Requisitos são testáveis e sem ambiguidade material.
 - [x] Critérios de sucesso são mensuráveis.
 - [x] Critérios de sucesso descrevem resultados, não tecnologias.

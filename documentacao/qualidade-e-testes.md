@@ -89,6 +89,10 @@ Casos reprovados geram correção e **reexecução completa da tabela**, não ap
 | TI03 | Autenticado como B, tentar editar um cliente de A | "Não encontrado" |
 | TI04 | Acessar qualquer rota interna sem sessão | Redirecionamento ao login (RNF13) |
 
+**Execução por incremento.** TI04 é verificado na Spec 001, que cria a autenticação. TI01 é
+verificado quando o catálogo de materiais existir; TI02, quando houver orçamento; e TI03, quando
+houver cliente. Os quatro testes são reexecutados e consolidados no incremento 010.
+
 ## 5. Avaliação exploratória de uso (OE7)
 
 Participante: proprietário da marcenaria familiar, mediante consentimento registrado (RNF16). Sessão única, observada, com anotações.
@@ -128,7 +132,7 @@ Preenchida ao fim de cada incremento e consolidada antes da defesa.
 | RF05, RF19–RF22 | 007 | Teste manual das configurações + CT03/CT04/CT06 | pendente |
 | RNF06, RNF21 | 008 | Execução completa dos casos de teste | pendente |
 | RNF01 | 009 | Avaliação exploratória de uso | pendente |
-| RNF12, RNF13 | todos | TI01–TI04 | pendente |
+| RNF12, RNF13 | 001–005 e 010 | TI04 na Spec 001; TI01–TI03 quando suas entidades existirem; reexecução completa no 010 | pendente |
 
 ## 7. Definição de pronto (Definition of Done)
 
