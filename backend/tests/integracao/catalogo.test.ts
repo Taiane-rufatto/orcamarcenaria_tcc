@@ -95,6 +95,25 @@ describe('catálogo', () => {
     expect(await (await chamar(token, '/servicos?situacao=inativos')).json()).toHaveLength(1)
   })
 
+  it('serviço: busca por nome, filtro de situação e valor além de NUMERIC(12,4) recusado com 400', async () => {
+    const token = await criarConta('busca')
+    await chamar(token, '/servicos', 'POST', { nome: 'Montagem no local', tipoCobranca: 'hora', valorUnitario: '80' })
+    await chamar(token, '/servicos', 'POST', { nome: 'Corte de chapa', tipoCobranca: 'unidade', valorUnitario: '15' })
+
+    const achados = await (await chamar(token, '/servicos?busca=MONT')).json() as Item[]
+    expect(achados.map((i) => i.nome)).toEqual(['Montagem no local'])
+    expect(await (await chamar(token, '/servicos?busca=inexistente')).json()).toEqual([])
+    expect(await (await chamar(token, '/servicos?situacao=todos')).json()).toHaveLength(2)
+    expect(await (await chamar(token, '/servicos?situacao=invalida')).json()).toEqual({ mensagem: expect.any(String) })
+
+    // % e _ são texto literal, não curingas: não podem listar tudo.
+    expect(await (await chamar(token, '/servicos?busca=%25')).json()).toEqual([])
+    expect(await (await chamar(token, '/servicos?busca=_')).json()).toEqual([])
+
+    const grande = await chamar(token, '/servicos', 'POST', { nome: 'Grande demais', tipoCobranca: 'hora', valorUnitario: '100000000' })
+    expect(grande.status).toBe(400)
+  })
+
   it('TI01: uma marcenaria não vê, edita nem inativa registros de outra', async () => {
     const tokenA = await criarConta('isolamentoa')
     const tokenB = await criarConta('isolamentob')
@@ -105,6 +124,7 @@ describe('catálogo', () => {
     expect(await (await chamar(tokenB, '/servicos?situacao=todos')).json()).toEqual([])
     expect((await chamar(tokenB, `/materiais/${material.id}`, 'PUT', { nome: 'Invadido', unidade: 'kg', custoUnitario: '1' })).status).toBe(404)
     expect((await chamar(tokenB, `/materiais/${material.id}`, 'DELETE')).status).toBe(404)
+    expect((await chamar(tokenB, `/servicos/${servico.id}`, 'PUT', { nome: 'Invadido', tipoCobranca: 'hora', valorUnitario: '1' })).status).toBe(404)
     expect((await chamar(tokenB, `/servicos/${servico.id}`, 'DELETE')).status).toBe(404)
     expect((await chamar(tokenB, '/materiais/nao-e-uuid', 'DELETE')).status).toBe(404)
 
@@ -112,8 +132,45 @@ describe('catálogo', () => {
     const restante = await (await chamar(tokenA, '/materiais')).json() as Item[]
     expect(restante).toHaveLength(1)
     expect(restante[0]).toMatchObject({ nome: 'Cola PVA', ativo: true })
+    expect(await (await chamar(tokenA, '/servicos')).json()).toMatchObject([{ nome: 'Corte', ativo: true, valor_unitario: '50.0000' }])
 
     // Mesmo nome é permitido em marcenarias diferentes.
     expect((await chamar(tokenB, '/materiais', 'POST', { nome: 'Cola PVA', unidade: 'kg', custoUnitario: '12' })).status).toBe(201)
+  })
+
+  it('reativa material e serviço inativados, que voltam à lista de ativos com os mesmos dados', async () => {
+    const token = await criarConta('reativacao')
+    const material = await (await chamar(token, '/materiais', 'POST', { nome: 'Fita de borda', unidade: 'm', custoUnitario: '0,8' })).json() as Item
+    const servico = await (await chamar(token, '/servicos', 'POST', { nome: 'Entrega', tipoCobranca: 'unidade', valorUnitario: '60' })).json() as Item
+
+    for (const [rota, item] of [['materiais', material], ['servicos', servico]] as const) {
+      expect((await chamar(token, `/${rota}/${item.id}`, 'DELETE')).status).toBe(204)
+      expect(await (await chamar(token, `/${rota}`)).json()).toEqual([])
+
+      expect((await chamar(token, `/${rota}/${item.id}/reativar`, 'POST')).status).toBe(204)
+      const ativos = await (await chamar(token, `/${rota}`)).json() as Item[]
+      expect(ativos).toHaveLength(1)
+      expect(ativos[0]).toMatchObject({ id: item.id, nome: item.nome, ativo: true })
+      expect(await (await chamar(token, `/${rota}?situacao=inativos`)).json()).toEqual([])
+    }
+    // Reativar um registro que já está ativo é inofensivo.
+    expect((await chamar(token, `/materiais/${material.id}/reativar`, 'POST')).status).toBe(204)
+  })
+
+  it('TI01: não reativa registro de outra marcenaria nem id inexistente ou malformado', async () => {
+    const tokenA = await criarConta('reativaa')
+    const tokenB = await criarConta('reativab')
+    const material = await (await chamar(tokenA, '/materiais', 'POST', { nome: 'Verniz', unidade: 'L', custoUnitario: '40' })).json() as Item
+    await chamar(tokenA, `/materiais/${material.id}`, 'DELETE')
+
+    expect((await chamar(tokenB, `/materiais/${material.id}/reativar`, 'POST')).status).toBe(404)
+    expect((await chamar(tokenB, `/servicos/${material.id}/reativar`, 'POST')).status).toBe(404)
+    expect((await chamar(tokenA, '/materiais/00000000-0000-4000-8000-000000000000/reativar', 'POST')).status).toBe(404)
+    expect((await chamar(tokenA, '/materiais/nao-e-uuid/reativar', 'POST')).status).toBe(404)
+    expect((await fetch(`${baseUrl}/materiais/${material.id}/reativar`, { method: 'POST' })).status).toBe(401)
+
+    // Continua inativo para a dona e invisível para a outra conta.
+    expect(await (await chamar(tokenA, '/materiais')).json()).toEqual([])
+    expect(await (await chamar(tokenB, '/materiais?situacao=todos')).json()).toEqual([])
   })
 })

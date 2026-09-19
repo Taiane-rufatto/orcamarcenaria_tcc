@@ -1,6 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import {
-  criarMaterial, editarMaterial, exibirValor, inativarMaterial, listarMateriais,
+  criarMaterial, editarMaterial, exibirValor, inativarMaterial, listarMateriais, reativarMaterial,
   type Material, type Situacao,
 } from '../servicos/catalogo'
 
@@ -50,6 +50,11 @@ export function Materiais() {
     catch (causa) { setErro(causa instanceof Error ? causa.message : 'Não foi possível inativar o material') }
   }
 
+  async function reativar(item: Material) {
+    try { await reativarMaterial(item.id); recarregar() }
+    catch (causa) { setErro(causa instanceof Error ? causa.message : 'Não foi possível reativar o material') }
+  }
+
   return <main className="pagina">
     <div className="cabecalho-pagina">
       <h1>Materiais</h1>
@@ -95,7 +100,7 @@ export function Materiais() {
           <td className="acoes-linha">{item.ativo && <>
             <button className="discreto" onClick={() => setEditando(item)}>Editar</button>
             <button className="discreto" onClick={() => inativar(item)}>Inativar</button>
-          </>}</td>
+          </>}{!item.ativo && <button className="discreto" onClick={() => reativar(item)}>Reativar</button>}</td>
         </tr>)}</tbody>
       </table></div>}
     </section>

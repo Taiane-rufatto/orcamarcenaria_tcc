@@ -14,6 +14,11 @@ describe('validações de material', () => {
     expect(materialSchema.safeParse({ ...material, custoUnitario }).success).toBe(false)
   })
 
+  it('respeita NUMERIC(12,4): até 8 dígitos inteiros, e rejeita além disso em vez de estourar no banco', () => {
+    expect(materialSchema.parse({ ...material, custoUnitario: '99999999,9999' }).custoUnitario).toBe('99999999.9999')
+    expect(materialSchema.safeParse({ ...material, custoUnitario: '100000000' }).success).toBe(false)
+  })
+
   it('aceita as oito unidades canônicas e rejeita outras', () => {
     for (const unidade of ['un', 'm', 'm²', 'ml', 'ch', 'kg', 'L', 'pç']) {
       expect(materialSchema.safeParse({ ...material, unidade }).success).toBe(true)

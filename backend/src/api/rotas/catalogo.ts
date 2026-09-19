@@ -4,7 +4,7 @@ import { ErroHttp } from '../erros/erro-http'
 import { exigirAutenticacao } from '../middlewares/autenticacao'
 import { materialSchema, servicoSchema } from '../validacoes/catalogo'
 import {
-  atualizarCatalogo, criarCatalogo, inativarCatalogo, listarCatalogo,
+  atualizarCatalogo, criarCatalogo, definirSituacaoCatalogo, listarCatalogo,
   type Situacao, type Tipo,
 } from '../../infra/repositorios/catalogo-repositorio'
 
@@ -53,9 +53,14 @@ function registrar(tipo: Tipo, rota: string, schema: typeof materialSchema | typ
     res.json(item)
   })
 
-  // Sem exclusão física (AGENTS §5.2): DELETE apenas inativa.
+  // Sem exclusão física (AGENTS §5.2): DELETE apenas inativa e a reativação devolve o registro à lista de ativos (D015).
   rotasCatalogo.delete(`/${rota}/:id`, exigirAutenticacao, async (req, res) => {
-    if (!await inativarCatalogo(tipo, lerId(req.params.id), marcenaria(res))) throw new ErroHttp(404, 'Registro não encontrado')
+    if (!await definirSituacaoCatalogo(tipo, lerId(req.params.id), marcenaria(res), false)) throw new ErroHttp(404, 'Registro não encontrado')
+    res.status(204).end()
+  })
+
+  rotasCatalogo.post(`/${rota}/:id/reativar`, exigirAutenticacao, async (req, res) => {
+    if (!await definirSituacaoCatalogo(tipo, lerId(req.params.id), marcenaria(res), true)) throw new ErroHttp(404, 'Registro não encontrado')
     res.status(204).end()
   })
 }

@@ -38,10 +38,11 @@ export async function atualizarCatalogo(tipo: Tipo, id: string, marcenariaId: st
   return resultado.rows[0] ?? null
 }
 
-export async function inativarCatalogo(tipo: Tipo, id: string, marcenariaId: string) {
+// Inativar e reativar só alternam a coluna `ativo`: nada é apagado nem recriado (RNF10).
+export async function definirSituacaoCatalogo(tipo: Tipo, id: string, marcenariaId: string, ativo: boolean) {
   const resultado = await pool.query(
-    `UPDATE ${tipo} SET ativo=false, atualizado_em=now() WHERE id=$1 AND marcenaria_id=$2 RETURNING id`,
-    [id, marcenariaId],
+    `UPDATE ${tipo} SET ativo=$3, atualizado_em=now() WHERE id=$1 AND marcenaria_id=$2 RETURNING id`,
+    [id, marcenariaId, ativo],
   )
   return resultado.rowCount === 1
 }

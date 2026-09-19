@@ -1,6 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import {
-  criarServico, editarServico, exibirValor, inativarServico, listarServicos,
+  criarServico, editarServico, exibirValor, inativarServico, listarServicos, reativarServico,
   type Servico, type Situacao,
 } from '../servicos/catalogo'
 
@@ -50,6 +50,11 @@ export function Servicos() {
     catch (causa) { setErro(causa instanceof Error ? causa.message : 'Não foi possível inativar o serviço') }
   }
 
+  async function reativar(item: Servico) {
+    try { await reativarServico(item.id); recarregar() }
+    catch (causa) { setErro(causa instanceof Error ? causa.message : 'Não foi possível reativar o serviço') }
+  }
+
   return <main className="pagina">
     <div className="cabecalho-pagina">
       <h1>Serviços</h1>
@@ -97,7 +102,7 @@ export function Servicos() {
           <td className="acoes-linha">{item.ativo && <>
             <button className="discreto" onClick={() => setEditando(item)}>Editar</button>
             <button className="discreto" onClick={() => inativar(item)}>Inativar</button>
-          </>}</td>
+          </>}{!item.ativo && <button className="discreto" onClick={() => reativar(item)}>Reativar</button>}</td>
         </tr>)}</tbody>
       </table></div>}
     </section>
