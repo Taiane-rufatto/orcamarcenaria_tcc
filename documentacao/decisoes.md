@@ -86,13 +86,13 @@ Formato: contexto → decisão → consequência → situação (`provisória` e
 ---
 
 ## D008 — Spec Kit como motor do ciclo
-**Data:** 2026-09-02 · **Situação:** provisória — confirmar no incremento 000
+**Data:** 2026-09-02 · **Situação:** firme — confirmado em 2026-09-18
 
 **Contexto.** A ata apresenta Spec Kit e BMad Method como alternativas e recomenda escolher **uma** que a autora consiga operar com controle.
 
 **Decisão.** Adotar Spec Kit, por estruturar explicitamente a passagem requisito → plano → tarefas → implementação, o que produz a rastreabilidade exigida na defesa.
 
-**Consequência.** O ciclo Specify → Clarify → Plan → Tasks → Analyze → Implement passa a ser o procedimento padrão de cada incremento. Se a ferramenta se mostrar pesada para um projeto deste porte, a alternativa registrada é executar o mesmo ciclo manualmente com os templates em `specs/`.
+**Consequência.** O ciclo Specify → Clarify → Plan → Tasks → Analyze → Implement passa a ser o procedimento padrão de cada incremento. O CLI oficial `specify` 1.0.8 foi instalado com integração Codex, criando `.specify/`, as skills em `.agents/skills/` e a constitution 1.0.0. Se a ferramenta se mostrar pesada para um projeto deste porte, a alternativa registrada é executar o mesmo ciclo manualmente com os templates em `specs/`.
 
 ---
 

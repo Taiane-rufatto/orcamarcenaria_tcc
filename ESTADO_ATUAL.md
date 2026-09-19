@@ -4,7 +4,7 @@
 
 ## Onde o projeto está
 
-Incremento 000 (Preparação) concluído: backend, frontend e PostgreSQL local estão integrados. O próximo incremento formal (001 — conta e acesso) aguarda somente a instalação do Spec Kit, registrada em B03.
+Incremento 000 (Preparação) concluído: backend, frontend e PostgreSQL local estão integrados. O Spec Kit e a constitution do projeto estão instalados; o próximo passo é abrir formalmente o incremento 001 (conta e acesso).
 
 ## Pronto
 
@@ -29,17 +29,13 @@ Incremento 000 (Preparação) concluído: backend, frontend e PostgreSQL local e
 - [x] Frontend React + TypeScript (Vite) inicializado, com tela de saúde que consulta a API por `src/servicos/api.ts`
 - [x] Teste inicial do backend aprovado: 2 testes Vitest
 - [x] READMEs de backend e frontend atualizados com os comandos executáveis
-
-## Pendente antes do incremento 001
-
-- [ ] Instalar o Spec Kit e escrever a constitution do projeto (D008)
+- [x] Spec Kit instalado com integração Codex e constitution do projeto criada em `.specify/memory/constitution.md`
 
 ## Próximo passo (nesta ordem)
 
-1. Instalar o Spec Kit e escrever a constitution do projeto (D008/B03).
-2. Abrir a Spec 001 (conta e acesso) com a rotina `abrir-incremento`.
-3. Realizar a entrevista com o proprietário (`documentacao/roteiro-entrevista.md`) e responder Q1–Q10 em `decisoes.md`.
-4. Implementar, verificar e fechar cada incremento com as rotinas do projeto.
+1. Abrir a Spec 001 (conta e acesso) com a rotina `abrir-incremento`.
+2. Realizar a entrevista com o proprietário (`documentacao/roteiro-entrevista.md`) e responder Q1–Q10 em `decisoes.md`.
+3. Implementar, verificar e fechar cada incremento com as rotinas do projeto.
 
 ## Não fazer agora
 

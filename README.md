@@ -15,7 +15,7 @@ O marceneiro cadastra uma vez seus materiais e serviços com os respectivos cust
 
 ## Estado
 
-Incremento 000 concluído: backend, frontend e banco local foram integrados e verificados. A abertura formal do incremento 001 aguarda a instalação do Spec Kit (B03). Ver `ESTADO_ATUAL.md`.
+Incremento 000 concluído: backend, frontend e banco local foram integrados e verificados. Spec Kit e constitution estão instalados; o próximo passo é abrir formalmente o incremento 001. Ver `ESTADO_ATUAL.md`.
 
 ## Documentação
 
@@ -42,6 +42,7 @@ O desenvolvimento segue a metodologia incremental assistida por IA orientada na 
 | [ESTADO_ATUAL.md](ESTADO_ATUAL.md) | O que está pronto e qual o próximo passo |
 | [HANDOFF.md](HANDOFF.md) | Como uma nova sessão assume o trabalho |
 | [BLOQUEIOS.md](BLOQUEIOS.md) | O que depende de decisão humana |
+| [.specify/memory/constitution.md](.specify/memory/constitution.md) | Princípios obrigatórios do ciclo orientado por Spec Kit |
 
 Rotinas reutilizáveis (skills), escritas para este projeto:
 
@@ -75,9 +76,8 @@ Node.js + TypeScript (backend), React + TypeScript com Vite (frontend), PostgreS
 ## Como começar (para a autora)
 
 1. Abrir a pasta no VS Code e instalar as extensões recomendadas (o editor sugere ao abrir).
-2. Instalar o Spec Kit e escrever a constitution (D008/B03).
-3. Abrir a Spec 001 com a rotina `abrir-incremento` e rodar o primeiro ciclo completo.
-4. Realizar a entrevista com o roteiro e responder Q1–Q10 em `decisoes.md`.
+2. Abrir a Spec 001 com a rotina `abrir-incremento` e rodar o primeiro ciclo completo.
+3. Realizar a entrevista com o roteiro e responder Q1–Q10 em `decisoes.md`.
 
 ## Referências da proposta
 
