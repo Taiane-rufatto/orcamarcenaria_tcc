@@ -1,0 +1,18 @@
+openapi: 3.0.3
+info: { title: OrçaMarcenaria — Catálogo, version: 1.0.0 }
+paths:
+  /materiais:
+    get: { summary: Lista materiais da sessão, security: [{ bearerAuth: [] }] }
+    post: { summary: Cria material, security: [{ bearerAuth: [] }] }
+  /materiais/{id}:
+    put: { summary: Edita material próprio, security: [{ bearerAuth: [] }] }
+    delete: { summary: Inativa material próprio, security: [{ bearerAuth: [] }] }
+  /servicos:
+    get: { summary: Lista serviços da sessão, security: [{ bearerAuth: [] }] }
+    post: { summary: Cria serviço, security: [{ bearerAuth: [] }] }
+  /servicos/{id}:
+    put: { summary: Edita serviço próprio, security: [{ bearerAuth: [] }] }
+    delete: { summary: Inativa serviço próprio, security: [{ bearerAuth: [] }] }
+components:
+  securitySchemes:
+    bearerAuth: { type: http, scheme: bearer }
