@@ -4,7 +4,7 @@
 
 ## Onde o projeto está
 
-Incremento 000 (Preparação) concluído: backend, frontend e PostgreSQL local estão integrados. O Spec Kit e a constitution do projeto estão instalados; o próximo passo é abrir formalmente o incremento 001 (conta e acesso).
+Incremento 000 (Preparação) está concluído. O incremento 001 (Conta e acesso) foi aberto na branch `spec/001-conta-acesso`; sua especificação aguarda apenas a decisão de método registrada em B10 antes do planejamento.
 
 ## Pronto
 
@@ -31,11 +31,18 @@ Incremento 000 (Preparação) concluído: backend, frontend e PostgreSQL local e
 - [x] READMEs de backend e frontend atualizados com os comandos executáveis
 - [x] Spec Kit instalado com integração Codex e constitution do projeto criada em `.specify/memory/constitution.md`
 
+## Em andamento — incremento 001 (Conta e acesso)
+
+- [x] Branch `spec/001-conta-acesso` criada
+- [x] Spec e checklist de qualidade criados em `specs/001-conta-acesso/`
+- [ ] Resolver B10 e concluir a clarificação antes do planejamento
+
 ## Próximo passo (nesta ordem)
 
-1. Abrir a Spec 001 (conta e acesso) com a rotina `abrir-incremento`.
-2. Realizar a entrevista com o proprietário (`documentacao/roteiro-entrevista.md`) e responder Q1–Q10 em `decisoes.md`.
-3. Implementar, verificar e fechar cada incremento com as rotinas do projeto.
+1. Decidir B10 e atualizar a Spec 001 com o critério de isolamento aplicável.
+2. Executar o planejamento da Spec 001.
+3. Realizar a entrevista com o proprietário (`documentacao/roteiro-entrevista.md`) e responder Q1–Q10 em `decisoes.md`.
+4. Implementar, verificar e fechar cada incremento com as rotinas do projeto.
 
 ## Não fazer agora
 

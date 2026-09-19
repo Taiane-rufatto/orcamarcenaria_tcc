@@ -11,6 +11,7 @@ Itens que dependem de decisão humana, acesso ou ação externa. Um agente **nã
 | B06 | Termo de consentimento do participante (RNF16) não elaborado | Entrevista (OE1) e avaliação exploratória de uso (OE7) | Taiane | Aberto — verificar exigência com o orientador |
 | B07 | Data da apresentação de andamento não confirmada com a coordenação | Ajuste fino do calendário do `roadmap.md` §3 | Taiane | Aberto |
 | B08 | Valores de referência dos 10 casos de teste ainda não conferidos em planilha pela autora | Uso dos casos como evidência formal (o método da proposta exige cálculo prévio em planilha) | Taiane | Aberto — conferir antes do incremento 008 |
+| B10 | TI01–TI03 exigem material, orçamento e cliente, entregues apenas nos incrementos 002–005; é necessário definir se os testes completos aguardam esses incrementos ou se a Spec 001 cria dados equivalentes apenas para a evidência | Planejamento e critério de encerramento da Spec 001 | Taiane | Aberto — decidir antes do plano |
 
 ## Como usar este arquivo
 

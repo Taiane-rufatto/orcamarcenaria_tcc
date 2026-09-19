@@ -1,6 +1,6 @@
 # Handoff
 
-**Atualizado em:** 2026-09-18 · Última sessão: encerramento técnico do incremento 000.
+**Atualizado em:** 2026-09-18 · Última sessão: abertura da Spec 001 (conta e acesso).
 
 Para qualquer nova sessão, agente ou ferramenta assumir o trabalho sem reconstruir contexto pelo histórico de conversa.
 
@@ -16,8 +16,8 @@ Para qualquer nova sessão, agente ou ferramenta assumir o trabalho sem reconstr
 ## O que foi feito na última sessão
 
 1. Incremento 000 concluído e publicado no GitHub: backend Express/TypeScript, frontend React/Vite e PostgreSQL local configurados.
-2. A rota `GET /saude` respondeu `api: "ok"` e `banco: "ok"`; o backend executou 2 testes Vitest aprovados. A tela do frontend consulta essa rota exclusivamente pelo serviço `src/servicos/api.ts`.
-3. Bibliotecas iniciais registradas em D010; `.env` e `node_modules` foram conferidos como ignorados pelo Git. Spec Kit 1.0.8 foi inicializado para Codex e a constitution 1.0.0 está em `.specify/memory/constitution.md`.
+2. A Spec 001 foi criada na branch `spec/001-conta-acesso`, em `specs/001-conta-acesso/spec.md`, cobrindo US01, US02, RF01–RF04, RF06 e RNF11–RNF13.
+3. A clarificação está bloqueada por B10: TI01–TI03 citam entidades que só existirão nos incrementos 002–005. A autora precisa escolher a estratégia antes do planejamento.
 
 Decisões firmes: D001, D004, D005, D007, D008, D009 e D010. Provisórias, aguardando a entrevista: D002, D003 e D006.
 
@@ -25,6 +25,7 @@ Decisões firmes: D001, D004, D005, D007, D008, D009 e D010. Provisórias, aguar
 
 - Entrevista de levantamento não realizada — por isso a §4 de `requisitos.md` existe.
 - Casos de teste calculados por script de referência, mas ainda não conferidos em planilha pela autora (exigência do método da proposta).
+- B10 precisa ser resolvido antes de executar o planejamento da Spec 001.
 
 ## Contexto que não está óbvio nos arquivos
 
@@ -36,5 +37,6 @@ Decisões firmes: D001, D004, D005, D007, D008, D009 e D010. Provisórias, aguar
 
 ## Perguntas a fazer à autora antes de avançar
 
-1. A entrevista com o proprietário já ocorreu? Em caso afirmativo, onde estão as notas?
-2. Há prazo definido pela coordenação para a apresentação de andamento?
+1. TI01–TI03 devem aguardar os incrementos que introduzem as entidades citadas, ou a Spec 001 deve criar dados equivalentes apenas para executá-los?
+2. A entrevista com o proprietário já ocorreu? Em caso afirmativo, onde estão as notas?
+3. Há prazo definido pela coordenação para a apresentação de andamento?
