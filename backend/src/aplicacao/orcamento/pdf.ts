@@ -1,6 +1,6 @@
 import { ErroHttp } from '../../api/erros/erro-http'
 import { lerCliente } from '../../infra/repositorios/cliente-repositorio'
-import { buscarMarcenaria } from '../../infra/repositorios/conta-repositorio'
+import { lerDadosMarcenaria } from '../../infra/repositorios/configuracao-repositorio'
 import { montarConteudoPdf } from '../../infra/pdf/conteudo-orcamento'
 import { desenharOrcamento } from '../../infra/pdf/desenhar-orcamento'
 import { consultarOrcamento } from './orcamento'
@@ -12,7 +12,7 @@ export async function gerarPdfOrcamento(marcenariaId: string, id: string, mostra
   if (orcamento.situacao === 'rascunho' || orcamento.numero === null) {
     throw new ErroHttp(409, 'Registre o orçamento antes de gerar o PDF')
   }
-  const [cliente, marcenaria] = await Promise.all([lerCliente(orcamento.clienteId, marcenariaId), buscarMarcenaria(marcenariaId)])
+  const [cliente, marcenaria] = await Promise.all([lerCliente(orcamento.clienteId, marcenariaId), lerDadosMarcenaria(marcenariaId)])
   if (!cliente || !marcenaria) throw new ErroHttp(404, 'Orçamento não encontrado')
 
   const conteudo = montarConteudoPdf({

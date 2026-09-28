@@ -74,15 +74,21 @@ function lerEntrada(entrada: EntradaCalculo) {
     return valor
   })
 
-  const percentual = lerDecimal(entrada.percentualLucro, 2, 'Percentual de lucro inválido')
-  if (entrada.modoLucro === 'margem') {
+  const percentual = validarLucro(entrada.modoLucro, entrada.percentualLucro)
+  return { itens, custosAdicionais, percentual }
+}
+
+// RN05, RN06 e RN10: limites do percentual de lucro. Exportada para a configuração da marcenaria
+// usar a mesma regra, sem uma segunda cópia (D024).
+export function validarLucro(modo: ModoLucro, percentualLucro: string): Decimal {
+  const percentual = lerDecimal(percentualLucro, 2, 'Percentual de lucro inválido')
+  if (modo === 'margem') {
     if (percentual.lt(0)) throw new ErroCalculo('A margem não pode ser negativa')
     if (percentual.gte(100)) throw new ErroCalculo('A margem deve ser menor que 100%')
   } else if (percentual.lt(0)) {
     throw new ErroCalculo('O markup não pode ser negativo')
   }
-
-  return { itens, custosAdicionais, percentual }
+  return percentual
 }
 
 // Passo 7 — RN05 (margem sobre o preço de venda) e RN06 (markup sobre o custo).

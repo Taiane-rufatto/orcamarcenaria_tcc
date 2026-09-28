@@ -19,7 +19,7 @@ const ct03: DadosPdf = {
     { descricao: 'Montagem e instalação', quantidade: '6.000', unidade: 'h' },
   ],
   cliente: { nome: 'Cliente Fictício', telefone: '(45) 90000-0000', email: null, endereco: 'Rua Fictícia, 10' },
-  marcenaria: { nome: 'Marcenaria Exemplo', responsavel: 'Responsável Fictício' },
+  marcenaria: { nome: 'Marcenaria Exemplo', responsavel: 'Responsável Fictício', telefone: '(45) 3000-0000', email: 'contato@example.test', cnpj: '00.000.000/0001-00', endereco: 'Rua Fictícia, 100' },
 }
 
 // Tudo o que o CT03 tem de interno: valores unitários, de linha, subtotais, custo, lucro, ajuste e percentual.
@@ -36,7 +36,7 @@ describe('conteúdo do PDF (RF41, RF42, D022)', () => {
     expect(montarConteudoPdf(ct03, true)).toEqual({
       nomeArquivo: 'orcamento-7.pdf',
       titulo: 'Orçamento nº 7',
-      marcenaria: ['Marcenaria Exemplo', 'Responsável: Responsável Fictício'],
+      marcenaria: ['Marcenaria Exemplo', 'Responsável: Responsável Fictício', 'CNPJ: 00.000.000/0001-00', '(45) 3000-0000 · contato@example.test', 'Rua Fictícia, 100'],
       cliente: ['Cliente Fictício', 'Telefone: (45) 90000-0000', 'Endereço: Rua Fictícia, 10'],
       datas: [{ rotulo: 'Emissão', valor: '01/10/2026' }, { rotulo: 'Válido até', valor: '31/10/2026' }],
       projeto: 'Armário de cozinha',
@@ -95,5 +95,14 @@ describe('leitura das especificações digitadas', () => {
       { tipo: 'subtitulo', texto: 'Acabamento:' },
       { tipo: 'texto', texto: 'Texto livre - com hífen no meio' },
     ])
+  })
+})
+
+describe('contatos da marcenaria no PDF (RF05)', () => {
+  it('só mostra o que foi preenchido', () => {
+    const semContato = montarConteudoPdf({ ...ct03, marcenaria: { nome: 'M', responsavel: 'R', telefone: null, email: null, cnpj: null, endereco: null } }, false)
+    expect(semContato.marcenaria).toEqual(['M', 'Responsável: R'])
+    const soEmail = montarConteudoPdf({ ...ct03, marcenaria: { nome: 'M', responsavel: 'R', telefone: null, email: 'm@example.test', cnpj: null, endereco: null } }, false)
+    expect(soEmail.marcenaria).toEqual(['M', 'Responsável: R', 'm@example.test'])
   })
 })

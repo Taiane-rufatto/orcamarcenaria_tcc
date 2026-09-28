@@ -47,6 +47,12 @@ export async function inserirOrcamento(c: PoolClient, marcenariaId: string, dado
   return id
 }
 
+// Validade padrão (RF22, D024): emissão + dias, calculada pelo banco para não lidar com fuso.
+export async function somarDias(c: PoolClient, data: string, dias: number): Promise<string> {
+  const { rows } = await c.query<{ data: string }>('SELECT ($1::date + $2::int)::text AS data', [data, dias])
+  return rows[0].data
+}
+
 // Trava o orçamento até o fim da transação: duas alterações simultâneas não gravam totais cruzados.
 // Devolve a situação, para o caso de uso só permitir alteração em rascunho (RN09).
 export async function travarOrcamento(c: PoolClient, id: string, marcenariaId: string): Promise<string | null> {
