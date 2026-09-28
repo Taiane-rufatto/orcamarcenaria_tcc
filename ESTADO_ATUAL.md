@@ -2,11 +2,11 @@
 
 **Atualizado em:** 2026-09-28
 
-> **Incremento 003 — Composição e cálculo do orçamento: implementado e verificado em 2026-09-28** na branch `spec/003-composicao-calculo` (CT01–CT10 com diferença nula, 77 testes de backend, 13 de frontend, percurso no Edge e validação manual da autora). **Falta apenas a revisão do diff pela autora (B13)** para abrir o PR e integrar em `main`.
+> **Incremento 004 — Registro e acompanhamento: aberto em 2026-09-28** na branch `spec/004-registro-acompanhamento` (spec, plano e tarefas em `specs/004-registro-acompanhamento/`; D020: registrar = enviar). Incremento 003 fechado e integrado em `main` (PR #4).
 
 ## Onde o projeto está
 
-Incrementos 000, 001 e 002 entregues; 003 pronto para integração. O cálculo do orçamento existe em `backend/src/dominio/orcamento/calculo.ts` e é o único ponto do sistema que calcula preço. O próximo incremento é o 004 (registro, numeração, situações e listagem de orçamentos).
+Incrementos 000 a 003 entregues e integrados; 004 em andamento. O cálculo do orçamento existe em `backend/src/dominio/orcamento/calculo.ts` e é o único ponto do sistema que calcula preço.
 
 ## Pronto
 
@@ -36,14 +36,13 @@ Incrementos 000, 001 e 002 entregues; 003 pronto para integração. O cálculo d
 - [x] **Incremento 002 — Catálogo de materiais e serviços** (RF11–RF13, RF15, RF17, RF18): cadastro, busca, filtro de situação, edição, inativação e reativação (D015); custo/valor decimal exato com até 4 casas (D016); TI01 verificado (`evidencias/testes/002-catalogo-2026-09-19.md`)
 - [x] **Identidade visual do frontend** (D014): verde musgo, laranja de cedro, layout responsivo
 - [x] **Respostas do proprietário a Q1–Q5** (D017): markup sobre o custo (2,5× a 2,8×), sem arredondamento, custos adicionais com lucro, chapa inteira
-- [x] **Incremento 003 — Composição e cálculo** (RF14, RF23–RF31): orçamento em rascunho com itens do catálogo e avulsos, custos adicionais, margem/markup com multiplicador (D018), arredondamento, memorial de cálculo; recálculo a cada alteração (D019); CT01–CT10 e TI01/TI02 verificados (`evidencias/testes/003-calculo-2026-09-28.md`) — pendente só a revisão do diff (B13)
+- [x] **Incremento 003 — Composição e cálculo** (RF14, RF23–RF31): orçamento em rascunho com itens do catálogo e avulsos, custos adicionais, margem/markup com multiplicador (D018), arredondamento, memorial de cálculo; recálculo a cada alteração (D019); CT01–CT10 e TI01/TI02 verificados (`evidencias/testes/003-calculo-2026-09-28.md`); integrado em `main` (PR #4)
 
 ## Próximo passo (nesta ordem)
 
-1. Autora revisar o diff completo (`git diff main...spec/003-composicao-calculo`) e autorizar PR e merge (B13).
-2. Abrir o incremento 004 (registro e acompanhamento) com a rotina `abrir-incremento`, a partir de `main` atualizada. Incluir o teste da RN09 (alteração fora de rascunho → 409) e os casos CN05/CN06.
-3. Transcrever as notas da conversa com o proprietário em `evidencias/entrevista/` e responder Q6–Q10 (B01); confirmar o termo de consentimento (B06). Q6 (validade) interessa ao 004.
-4. Conferir em planilha os valores de referência dos 10 casos (B08), no mais tardar antes do incremento 008.
+1. Implementar o 004 conforme `specs/004-registro-acompanhamento/tasks.md` (Fase 1: migração, regras, API e testes, incluindo o teste da RN09 e CN05/CN06).
+2. Transcrever as notas da conversa com o proprietário em `evidencias/entrevista/` e responder Q6–Q10 (B01); confirmar o termo de consentimento (B06). Q6 (validade) interessa ao 004.
+3. Conferir em planilha os valores de referência dos 10 casos (B08), no mais tardar antes do incremento 008.
 
 ## Não fazer agora
 
