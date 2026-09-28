@@ -65,7 +65,7 @@ Baseado no cronograma da proposta (implementação em outubro e novembro, defesa
 
 Registrado para a seção de trabalhos futuros e para dar destino às ideias que surgirem durante o desenvolvimento, sem contaminar o escopo:
 
-- Duplicação e versionamento de orçamento (RF40)
+- Duplicação e versionamento de orçamento (RF40) — detalhado em §5.1
 - Desconto comercial no fechamento (RF33)
 - Múltiplos usuários e papéis por marcenaria
 - Histórico de variação de custo dos materiais (RF16)
@@ -76,3 +76,31 @@ Registrado para a seção de trabalhos futuros e para dar destino às ideias que
 - Painel com indicadores de aprovação e ticket médio
 
 > Toda ideia nova recebida durante o desenvolvimento vai para esta lista **primeiro**. Se for essencial ao TCC, é promovida a incremento com registro em `decisoes.md`; caso contrário, permanece aqui.
+
+### 5.1 Ajustar um orçamento já enviado (RF40)
+
+Registrado em 2026-09-28, durante o incremento 007, a partir de uma situação levantada pela autora: o orçamento foi enviado e o cliente pede um ajuste (trocar um puxador, tirar um item, mudar uma quantidade).
+
+**Problema hoje.** O orçamento registrado fica travado (RF39, D020), para que o número entregue ao cliente nunca corresponda a valores alterados depois. O único caminho é criar outro orçamento do zero e redigitar itens, custos e textos.
+
+**Alternativas avaliadas.**
+
+| Alternativa | Retrabalho | Situação |
+|---|---|---|
+| **Duplicar para ajustar** | Mínimo: só o ajuste | **Escolhida para implementar depois** |
+| Reabrir o enviado para edição | Mínimo | Rejeitada: o número em poder do cliente passaria a ter outros valores, quebrando a rastreabilidade (D020) |
+| Versões (nº 12, 12-A, 12-B) | Mínimo | Rejeitada no prazo do TCC: numeração, histórico e telas novas |
+| Criar outro do zero | Alto | É o que existe hoje |
+
+**Como deve funcionar.**
+1. Botão "Duplicar para ajustar" no orçamento fora de rascunho (enviado, aprovado, recusado ou vencido).
+2. Cria um **rascunho novo**, sem número, copiando cliente, projeto, itens (com os valores congelados), custos adicionais, lucro, arredondamento, especificações e observações. Emissão = hoje; validade = emissão + dias da configuração (D024).
+3. O rascunho guarda a referência "ajuste do orçamento nº X", exibida na tela (não precisa sair no PDF).
+4. O original não muda; o marceneiro pode marcá-lo como recusado ou deixá-lo vencer.
+5. O cálculo do rascunho novo é refeito pelo mesmo domínio (D019), sem regra nova.
+
+**Decisão a tomar ao implementar.** Ao duplicar, manter os valores unitários do orçamento original (preço já combinado) ou atualizar pelo catálogo atual (se o material subiu). Sugestão: manter e sinalizar os itens cujo custo no catálogo mudou desde o original.
+
+**Estimativa.** Pequena: uma rota que copia o orçamento em transação e um botão na tela, sem mudar `regras-de-calculo.md`. Testes: cópia fiel dos valores, rascunho sem número, original intacto, isolamento entre marcenarias e regressão dos dez casos.
+
+**Por que não agora.** Está fora do escopo declarado (pós-TCC). Se a avaliação de uso (009) mostrar que o proprietário precisa disso, a promoção a incremento deve ser registrada em `decisoes.md` e, por mudar o escopo, comentada com o orientador.
