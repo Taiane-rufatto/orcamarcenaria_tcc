@@ -2,11 +2,11 @@
 
 **Atualizado em:** 2026-09-28
 
-> **Incremento 007 — Configurações da marcenaria: aberto em 2026-09-28** na branch `spec/007-configuracoes` (D024: padrões markup 150%, sem arredondamento, validade de 10 dias; só para orçamentos novos). Incremento 006 fechado e integrado em `main` (PR #7).
+> **Incremento 007 — Configurações da marcenaria: implementado e verificado em 2026-09-28** na branch `spec/007-configuracoes` (139 testes de backend em três execuções, CT03/CT04/CT06 pela configuração, percurso no Edge e validação manual da autora). **Falta a revisão do diff pela autora (B17)** para o PR e o merge.
 
 ## Onde o projeto está
 
-Incrementos 000 a 006 entregues e integrados; 007 em andamento. O cálculo do orçamento existe em `backend/src/dominio/orcamento/calculo.ts` e é o único ponto do sistema que calcula preço.
+Incrementos 000 a 006 entregues e integrados; 007 pronto para integração. O próximo é o 008 (validação formal do cálculo), que depende da conferência dos dez casos em planilha (B08). O cálculo do orçamento existe em `backend/src/dominio/orcamento/calculo.ts` e é o único ponto do sistema que calcula preço.
 
 ## Pronto
 
@@ -40,12 +40,14 @@ Incrementos 000 a 006 entregues e integrados; 007 em andamento. O cálculo do or
 - [x] **Incremento 004 — Registro e acompanhamento** (RF32, RF34–RF39): lista com busca e filtros, rascunho reaberto para edição, registrar = enviar com número sequencial (D020), aprovado/recusado, vencimento automático, somente leitura fora de rascunho; CN05/CN06, TI01/TI02 verificados (`evidencias/testes/004-registro-2026-09-28.md`); integrado em `main` (PR #5)
 - [x] **Incremento 005 — Clientes** (RF08–RF10): cadastro, busca, edição, inativação e reativação; orçamento ligado ao cliente por `cliente_id` (D021), com migração dos nomes em texto livre; TI03 verificado (`evidencias/testes/005-clientes-2026-09-28.md`); integrado em `main` (PR #6)
 - [x] **Incremento 006 — Orçamento em PDF** (RF41–RF43, RNF19): PDF de orçamento registrado no formato do modelo do proprietário (especificações, preço em número e por extenso, observações), sem custo nem lucro, lista de materiais opcional (D022); PDFKit (D023); integrado em `main` (PR #7)
+- [x] **Incremento 007 — Configurações** (RF05, RF19–RF22): página "Minha marcenaria" com dados da empresa (saem no PDF), padrões de lucro, arredondamento e validade de 10 dias para orçamentos novos (D024) — pendente a revisão do diff (B17)
 
 ## Próximo passo (nesta ordem)
 
-1. Implementar o 007 conforme `specs/007-configuracoes/tasks.md`.
-2. Transcrever as notas da conversa com o proprietário em `evidencias/entrevista/` e responder Q6–Q10 (B01); confirmar o termo de consentimento (B06).
-3. Conferir em planilha os valores de referência dos 10 casos (B08), no mais tardar antes do incremento 008.
+1. Autora revisar o diff (`main...spec/007-configuracoes`), abrir o PR e fazer o merge (B17).
+2. **Autora conferir em planilha os valores de referência dos dez casos (B08).** É pré-requisito do 008: pelo método da proposta, o valor de referência é calculado em planilha antes da execução no sistema.
+3. Abrir o 008 (validação formal: os dez casos lançados pela tela, com registro em `resultado-casos-de-teste.md`).
+4. Transcrever as notas da conversa com o proprietário em `evidencias/entrevista/` e responder Q6–Q10 (B01); confirmar o termo de consentimento (B06).
 
 ## Não fazer agora
 

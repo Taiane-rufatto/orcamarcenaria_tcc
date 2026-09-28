@@ -13,6 +13,6 @@
 
 ## Fase 3 — Evidências e fechamento
 
-- [ ] T006 Testes, builds, lint, regressão, percurso de tela (1280 e 390 px); registrar em `evidencias/testes/`.
-- [ ] T007 Validação manual da autora.
-- [ ] T008 Documentação (arquitetura, matriz) e `fechar-spec` após revisão do diff.
+- [x] T006 Testes, builds, lint, regressão, percurso de tela (1280 e 390 px); registrar em `evidencias/testes/`.
+- [x] T007 Validação manual da autora.
+- [x] T008 Documentação (arquitetura, matriz) e `fechar-spec` após revisão do diff.

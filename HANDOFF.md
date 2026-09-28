@@ -1,8 +1,8 @@
 # Handoff
 
-**Atualizado em:** 2026-09-28 · Última sessão: Specs 003 a 005 integradas (PR #4 a #6); Spec 006 (PDF) aberta, implementada, revisada após uso e verificada.
+**Atualizado em:** 2026-09-28 · Última sessão: Specs 003 a 006 integradas (PR #4 a #7); Spec 007 (configurações) aberta, implementada e verificada; RF40 detalhado como evolução pós-TCC.
 
-> **Próxima sessão:** a autora revisa o diff da Spec 006 e faz PR e merge (B16); depois, abrir o incremento 007 (configurações) a partir de `main`. Estado detalhado em `ESTADO_ATUAL.md`.
+> **Próxima sessão:** a autora revisa o diff da Spec 007 e faz PR e merge (B17). O 008 depende de a autora conferir os dez casos em planilha (B08). Estado detalhado em `ESTADO_ATUAL.md`.
 
 Para qualquer nova sessão, agente ou ferramenta assumir o trabalho sem reconstruir contexto pelo histórico de conversa.
 
@@ -17,21 +17,21 @@ Para qualquer nova sessão, agente ou ferramenta assumir o trabalho sem reconstr
 
 ## O que foi feito na última sessão
 
-1. **Specs 003, 004 e 005 fechadas e integradas** em `main` (PR #4, #5 e #6, abertos e mesclados pela autora).
-2. **Spec 006 implementada:** `GET /orcamentos/:id/pdf` com PDFKit (D023); conteúdo por função pura que só recebe o que o cliente pode ver; valor por extenso próprio; campos `especificacoes` e `observacoes`; botão "Baixar PDF" na tela.
-3. **Revisão após uso:** a autora perdeu o texto das observações ao registrar sem salvar, e mostrou o modelo de orçamento do proprietário. Resultado: especificações com marcadores no alto do PDF, lista de materiais opcional (responde à Q7), textos com botão próprio e salvos ao registrar (D022 revista).
-4. **Verificação:** 128 testes de backend, regressão dos dez casos, PDFs abertos e conferidos, percurso no Edge. Evidência: `evidencias/testes/006-pdf-2026-09-28.md`.
+1. **Specs 003 a 006 fechadas e integradas** em `main` (PR #4 a #7, abertos e mesclados pela autora).
+2. **Spec 007 implementada:** migração `007-configuracoes.sql`; `GET /configuracoes`, `PUT /configuracoes/marcenaria` e `/padroes`; orçamento novo com os padrões e validade calculada; página "Minha marcenaria" (com "Alterar senha"); contatos da marcenaria no PDF.
+3. **Q6 respondida pela autora: 10 dias** (D024). Q7 respondida pelo modelo do proprietário (D022).
+4. **RF40 (duplicar para ajustar orçamento enviado) detalhado em `roadmap.md` §5.1** a pedido da autora, para implementar depois do TCC.
+5. **Verificação:** 139 testes de backend em três execuções seguidas, CT03/CT04/CT06 pela configuração, percurso no Edge e validação manual. Evidência: `evidencias/testes/007-configuracoes-2026-09-28.md`.
 
-Decisões firmes: D001–D023. Nenhuma provisória no momento.
+Decisões firmes: D001–D024. Nenhuma provisória no momento.
 
 ## O que **não** foi feito
 
-- Revisão do diff da Spec 006 (B16), PR e merge; a autora ainda não confirmou o teste manual da versão corrigida dos textos.
-- Telefone, e-mail, CNPJ e endereço da marcenaria no PDF: RF05, incremento 007.
-- Textos de orçamento já registrado não podem ser editados (mesma trava dos valores). O orçamento nº 5 do banco principal da autora ficou sem especificações.
-- Duplicar orçamento (RF40) e desconto (RF33): pós-TCC.
-- Entrevista: notas não transcritas; Q6, Q8–Q10 sem resposta (Q7 respondida pelo modelo do proprietário); consentimento (B06) não confirmado.
-- Conferência dos 10 casos em planilha (B08) e execução formal pela tela (008).
+- Revisão do diff da Spec 007 (B17), PR e merge.
+- **Conferência dos dez casos em planilha pela autora (B08)**: bloqueia o 008.
+- Duplicar orçamento (RF40), desconto (RF33) e demais itens do `roadmap.md` §5: pós-TCC.
+- Entrevista: notas não transcritas; Q8–Q10 sem resposta; consentimento (B06) não confirmado — necessário também para a avaliação de uso (009).
+- Edição de custo adicional pela tela (a API tem `PUT`; a tela só inclui e remove).
 
 ## Contexto que não está óbvio nos arquivos
 
@@ -61,12 +61,15 @@ Decisões firmes: D001–D023. Nenhuma provisória no momento.
 - **PDF:** a função de conteúdo (`montarConteudoPdf`) nem recebe custos; o teste de RF42 procura 28 textos internos do CT03 em todo o conteúdo. Mudar o PDF é mudar primeiro o conteúdo e o teste, depois o desenho.
 - **Fontes padrão do PDFKit** (Helvetica) cobrem acentos do português, "º" e "•"; caracteres fora do WinAnsi (emoji, alguns símbolos) não aparecem. Não houve necessidade de embutir fonte.
 - **Textos do orçamento na tela são estado controlado** (`textos` em `Orcamento.tsx`); outras ações não os apagam, e o registrar grava o que estiver pendente.
+- **Testes de integração com limite de 20 s** (`backend/vitest.config.ts`): com 5 s, o cadastro com bcrypt falhava ao acaso quando a suíte inteira rodava em paralelo.
+- **Padrões iniciais moram só no banco** (`DEFAULT` da tabela `configuracao`); a linha é criada na primeira leitura (`lerPadroes`). Não repetir valores padrão no código.
+- **Edição de rascunho mantém campos omitidos** (`alterarCabecalho`); a criação preenche os omitidos pela configuração (`criarOrcamento`).
 - **Commits vão para o GitHub só com `git push`**; a autora estranhou não ver os commits. A branch do 003 já está publicada.
 
 
 ## Perguntas a fazer à autora antes de avançar
 
-1. Revisou o diff da Spec 006 e testou os textos novamente? Fez PR e merge?
-2. Q6: qual prazo de validade o proprietário costuma dar? Define o padrão do RF22 (007).
-3. Onde estão as anotações da conversa com o proprietário, e em que data ocorreu? Houve consentimento (B06)?
+1. Revisou o diff da Spec 007? Fez PR e merge?
+2. Conferiu em planilha os valores de referência dos dez casos (B08)? Sem isso, o 008 não abre.
+3. Houve consentimento do proprietário (B06)? É necessário para a avaliação de uso (009).
 4. Há data para a apresentação de andamento (B07)?

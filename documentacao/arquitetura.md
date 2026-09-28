@@ -73,11 +73,11 @@ erDiagram
 
 ### 5.1 Tabelas
 
-**marcenaria** — `id`, `nome`, `responsavel`, `cnpj?`, `telefone?`, `email_contato?`, `endereco?`, `criado_em`
+**marcenaria** — `id`, `nome`, `responsavel`, `cnpj?` (14 dígitos, pontuação livre), `telefone?`, `email_contato?`, `endereco?`, `criado_em`. Os contatos saem no PDF quando preenchidos (RF05, D024)
 
 **usuario** — `id`, `marcenaria_id`, `nome`, `email` (único), `senha_hash`, `ativo`, `criado_em`
 
-**configuracao** — `marcenaria_id` (PK), `modo_lucro` (`margem` | `markup`), `percentual_lucro_padrao` NUMERIC(5,2), `regra_arredondamento` (`duas_casas` | `real_inteiro` | `dezena`), `validade_padrao_dias` INT
+**configuracao** — `marcenaria_id` (PK), `modo_lucro` (`margem` | `markup`), `percentual_lucro_padrao` NUMERIC(5,2), `regra_arredondamento` (`duas_casas` | `real_inteiro` | `dezena`), `validade_padrao_dias` INT (1 a 365). Os padrões iniciais são os `DEFAULT` das colunas (markup 150%, duas casas, 10 dias — D024) e a linha é criada na primeira leitura
 
 **cliente** — `id`, `marcenaria_id`, `nome` (não único: homônimos se distinguem pelo telefone, D021), `telefone?` (até 30), `email?` (até 200), `endereco?` (até 300), `ativo` (inativa e reativa, sem exclusão), `criado_em`, `atualizado_em`
 

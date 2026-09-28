@@ -2,7 +2,7 @@
 
 **Branch:** `spec/007-configuracoes`
 **Data:** 2026-09-28
-**Status:** aberta — especificação e esclarecimento
+**Status:** implementada e verificada em 2026-09-28; fechamento pendente da revisão do diff pela autora (B17)
 
 ## Clarificações
 
