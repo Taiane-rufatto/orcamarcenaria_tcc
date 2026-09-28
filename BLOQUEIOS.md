@@ -10,7 +10,7 @@ Itens que dependem de decisão humana, acesso ou ação externa. Um agente **nã
 | B05 | Três orçamentos reais da marcenaria ainda não coletados e anonimizados | Validação das regras de cálculo contra a prática e refinamento dos casos de teste | Taiane | Aberto — pedir na entrevista |
 | B06 | Termo de consentimento do participante (RNF16) não elaborado | Entrevista (OE1) e avaliação exploratória de uso (OE7) | Taiane | Aberto — verificar exigência com o orientador |
 | B07 | Data da apresentação de andamento não confirmada com a coordenação | Ajuste fino do calendário do `roadmap.md` §3 | Taiane | Aberto |
-| B13 | Revisão humana do diff completo da Spec 003 (DoD §7.3) | PR e merge do incremento 003; abertura do 004 | Taiane | Aberto — revisar `git diff main...spec/003-composicao-calculo` |
+| B13 | Revisão humana do diff completo da Spec 003 (DoD §7.3) | PR e merge do incremento 003; abertura do 004 | Taiane | PR autorizado pela autora em 2026-09-28; aguarda abertura do PR, revisão do diff e merge |
 | B08 | Valores de referência dos 10 casos de teste ainda não conferidos em planilha pela autora | Uso dos casos como evidência formal (o método da proposta exige cálculo prévio em planilha) | Taiane | Aberto — conferir antes do incremento 008 |
 
 ## Como usar este arquivo
