@@ -6,6 +6,51 @@ Formato: contexto → decisão → consequência → situação (`provisória` e
 
 ---
 
+## D019 — Recálculo embutido em cada alteração do orçamento
+**Data:** 2026-09-28 · **Situação:** firme
+
+**Contexto.** `arquitetura.md` §8 desenha um `POST /orcamentos/{id}/calcular` que recebe a composição atual. Isso obrigaria a tela a manter a composição em memória e a salvá-la por outro caminho, com risco de totais gravados diferentes dos exibidos.
+
+**Decisão.** Cada alteração da composição (item, custo adicional, lucro, arredondamento) é gravada em transação, o domínio calcula uma única vez e a resposta devolve o orçamento completo com os totais. Não há endpoint `/calcular` separado.
+
+**Consequência.** Continua havendo um único caminho de cálculo (D005) e os totais gravados ficam sempre coerentes com os itens. Custo: uma escrita no banco a cada alteração, irrelevante no volume de uma marcenaria. `arquitetura.md` §8 será atualizado no fechamento da Spec 003.
+
+---
+
+## D018 — Multiplicador equivalente no markup e cliente em texto livre no 003
+**Data:** 2026-09-28 · **Situação:** firme (decidido pela autora)
+
+**Contexto.** O proprietário expressa o preço como "250% a 280% do custo" (2,5× a 2,8×). Na RN06 o percentual é **somado** ao custo: digitar 250 produziria 3,5× o custo, cobrando 40% a mais do que ele pretende. Além disso, RF23 pede cliente no orçamento, mas o cadastro de clientes só chega no incremento 005.
+
+**Decisão.**
+1. A RN06 não muda. No modo markup, o servidor devolve também o **multiplicador equivalente** `1 + markup/100` (ex.: markup 150% → 2,50×), exibido na tela e no memorial junto ao percentual. O frontend não calcula o multiplicador.
+2. No incremento 003 o cliente é um campo de texto livre (`cliente_nome`). O incremento 005 introduz o vínculo com o cadastro (`cliente_id`).
+
+**Alternativa rejeitada.** Um terceiro modo "multiplicador" (digitar 2,5): mais natural para o proprietário, mas altera regras, D002, casos de teste e configuração — escopo extra sem ganho de cálculo.
+
+**Consequência.** O memorial deixa explícita a equivalência entre percentual e multiplicador, que é justamente a confusão apontada na justificativa da proposta. Custa um campo derivado na resposta do cálculo.
+
+---
+
+## D017 — Respostas do proprietário a Q1–Q5
+**Data:** 2026-09-28 · **Situação:** firme (confirmadas pelo proprietário na entrevista — B01)
+
+**Contexto.** A autora obteve do proprietário respostas a Q1–Q5 em conversa informal e depois as confirmou com ele, que revisou apenas a Q1.
+
+**Respostas.**
+
+| # | Resposta | Efeito |
+|---|---|---|
+| Q1 | Lucro sobre o que gastou: cobra de 250% a 280% do custo dos materiais (2,5× a 2,8×) | É markup (RN06), equivalente a markup de 150% a 180%. O padrão de D002 passa de margem para **markup**; os dois modos continuam existindo. Ver D018 para a forma de informar |
+| Q2 | Soma o custo e aplica o multiplicador; a mão de obra não é calculada à parte | O multiplicador já embute mão de obra e lucro. Não exige novo tipo de cobrança em `servico`; itens de serviço seguem disponíveis |
+| Q3 | Sempre cobra a chapa inteira | Lança-se quantidade inteira de chapas. Nenhuma mudança de regra; aproveitamento segue fora do MVP |
+| Q4 | Hoje frete, deslocamento e instalação não entram no preço; quer passar a incluí-los, com lucro | Confirma RN04 e D006 como estão |
+| Q5 | Não costuma arredondar | O padrão de D003 passa a ser `duas_casas`; `real_inteiro` e `dezena` continuam disponíveis |
+
+**Consequência.** Nenhuma fórmula de `regras-de-calculo.md` muda; mudam apenas os padrões. O exemplo do §4 (modo margem) segue válido como caso de teste. Observação para a monografia: embutir mão de obra e lucro num único multiplicador (Q2) esconde quanto do preço remunera o trabalho — é um dos problemas que o memorial de cálculo (RF31) torna visível.
+
+---
+
 ## D016 — Custo e valor unitário do catálogo devem ser maiores que zero
 **Data:** 2026-09-19 · **Situação:** firme
 
@@ -68,7 +113,7 @@ Formato: contexto → decisão → consequência → situação (`provisória` e
 ---
 
 ## D002 — Margem e markup como modos explícitos e excludentes
-**Data:** 2026-09-02 · **Situação:** provisória (confirmar na entrevista — Q1)
+**Data:** 2026-09-02 · **Situação:** firme — confirmada em 2026-09-28 com padrão alterado para markup (D017)
 
 **Contexto.** A proposta cita "margem de lucro ou markup" sem definir qual das duas fórmulas o sistema aplica. São contas diferentes: com 30% sobre custo de R$ 1.931,10, margem dá R$ 2.758,71 e markup dá R$ 2.510,43.
 
@@ -79,7 +124,7 @@ Formato: contexto → decisão → consequência → situação (`provisória` e
 ---
 
 ## D003 — Arredondamento comercial sempre para cima
-**Data:** 2026-09-02 · **Situação:** provisória (confirmar na entrevista — Q5)
+**Data:** 2026-09-02 · **Situação:** firme — confirmada em 2026-09-28 com padrão `duas_casas` (D017)
 
 **Contexto.** A proposta exige "critério de arredondamento" definido, mas não o especifica.
 
@@ -112,7 +157,7 @@ Formato: contexto → decisão → consequência → situação (`provisória` e
 ---
 
 ## D006 — Custos adicionais recebem lucro
-**Data:** 2026-09-02 · **Situação:** provisória (confirmar na entrevista — Q4)
+**Data:** 2026-09-02 · **Situação:** firme — confirmada em 2026-09-28 (D017)
 
 **Contexto.** Frete e deslocamento podem ser repassados a custo ou entrar na base de lucro.
 
@@ -204,7 +249,7 @@ usuários ou recuperação de senha.
 
 ## Questões em aberto (entrevista de levantamento — OE1)
 
-Enquanto não respondidas, valem as decisões provisórias acima. Espelhadas em `BLOQUEIOS.md`.
+Enquanto não respondidas, valem as decisões provisórias acima. Espelhadas em `BLOQUEIOS.md`. Q1–Q5 respondidas em D017; Q6–Q10 seguem em aberto.
 
 | # | Pergunta | Impacto se a resposta for diferente do assumido |
 |---|---|---|

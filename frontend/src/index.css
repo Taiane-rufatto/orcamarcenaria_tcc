@@ -114,6 +114,21 @@ th.valor { text-align: right; }
 .selo.inativo { background: #e6e1d3; color: var(--tinta-suave); }
 .vazio { text-align: center; color: var(--tinta-suave); padding: 36px 12px; border: 1.5px dashed var(--linha); border-radius: 6px; }
 
+/* ---------- Orçamento ---------- */
+.subtitulo { font-family: var(--titulo); font-weight: 400; font-size: 1.05rem; color: var(--verde-escuro); margin: 24px 0 12px; }
+.ajuda { color: var(--tinta-suave); margin-bottom: 16px; max-width: 60ch; }
+.selo.ajustado { background: var(--laranja-claro); color: var(--laranja-escuro); margin-top: 4px; }
+.campo-com-unidade { display: flex; align-items: center; gap: 8px; }
+td input { min-width: 90px; }
+td form { display: inline; }
+/* memorial: lista de conferência, com traço antes do custo direto e do preço final (regras-de-calculo.md §5) */
+.memorial { margin: 0; display: grid; max-width: 560px; }
+.memorial div { display: flex; justify-content: space-between; gap: 16px; padding: 9px 0; border-bottom: 1px dashed var(--linha); }
+.memorial dd { margin: 0; font-variant-numeric: tabular-nums; font-weight: 700; white-space: nowrap; }
+.memorial .subtotal { border-top: 2px solid var(--verde); font-weight: 700; }
+.memorial .final { border-top: 2px solid var(--verde); border-bottom: 0; padding-top: 14px; font-family: var(--titulo); font-size: 1.45rem; color: var(--verde-escuro); }
+.memorial .final dd { font-weight: 400; }
+
 /* ---------- Entrada e cadastro ---------- */
 .acesso { flex: 1; display: grid; grid-template-columns: minmax(300px, 5fr) 6fr; }
 .acesso-lateral { background: var(--verde); color: var(--folha); padding: 56px 48px; display: flex; flex-direction: column; justify-content: space-between; gap: 40px; position: relative; }

@@ -65,6 +65,8 @@ preco_bruto = arred2( custo_direto_total × (1 + markup/100) )
 
 Interpretação: "somo 30% sobre o que gastei". Restrição: `markup ≥ 0`.
 
+No modo markup, o memorial exibe também o **multiplicador equivalente** `1 + markup/100` (ex.: markup 150% → 2,50× o custo), para evitar que "cobrar 250% do custo" seja digitado como markup de 250% (D018). O multiplicador é informativo: o preço é sempre calculado pela fórmula acima.
+
 > **Os dois modos produzem preços diferentes com o mesmo percentual.** Com custo de R$ 1.931,10 e 30%: margem → R$ 2.758,71; markup → R$ 2.510,43. Confundir os dois é justamente uma das falhas de precificação apontadas na justificativa da proposta. Por isso o sistema exige a escolha explícita do modo e exibe o rótulo correspondente na tela e no memorial de cálculo.
 
 ### RN07 — Arredondamento comercial do preço final
@@ -166,11 +168,13 @@ Serviços e mão de obra ........... R$   690,00
 Custos adicionais ................ R$   165,50
 --------------------------------------------
 Custo direto total ............... R$ 1.931,10
-Lucro (margem 30,00%) ............ R$   827,61
+Lucro (margem 30,00% sobre o preço) R$   827,61
 Ajuste de arredondamento ......... R$     1,29
 --------------------------------------------
 PREÇO FINAL ...................... R$ 2.760,00
 ```
+
+No modo markup, a linha do lucro traz também o multiplicador equivalente (D018): `Lucro (markup 150,00% · 2,50× o custo)`.
 
 Esse bloco é a evidência visual de que o sistema não é uma caixa-preta — requisito para a defesa e para os testes de conferência manual.
 
