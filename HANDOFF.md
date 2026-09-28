@@ -1,8 +1,8 @@
 # Handoff
 
-**Atualizado em:** 2026-09-28 · Última sessão: respostas do proprietário (D017), abertura, implementação e verificação da Spec 003 (composição e cálculo).
+**Atualizado em:** 2026-09-28 · Última sessão: Spec 003 integrada (PR #4); Spec 004 (registro e acompanhamento) aberta, implementada e verificada.
 
-> **Próxima sessão:** a autora revisa o diff da Spec 003 (B13); depois, PR, merge e abertura do incremento 004 a partir de `main`. Estado detalhado em `ESTADO_ATUAL.md`.
+> **Próxima sessão:** a autora revisa o diff da Spec 004 e faz PR e merge (B14); depois, abrir o incremento 005 (clientes) a partir de `main`. Estado detalhado em `ESTADO_ATUAL.md`.
 
 Para qualquer nova sessão, agente ou ferramenta assumir o trabalho sem reconstruir contexto pelo histórico de conversa.
 
@@ -17,20 +17,17 @@ Para qualquer nova sessão, agente ou ferramenta assumir o trabalho sem reconstr
 
 ## O que foi feito na última sessão
 
-1. **Respostas do proprietário (D017):** lucro sobre o custo, cobrando 250% a 280% do custo (markup de 150% a 180%); mão de obra embutida no multiplicador; chapa inteira; custos adicionais passam a entrar, com lucro; sem arredondamento. D002, D003 e D006 viraram firmes com padrões markup e `duas_casas`.
-2. **Spec 003 implementada** em quatro camadas: domínio (`calculo.ts`), banco (`003-orcamento.sql`), casos de uso e API (`aplicacao/orcamento/`, `rotas/orcamentos.ts`) e telas (`Orcamento.tsx`, `Memorial.tsx`).
-3. **Decisões novas:** D018 (multiplicador equivalente no markup e cliente em texto livre até o 005) e D019 (recálculo embutido em cada alteração, sem endpoint `/calcular`).
-4. **Verificação:** CT01–CT10 com diferença nula (lidos do CSV de referência), CT03/CT04 pela API e pela tela, CN01–CN04, TI01/TI02, validação manual da autora. Evidência: `evidencias/testes/003-calculo-2026-09-28.md` e `resultado-casos-de-teste.md` (execução nº 1).
-5. **Duas revisões de código da autora** geraram correções: validação estrita de formato no domínio e filtro por `marcenaria_id` em todo SQL do repositório.
+1. **Spec 003 fechada e integrada** em `main` (PR #4, aberto e mesclado pela autora).
+2. **Spec 004 implementada:** migração `004-situacoes.sql`; registrar = enviar com número sequencial por marcenaria (D020); transições da RN09 numa tabela única (`TRANSICOES` em `aplicacao/orcamento/orcamento.ts`); vencimento automático; `GET /orcamentos` com busca e filtros; lista na página de orçamentos e tela somente leitura fora de rascunho.
+3. **Verificação:** 85 testes de backend (8 novos em `registro.test.ts`, incluindo o teste da RN09 pendente do 003 e CN05/CN06), regressão dos dez casos (domínio não mudou), percurso no Edge e validação manual da autora. Evidência: `evidencias/testes/004-registro-2026-09-28.md`.
 
-Decisões firmes: D001–D019. Nenhuma provisória no momento.
+Decisões firmes: D001–D020. Nenhuma provisória no momento.
 
 ## O que **não** foi feito
 
-- Revisão do diff completo pela autora (B13), PR e merge do 003.
-- Listagem de orçamentos, numeração e situações: incremento 004. Até lá, um rascunho só é reaberto pelo endereço `/orcamentos/<id>`.
-- Teste da RN09 (alteração fora de rascunho → 409): o código já existe em `alterar`, mas o banco só admite `rascunho`. Incluir no 004.
-- CN05/CN06 (registro sem itens/cliente): dependem do registro (RF32, 004).
+- Revisão do diff da Spec 004 pela autora (B14), PR e merge.
+- Cliente continua em texto livre (D018): cadastro e vínculo no 005.
+- Duplicar ou reabrir orçamento vencido ou enviado (RF40) e desconto (RF33): pós-TCC. Um orçamento registrado com erro não pode ser corrigido; só criando um novo rascunho.
 - Entrevista: notas não transcritas; Q6–Q10 sem resposta; consentimento (B06) não confirmado.
 - Conferência dos 10 casos em planilha (B08) e execução formal pela tela (008).
 - Edição de custo adicional pela tela (a API tem `PUT`; a tela só inclui e remove).
@@ -54,11 +51,14 @@ Decisões firmes: D001–D019. Nenhuma provisória no momento.
 - **`valor_ajustado_manualmente` é coluna gerada** (compara com `valor_unitario_catalogo`); não se grava nela.
 - **Migração do 003 foi recriada** (DROP das três tabelas vazias) antes do merge. Depois de integrada em `main`, qualquer mudança de esquema deve ser migração nova (`004-...sql`), nunca edição do `003-orcamento.sql`.
 - **Percurso de tela com Playwright:** o rótulo que envolve um `select` inclui o texto da opção no nome acessível; `getByLabel(..., { exact: true })` falha. Localizar por `select[name=...]`.
+- **Vencimento é aplicado na leitura** (`vencerOrcamentos` antes de listar, consultar e mudar situação), com a data de São Paulo explícita no SQL. Não há tarefa agendada: um orçamento só aparece vencido quando alguém abre a lista ou o orçamento.
+- **Migrações são reaplicadas por inteiro** a cada `npm run migrar`: toda migração nova precisa ser idempotente (`DROP CONSTRAINT IF EXISTS` antes de `ADD CONSTRAINT`, `IF NOT EXISTS` em índices).
+- **O classificador de segurança dos comandos falhou por um período** e bloqueou commits; a autora fez o commit manualmente. Se acontecer de novo, pedir a ela o `git commit` e seguir.
 - **Commits vão para o GitHub só com `git push`**; a autora estranhou não ver os commits. A branch do 003 já está publicada.
 
 
 ## Perguntas a fazer à autora antes de avançar
 
-1. Revisou o diff da Spec 003? Autoriza PR e merge?
+1. Revisou o diff da Spec 004? Fez PR e merge?
 2. Onde estão as anotações da conversa com o proprietário, e em que data ocorreu? Q6–Q10 foram perguntadas? Houve consentimento?
-3. Há prazo definido pela coordenação para a apresentação de andamento (B07)?
+3. Há prazo definido pela coordenação para a apresentação de andamento (B07)? O roadmap pede os incrementos 001–005 fechados para ela.

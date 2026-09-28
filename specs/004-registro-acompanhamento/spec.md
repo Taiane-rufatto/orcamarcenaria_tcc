@@ -2,7 +2,7 @@
 
 **Branch:** `spec/004-registro-acompanhamento`  
 **Data:** 2026-09-28  
-**Status:** aberta — especificação e esclarecimento
+**Status:** implementada e verificada em 2026-09-28; fechamento pendente da revisão do diff pela autora (B14)
 
 ## Clarificações
 
