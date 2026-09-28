@@ -131,7 +131,7 @@ Preenchida ao fim de cada incremento e consolidada antes da defesa.
 | RF23–RF31 | 003 | CT01–CT10 + testes de unidade do domínio + integração + percurso de tela | verificado em 2026-09-28 (`evidencias/testes/003-calculo-2026-09-28.md`); execução formal dos dez casos pela tela no 008 |
 | RF32, RF34–RF39 | 004 | Integração do ciclo de vida + CN05, CN06 + percurso de tela + validação manual | verificado em 2026-09-28 (`evidencias/testes/004-registro-2026-09-28.md`) |
 | RF08–RF10 | 005 | Integração dos cadastros + TI03 + percurso de tela + validação manual | verificado em 2026-09-28 (`evidencias/testes/005-clientes-2026-09-28.md`) |
-| RF41–RF43 | 006 | Inspeção do PDF gerado + medição de tempo | pendente |
+| RF41–RF43, RNF19 | 006 | Testes do conteúdo (RF42 sem valores internos) e do extenso + integração com tempo de dez itens + PDFs conferidos visualmente | verificado em 2026-09-28 (`evidencias/testes/006-pdf-2026-09-28.md`) |
 | RF05, RF19–RF22 | 007 | Teste manual das configurações + CT03/CT04/CT06 | pendente |
 | RNF06, RNF21 | 008 | Execução completa dos casos de teste | pendente |
 | RNF01 | 009 | Avaliação exploratória de uso | pendente |

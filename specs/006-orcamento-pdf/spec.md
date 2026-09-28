@@ -2,7 +2,7 @@
 
 **Branch:** `spec/006-orcamento-pdf`  
 **Data:** 2026-09-28  
-**Status:** aberta — especificação e esclarecimento
+**Status:** implementada e verificada em 2026-09-28; fechamento pendente da revisão do diff pela autora (B16)
 
 ## Clarificações
 
@@ -20,9 +20,9 @@
 
 ## Capacidade entregável
 
-1. **Entrega:** num orçamento registrado, o marceneiro clica em "Baixar PDF", escolhe se mostra a lista de itens ou só o total, e recebe um PDF com a marcenaria, o cliente, número, datas, projeto, itens com quantidade, preço final em número e por extenso, validade e observações — sem nenhum custo, percentual ou lucro. No rascunho, pode escrever as observações.
+1. **Entrega:** no rascunho, o marceneiro escreve as especificações (o que está incluído) e as observações. No orçamento registrado, clica em "Baixar PDF" e recebe um PDF no formato do modelo do proprietário: marcenaria, cliente, número, datas, especificações, preço final em número e por extenso, observações e validade — e, se marcar, a lista de materiais e serviços só com quantidades. Nenhum custo, percentual ou lucro aparece.
 2. **Fica de fora:** telefone, e-mail, CNPJ e endereço da marcenaria (RF05, incremento 007); logotipo; envio por e-mail ou link (pós-TCC); valores por item (D022).
-3. **Demonstração:** registrar o orçamento do exemplo §4 e baixar os dois PDFs: o de itens mostra as 6 linhas com quantidades e "R$ 2.760,00 (dois mil, setecentos e sessenta reais)"; nenhum dos dois contém R$ 724,75, "markup", "margem", "lucro" ou "custo".
+3. **Demonstração:** registrar o orçamento do exemplo §4 com especificações e baixar o PDF padrão e o com lista: ambos mostram "R$ 2.760,00 (dois mil, setecentos e sessenta reais)" e nenhum contém R$ 724,75, "markup", "margem", "lucro" ou "custo".
 
 ## Histórias e critérios verificáveis
 

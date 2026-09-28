@@ -13,6 +13,6 @@
 
 ## Fase 3 — Evidências e fechamento
 
-- [ ] T006 Testes, builds, lint, regressão dos dez casos; PDFs de exemplo conferidos; registrar em `evidencias/testes/`.
-- [ ] T007 Validação manual da autora.
-- [ ] T008 Documentação (arquitetura, matriz) e `fechar-spec` após revisão do diff.
+- [x] T006 Testes, builds, lint, regressão dos dez casos; PDFs de exemplo conferidos; registrar em `evidencias/testes/`.
+- [x] T007 Validação manual da autora. *Limite:* a primeira rodada (PDF nº 5) revelou o defeito dos textos perdidos ao registrar; a versão corrigida foi verificada no navegador pelo agente e a autora autorizou seguir, sem declarar novo teste manual. Confirmar na revisão do diff (B16).
+- [x] T008 Documentação (arquitetura, matriz) e `fechar-spec` após revisão do diff.
