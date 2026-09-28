@@ -1,8 +1,8 @@
 # Estado Atual
 
-**Atualizado em:** 2026-09-19
+**Atualizado em:** 2026-09-28
 
-> **Incremento 002 — Catálogo de materiais e serviços: fechado em 2026-09-19** (25 testes de backend, TI01, builds, lint, validação manual e revisão do diff pela autora). Nenhum incremento está aberto: o próximo é o 003.
+> **Incremento 003 — Composição e cálculo do orçamento: aberto em 2026-09-28** na branch `spec/003-composicao-calculo`. Spec, plano e tarefas escritos em `specs/003-composicao-calculo/`. Fase 1 (domínio do cálculo, T001–T003) concluída: CT01–CT10 passam com diferença nula. Próximo: persistência (T004). Respostas do proprietário a Q1–Q5 registradas em D017 e D018.
 
 ## Onde o projeto está
 
@@ -38,9 +38,9 @@ Incrementos 000 (preparação), 001 (conta e acesso) e 002 (catálogo) entregues
 
 ## Próximo passo (nesta ordem)
 
-1. Recomendado antes do 003: realizar a entrevista com o proprietário (`documentacao/roteiro-entrevista.md`, B01) e responder Q1–Q10 em `decisoes.md`. D002, D003 e D006 (margem/markup, arredondamento, lucro sobre custos adicionais) são provisórias e o 003 as implementa; se a entrevista não puder vir antes, seguir com elas e registrar o risco.
-2. Conferir em planilha os valores de referência dos 10 casos (B08), no mais tardar antes do incremento 008.
-3. Abrir o incremento 003 (composição e cálculo do orçamento) com a rotina `abrir-incremento`, a partir de `main` atualizada.
+1. Autora revisar `backend/src/dominio/orcamento/calculo.ts`; seguir para a Fase 2 (migração e repositório).
+2. Transcrever as notas da conversa com o proprietário em `evidencias/entrevista/` e responder Q6–Q10 (B01); confirmar o termo de consentimento (B06).
+3. Conferir em planilha os valores de referência dos 10 casos (B08), no mais tardar antes do incremento 008.
 
 ## Não fazer agora
 
