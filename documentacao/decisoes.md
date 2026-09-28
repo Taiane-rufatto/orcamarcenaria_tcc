@@ -6,6 +6,23 @@ Formato: contexto → decisão → consequência → situação (`provisória` e
 
 ---
 
+## D024 — Configurações da marcenaria e padrões do orçamento
+**Data:** 2026-09-28 · **Situação:** firme (decidido pela autora)
+
+**Contexto.** O 007 cria a configuração por marcenaria (RF05, RF19–RF22). Até aqui, os padrões de lucro estavam fixos no código (D017) e a validade era digitada em todo orçamento. A Q6 (prazo habitual) estava sem resposta.
+
+**Decisão.**
+1. Valores iniciais de toda marcenaria: markup, 150,00%, sem arredondamento (D017) e **validade de 10 dias** (resposta da autora à Q6). Ficam como `DEFAULT` das colunas da tabela `configuracao`, um único lugar.
+2. A configuração vale só para orçamentos **novos**: modo, percentual e arredondamento são copiados para o orçamento na criação (arquitetura §5.2.3) e podem ser mudados em cada rascunho (RF30). Alterar a configuração nunca muda orçamento existente.
+3. "Válido até" em branco na criação é preenchido pelo servidor com a emissão + os dias configurados.
+4. A regra da margem (0 ≤ margem < 100) é verificada pela mesma função do domínio usada no cálculo, para não existir uma segunda cópia da regra.
+5. Dados da marcenaria (telefone, e-mail, CNPJ e endereço opcionais) aparecem no PDF quando preenchidos. CNPJ, se informado, precisa ter 14 dígitos.
+6. Tudo fica numa página "Minha marcenaria", que passa a abrigar também o "Alterar senha".
+
+**Consequência.** O código deixa de ter padrões de lucro fixos (a validação de criação não impõe mais markup 150%). Os casos CT03, CT04 e CT06 são reexecutados partindo da configuração.
+
+---
+
 ## D023 — PDF gerado no servidor com PDFKit, conteúdo separado do desenho
 **Data:** 2026-09-28 · **Situação:** firme
 
@@ -318,7 +335,7 @@ Enquanto não respondidas, valem as decisões provisórias acima. Espelhadas em 
 | Q3 | Material comprado em chapa e usado pela metade: cobra a chapa inteira ou só a parte usada? A sobra é aproveitada? | Pode antecipar o cálculo por aproveitamento, hoje fora do MVP |
 | Q4 | Frete, deslocamento e instalação entram no preço com lucro ou são repassados a custo? | Muda D006 |
 | Q5 | Costuma arredondar o preço final? Para real inteiro, dezena ou não arredonda? | Define o padrão de D003 |
-| Q6 | Qual o prazo de validade que costuma dar ao orçamento? O que faz quando vence? | Ajusta RF22 e RN09 |
+| Q6 | Qual o prazo de validade que costuma dar ao orçamento? O que faz quando vence? | Ajusta RF22 e RN09 — **respondida pela autora em 2026-09-28: 10 dias (D024)** |
 | Q7 | O que o cliente vê hoje: lista de itens com valores ou só o total? | Define o padrão de RF42 — **respondida pelo modelo de orçamento do proprietário (D022): descrição do que está incluído, sem valores, e o total** |
 | Q8 | Quantos orçamentos faz por mês e quanto tempo leva em cada um? | Base de comparação para a observação de uso (RNF01) |
 | Q9 | Já perdeu dinheiro por esquecer algum custo? Qual? | Evidência qualitativa forte para a justificativa da monografia |

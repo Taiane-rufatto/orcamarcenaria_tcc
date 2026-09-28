@@ -2,7 +2,7 @@
 
 **Branch:** `spec/006-orcamento-pdf`  
 **Data:** 2026-09-28  
-**Status:** implementada e verificada em 2026-09-28; fechamento pendente da revisão do diff pela autora (B16)
+**Status:** fechada em 2026-09-28 (PR #7)
 
 ## Clarificações
 
