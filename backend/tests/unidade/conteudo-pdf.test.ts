@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { montarConteudoPdf, type DadosPdf } from '../../src/infra/pdf/conteudo-orcamento'
+import { lerEspecificacoes, montarConteudoPdf, type DadosPdf } from '../../src/infra/pdf/conteudo-orcamento'
 
 // CT03 (regras-de-calculo.md §4) registrado como nº 7, com dados fictícios.
 const ct03: DadosPdf = {
@@ -7,6 +7,7 @@ const ct03: DadosPdf = {
   descricaoProjeto: 'Armário de cozinha',
   dataEmissao: '2026-10-01',
   dataValidade: '2026-10-31',
+  especificacoes: 'Armário com cinco portas\n- Canto em 45°\n\nFerragens e acabamentos:\n• Dobradiça anti-impacto\n* Puxador anodizado',
   observacoes: 'Entrega em 20 dias úteis.',
   precoFinal: '2760.00',
   itens: [
@@ -39,6 +40,17 @@ describe('conteúdo do PDF (RF41, RF42, D022)', () => {
       cliente: ['Cliente Fictício', 'Telefone: (45) 90000-0000', 'Endereço: Rua Fictícia, 10'],
       datas: [{ rotulo: 'Emissão', valor: '01/10/2026' }, { rotulo: 'Válido até', valor: '31/10/2026' }],
       projeto: 'Armário de cozinha',
+      especificacoes: {
+        introducao: 'Orçamento referente a Armário de cozinha, estando incluídos os seguintes itens:',
+        linhas: [
+          { tipo: 'texto', texto: 'Armário com cinco portas' },
+          { tipo: 'marcador', texto: 'Canto em 45°' },
+          { tipo: 'espaco' },
+          { tipo: 'subtitulo', texto: 'Ferragens e acabamentos:' },
+          { tipo: 'marcador', texto: 'Dobradiça anti-impacto' },
+          { tipo: 'marcador', texto: 'Puxador anodizado' },
+        ],
+      },
       itens: [
         { descricao: 'MDF branco 18 mm', quantidade: '2,5 ch' },
         { descricao: 'Fita de borda 22 mm', quantidade: '30 m' },
@@ -65,9 +77,23 @@ describe('conteúdo do PDF (RF41, RF42, D022)', () => {
     for (const proibido of PROIBIDOS) expect(texto, proibido).not.toContain(proibido.toLowerCase())
   })
 
-  it('omite observações vazias e contatos ausentes', () => {
-    const conteudo = montarConteudoPdf({ ...ct03, observacoes: '  ', cliente: { nome: 'Só Nome', telefone: null, email: null, endereco: null } }, true)
+  it('omite especificações e observações vazias e contatos ausentes', () => {
+    const conteudo = montarConteudoPdf({ ...ct03, especificacoes: ' \n ', observacoes: '  ', cliente: { nome: 'Só Nome', telefone: null, email: null, endereco: null } }, true)
+    expect(conteudo.especificacoes).toBeNull()
     expect(conteudo.observacoes).toBeNull()
     expect(conteudo.cliente).toEqual(['Só Nome'])
+  })
+})
+
+describe('leitura das especificações digitadas', () => {
+  it('reconhece marcadores, subtítulos, parágrafos e linhas em branco, e ignora bordas vazias', () => {
+    expect(lerEspecificacoes('\r\n\n- Um\r\n  *Dois  \n•Três\n\nAcabamento:\nTexto livre - com hífen no meio\n\n')).toEqual([
+      { tipo: 'marcador', texto: 'Um' },
+      { tipo: 'marcador', texto: 'Dois' },
+      { tipo: 'marcador', texto: 'Três' },
+      { tipo: 'espaco' },
+      { tipo: 'subtitulo', texto: 'Acabamento:' },
+      { tipo: 'texto', texto: 'Texto livre - com hífen no meio' },
+    ])
   })
 })

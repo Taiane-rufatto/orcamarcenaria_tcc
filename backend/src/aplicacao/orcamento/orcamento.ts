@@ -62,6 +62,7 @@ async function montarResposta(c: PoolClient, marcenariaId: string, id: string) {
     modoLucro: o.modo_lucro,
     percentualLucro: o.percentual_lucro,
     regraArredondamento: o.regra_arredondamento,
+    especificacoes: (o.especificacoes ?? '') as string,
     observacoes: (o.observacoes ?? '') as string,
     itens: itens.map((i) => ({
       id: i.id, tipo: i.tipo, materialId: i.material_id, servicoId: i.servico_id,

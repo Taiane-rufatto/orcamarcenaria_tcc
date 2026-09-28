@@ -20,6 +20,7 @@ export async function gerarPdfOrcamento(marcenariaId: string, id: string, mostra
     descricaoProjeto: orcamento.descricaoProjeto,
     dataEmissao: orcamento.dataEmissao,
     dataValidade: orcamento.dataValidade,
+    especificacoes: orcamento.especificacoes,
     observacoes: orcamento.observacoes,
     precoFinal: orcamento.memorial.precoFinal,
     itens: orcamento.itens.map((item) => ({ descricao: item.descricao, quantidade: item.quantidade, unidade: item.unidade })),

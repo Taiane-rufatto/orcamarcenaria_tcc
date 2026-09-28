@@ -36,6 +36,7 @@ export const cabecalhoSchema = z
     modoLucro: z.enum(['margem', 'markup'], 'Selecione margem ou markup').default('markup'),
     percentualLucro: percentualLucro.default('150'),
     regraArredondamento: z.enum(['duas_casas', 'real_inteiro', 'dezena'], 'Selecione a regra de arredondamento').default('duas_casas'),
+    especificacoes: z.string().trim().max(4000, 'As especificações devem ter até 4.000 caracteres').default(''),
     observacoes: z.string().trim().max(1000, 'As observações devem ter até 1.000 caracteres').default(''),
   })
   // Datas ISO (AAAA-MM-DD) comparam corretamente como texto.

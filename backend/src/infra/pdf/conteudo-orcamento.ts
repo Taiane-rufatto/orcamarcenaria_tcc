@@ -9,6 +9,7 @@ export interface DadosPdf {
   descricaoProjeto: string
   dataEmissao: string // AAAA-MM-DD
   dataValidade: string
+  especificacoes: string
   observacoes: string
   precoFinal: string // texto decimal gravado pelo domínio (D019), ex.: "2760.00"
   itens: { descricao: string; quantidade: string; unidade: string }[]
@@ -23,11 +24,33 @@ export interface ConteudoPdf {
   cliente: string[]
   datas: { rotulo: string; valor: string }[]
   projeto: string
+  // Especificações no formato do modelo do proprietário: introdução + linhas do texto digitado.
+  especificacoes: { introducao: string; linhas: LinhaEspecificacao[] } | null
   itens: { descricao: string; quantidade: string }[] | null // nulo em "apenas o preço final"
   precoFinal: string
   precoPorExtenso: string
   observacoes: string | null
   rodape: string
+}
+
+export type LinhaEspecificacao =
+  | { tipo: 'marcador'; texto: string } // linha iniciada por "-", "*" ou "•"
+  | { tipo: 'subtitulo'; texto: string } // linha terminada em ":" (ex.: "Ferragens e acabamentos:")
+  | { tipo: 'texto'; texto: string }
+  | { tipo: 'espaco' } // linha em branco
+
+// Interpreta o texto digitado: marcadores, subtítulos e parágrafos, sem exigir nenhuma formatação especial.
+export function lerEspecificacoes(texto: string): LinhaEspecificacao[] {
+  const linhas = texto.replace(/\r/g, '').split('\n').map((linha) => linha.trim())
+  while (linhas.length && !linhas[0]) linhas.shift()
+  while (linhas.length && !linhas[linhas.length - 1]) linhas.pop()
+  return linhas.map((linha): LinhaEspecificacao => {
+    if (!linha) return { tipo: 'espaco' }
+    const marcador = /^[-*•]\s*(.+)$/.exec(linha)
+    if (marcador) return { tipo: 'marcador', texto: marcador[1] }
+    if (linha.endsWith(':')) return { tipo: 'subtitulo', texto: linha }
+    return { tipo: 'texto', texto: linha }
+  })
 }
 
 // Formatação só sobre o texto (AGENTS §8), como no frontend.
@@ -55,6 +78,9 @@ export function montarConteudoPdf(dados: DadosPdf, mostrarItens: boolean): Conte
       { rotulo: 'Válido até', valor: data(dados.dataValidade) },
     ],
     projeto: dados.descricaoProjeto,
+    especificacoes: dados.especificacoes.trim()
+      ? { introducao: `Orçamento referente a ${dados.descricaoProjeto}, estando incluídos os seguintes itens:`, linhas: lerEspecificacoes(dados.especificacoes) }
+      : null,
     itens: mostrarItens
       ? dados.itens.map((item) => ({ descricao: item.descricao, quantidade: `${quantidade(item.quantidade)} ${item.unidade}` }))
       : null,

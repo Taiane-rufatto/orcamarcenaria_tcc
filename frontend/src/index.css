@@ -129,6 +129,7 @@ th.valor { text-align: right; }
 .resumo dt { font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; color: var(--tinta-suave); font-weight: 700; }
 .resumo dd { margin: 4px 0 0; }
 .resumo .largo { grid-column: 1 / -1; }
+.texto-livre { white-space: pre-line; }
 .opcoes { border: 0; padding: 0; margin: 0; display: grid; gap: 10px; }
 .opcoes label { display: flex; align-items: center; gap: 10px; font-weight: 400; font-size: 1rem; }
 .opcoes input { width: 20px; min-height: 20px; accent-color: var(--verde); }

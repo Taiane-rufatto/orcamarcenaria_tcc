@@ -75,8 +75,9 @@ rotasOrcamentos.post('/orcamentos/:id/situacao', async (req, res) => {
   res.json(await casos.mudarSituacao(marcenaria(res), lerId(req.params.id), situacao))
 })
 
-// RF43: baixar o PDF de um orçamento registrado. ?itens=nao gera "apenas o preço final" (RF42, D022).
-const opcaoPdfSchema = z.object({ itens: z.enum(['sim', 'nao'], 'Escolha itens=sim ou itens=nao').default('sim') })
+// RF43: baixar o PDF de um orçamento registrado. Por padrão sem a lista de materiais e serviços,
+// como no modelo do proprietário (Q7); ?itens=sim a inclui, sempre sem valores (RF42, D022).
+const opcaoPdfSchema = z.object({ itens: z.enum(['sim', 'nao'], 'Escolha itens=sim ou itens=nao').default('nao') })
 
 rotasOrcamentos.get('/orcamentos/:id/pdf', async (req, res) => {
   const { itens } = opcaoPdfSchema.parse(req.query)

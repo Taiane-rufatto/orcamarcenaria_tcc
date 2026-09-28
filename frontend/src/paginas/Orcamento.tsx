@@ -28,7 +28,10 @@ export function Orcamento() {
   const [clientes, setClientes] = useState<Cliente[]>([])
   const [origem, setOrigem] = useState<Origem>('material')
   const [erro, setErro] = useState('')
-  const [mostrarItensPdf, setMostrarItensPdf] = useState(true)
+  // Padrão sem a lista de materiais, como no modelo de orçamento do proprietário (Q7, D022).
+  const [mostrarItensPdf, setMostrarItensPdf] = useState(false)
+  // Textos para o cliente: controlados aqui para não se perderem ao registrar sem salvar.
+  const [textos, setTextos] = useState({ especificacoes: '', observacoes: '' })
   const [baixando, setBaixando] = useState(false)
 
   useEffect(() => {
@@ -37,6 +40,7 @@ export function Orcamento() {
       .then(([dados, listaMateriais, listaServicos, listaClientes]) => {
         if (!atual) return
         setOrcamento(dados); setMateriais(listaMateriais); setServicos(listaServicos); setClientes(listaClientes)
+        setTextos({ especificacoes: dados.especificacoes, observacoes: dados.observacoes })
       })
       .catch((causa) => { if (atual) setErro(causa instanceof Error ? causa.message : 'Não foi possível carregar o orçamento') })
     return () => { atual = false }
@@ -59,6 +63,26 @@ export function Orcamento() {
   }
 
   const editavel = orcamento.situacao === 'rascunho'
+  const textosPendentes = textos.especificacoes !== orcamento.especificacoes || textos.observacoes !== orcamento.observacoes
+
+  // Cabeçalho gravado + textos da tela: salvar os textos não mexe nos demais dados.
+  const cabecalhoAtual = (o: DadosOrcamento) => ({
+    clienteId: o.clienteId, descricaoProjeto: o.descricaoProjeto, dataEmissao: o.dataEmissao, dataValidade: o.dataValidade,
+    modoLucro: o.modoLucro, percentualLucro: o.percentualLucro, regraArredondamento: o.regraArredondamento, ...textos,
+  })
+
+  async function salvarTextos(): Promise<boolean> {
+    try {
+      const salvo = await alterarCabecalho(id, cabecalhoAtual(orcamento!))
+      setOrcamento(salvo)
+      setTextos({ especificacoes: salvo.especificacoes, observacoes: salvo.observacoes })
+      setErro('')
+      return true
+    } catch (causa) {
+      setErro(causa instanceof Error ? causa.message : 'Não foi possível salvar os textos')
+      return false
+    }
+  }
 
   // RF43: baixa o PDF gerado no servidor e o salva com o número do orçamento.
   async function baixar() {
@@ -80,8 +104,10 @@ export function Orcamento() {
   }
 
   // Registrar = enviar (D020): o número é atribuído e a edição trava. A confirmação evita registro por engano.
-  function registrar() {
-    if (!window.confirm('Registrar este orçamento? Ele recebe um número e os itens e valores não poderão mais ser alterados.')) return
+  // Textos ainda não salvos são gravados antes, para não se perderem.
+  async function registrar() {
+    if (!window.confirm('Registrar este orçamento? Ele recebe um número e os itens, valores e textos não poderão mais ser alterados.')) return
+    if (textosPendentes && !await salvarTextos()) return
     executar(registrarOrcamento(id))
   }
 
@@ -96,7 +122,7 @@ export function Orcamento() {
       modoLucro: String(dados.get('modoLucro')) as ModoLucro,
       percentualLucro: String(dados.get('percentualLucro')),
       regraArredondamento: String(dados.get('regraArredondamento')) as RegraArredondamento,
-      observacoes: String(dados.get('observacoes') ?? ''),
+      ...textos,
     }))
   }
 
@@ -171,25 +197,24 @@ export function Orcamento() {
           {orcamento.memorial.multiplicadorEquivalente && ` (${paraCampo(orcamento.memorial.multiplicadorEquivalente)}× o custo)`}
         </dd></div>
         <div><dt>Arredondamento</dt><dd>{REGRAS[orcamento.regraArredondamento]}</dd></div>
-        {orcamento.observacoes && <div className="largo"><dt>Observações</dt><dd>{orcamento.observacoes}</dd></div>}
+        {orcamento.especificacoes && <div className="largo"><dt>Especificações</dt><dd className="texto-livre">{orcamento.especificacoes}</dd></div>}
+        {orcamento.observacoes && <div className="largo"><dt>Observações</dt><dd className="texto-livre">{orcamento.observacoes}</dd></div>}
       </dl>
     </section>}
 
     {!editavel && <section className="folha">
       <h2>PDF para o cliente</h2>
-      <p className="ajuda">O PDF nunca mostra custos, lucro ou valor por item: só o que será feito e o preço final.</p>
-      <fieldset className="opcoes">
-        <legend className="sr-only">O que mostrar no PDF</legend>
-        <label><input type="radio" name="conteudoPdf" checked={mostrarItensPdf} onChange={() => setMostrarItensPdf(true)} /> Lista de itens com quantidades e o preço final</label>
-        <label><input type="radio" name="conteudoPdf" checked={!mostrarItensPdf} onChange={() => setMostrarItensPdf(false)} /> Apenas o preço final</label>
-      </fieldset>
+      <p className="ajuda">O PDF traz as especificações, o preço final e as observações. Nunca mostra custos, lucro ou valor por item.</p>
+      <div className="opcoes">
+        <label><input type="checkbox" checked={mostrarItensPdf} onChange={(e) => setMostrarItensPdf(e.target.checked)} /> Incluir também a lista de materiais e serviços (só quantidades, sem valores)</label>
+      </div>
       <div className="acoes"><button onClick={baixar} disabled={baixando}>{baixando ? 'Gerando PDF…' : 'Baixar PDF'}</button></div>
     </section>}
 
     {editavel && <section className="folha">
       <h2>Dados e lucro</h2>
       {/* key: após salvar, o formulário volta a mostrar o que a API gravou */}
-      <form key={JSON.stringify([orcamento.clienteId, orcamento.descricaoProjeto, orcamento.dataEmissao, orcamento.dataValidade, orcamento.modoLucro, orcamento.percentualLucro, orcamento.regraArredondamento, orcamento.observacoes])} onSubmit={salvarCabecalho}>
+      <form key={JSON.stringify([orcamento.clienteId, orcamento.descricaoProjeto, orcamento.dataEmissao, orcamento.dataValidade, orcamento.modoLucro, orcamento.percentualLucro, orcamento.regraArredondamento])} onSubmit={salvarCabecalho}>
         <div className="campos">
           <label>Cliente
             {/* D021: troca só para cliente ativo; o atual aparece mesmo se tiver sido inativado depois */}
@@ -213,9 +238,6 @@ export function Orcamento() {
               {Object.entries(REGRAS).map(([valor, rotulo]) => <option key={valor} value={valor}>{rotulo}</option>)}
             </select>
           </label>
-          <label className="largo">Observações para o cliente (opcional, sai no PDF)
-            <textarea name="observacoes" rows={3} maxLength={1000} defaultValue={orcamento.observacoes} placeholder="Ex.: prazo de entrega, forma de pagamento" />
-          </label>
         </div>
         {orcamento.memorial.multiplicadorEquivalente && <p className="aviso" style={{ marginTop: 16 }}>
           Markup de {paraCampo(orcamento.percentualLucro)}% equivale a cobrar {paraCampo(orcamento.memorial.multiplicadorEquivalente)}× o custo.
@@ -223,6 +245,25 @@ export function Orcamento() {
         </p>}
         <div className="acoes"><button>Salvar dados e lucro</button></div>
       </form>
+    </section>}
+
+    {editavel && <section className="folha">
+      <h2>Texto para o cliente</h2>
+      <p className="ajuda">Sai no PDF. Escreva o que o cliente recebe; linhas começando com "-" viram marcadores e linhas terminando com ":" viram subtítulos.</p>
+      <div className="campos">
+        <label className="largo">Especificações (o que está incluído)
+          <textarea rows={8} maxLength={4000} value={textos.especificacoes}
+            onChange={(e) => setTextos({ ...textos, especificacoes: e.target.value })}
+            placeholder={'Armário com cinco portas\n- Canto em 45°\n\nFerragens e acabamentos:\n- Dobradiça anti-impacto'} />
+        </label>
+        <label className="largo">Observações (prazo, pagamento, garantia)
+          <textarea rows={3} maxLength={1000} value={textos.observacoes}
+            onChange={(e) => setTextos({ ...textos, observacoes: e.target.value })}
+            placeholder="Ex.: entrega em 20 dias úteis; 50% na aprovação e 50% na entrega" />
+        </label>
+      </div>
+      {textosPendentes && <p className="aviso" style={{ marginTop: 16 }}>Há alterações não salvas. Elas também são salvas ao registrar.</p>}
+      <div className="acoes"><button onClick={salvarTextos} disabled={!textosPendentes}>Salvar textos</button></div>
     </section>}
 
     <section className="folha">

@@ -50,7 +50,7 @@ async function prepararOrcamento(rotulo: string, quantidadeItens: number) {
   const cliente = await esperar<{ id: string }>(chamar(token, '/clientes', 'POST', { nome: 'Cliente Fictício', telefone: '(45) 90000-0000' }), 201)
   let orcamento = await esperar<Orcamento>(chamar(token, '/orcamentos', 'POST', {
     clienteId: cliente.id, descricaoProjeto: 'Armário de cozinha', dataEmissao: '2026-10-01', dataValidade: '2099-12-31',
-    modoLucro: 'margem', percentualLucro: '30', regraArredondamento: 'dezena', observacoes: 'Entrega em 20 dias úteis.',
+    modoLucro: 'margem', percentualLucro: '30', regraArredondamento: 'dezena', observacoes: 'Entrega em 20 dias úteis.', especificacoes: 'Armário com cinco portas\n- Canto em 45°',
   }), 201)
   for (let i = 1; i <= quantidadeItens; i++) {
     orcamento = await esperar<Orcamento>(chamar(token, `/orcamentos/${orcamento.id}/itens`, 'POST', {
@@ -101,9 +101,10 @@ describe('PDF do orçamento (US14)', () => {
     expect((await chamar(b.token, `/orcamentos/${a.orcamento.id}/pdf`)).status).toBe(404)
   })
 
-  it('observações: editáveis no rascunho, travadas depois do registro (RF39)', async () => {
+  it('especificações e observações: editáveis no rascunho, travadas depois do registro (RF39)', async () => {
     const { token, orcamento } = await prepararOrcamento('pdf.observacoes', 1)
     expect(orcamento.observacoes).toBe('Entrega em 20 dias úteis.')
+    expect(orcamento.especificacoes).toBe('Armário com cinco portas\n- Canto em 45°')
     const cabecalho = {
       clienteId: orcamento.clienteId, descricaoProjeto: orcamento.descricaoProjeto, dataEmissao: orcamento.dataEmissao,
       dataValidade: orcamento.dataValidade, modoLucro: orcamento.modoLucro, percentualLucro: orcamento.percentualLucro,
@@ -112,6 +113,7 @@ describe('PDF do orçamento (US14)', () => {
     const alterado = await esperar<Orcamento>(chamar(token, `/orcamentos/${orcamento.id}`, 'PUT', { ...cabecalho, observacoes: 'Pagamento em duas vezes.' }), 200)
     expect(alterado.observacoes).toBe('Pagamento em duas vezes.')
     expect((await chamar(token, `/orcamentos/${orcamento.id}`, 'PUT', { ...cabecalho, observacoes: 'x'.repeat(1001) })).status).toBe(400)
+    expect((await chamar(token, `/orcamentos/${orcamento.id}`, 'PUT', { ...cabecalho, especificacoes: 'x'.repeat(4001) })).status).toBe(400)
 
     await esperar(chamar(token, `/orcamentos/${orcamento.id}/registrar`, 'POST'), 200)
     expect((await chamar(token, `/orcamentos/${orcamento.id}`, 'PUT', { ...cabecalho, observacoes: 'Outra.' })).status).toBe(409)

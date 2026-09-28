@@ -21,7 +21,8 @@ export type Cabecalho = {
   modoLucro?: ModoLucro
   percentualLucro?: string
   regraArredondamento?: RegraArredondamento
-  observacoes?: string // impressas no PDF (D022)
+  especificacoes?: string // o que o cliente recebe, no alto do PDF (D022)
+  observacoes?: string // prazo, pagamento etc., no fim do PDF (D022)
 }
 
 export type Item = {
@@ -75,7 +76,7 @@ export const registrarOrcamento = (id: string) => requisitar<Orcamento>(rota(id,
 export const mudarSituacao = (id: string, situacao: 'aprovado' | 'recusado') =>
   requisitar<Orcamento>(rota(id, '/situacao'), 'POST', { situacao })
 
-// PDF para o cliente (RF41–RF43): com a lista de itens (sem valores) ou só com o preço final (D022).
+// PDF para o cliente (RF41–RF43): a lista de materiais e serviços (sem valores) só entra se pedida (D022).
 export const baixarPdf = (id: string, mostrarItens: boolean) =>
   baixarArquivo(rota(id, `/pdf?itens=${mostrarItens ? 'sim' : 'nao'}`))
 

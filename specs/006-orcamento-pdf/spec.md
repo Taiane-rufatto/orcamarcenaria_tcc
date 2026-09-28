@@ -13,6 +13,11 @@
 - Q: O que é o "campo de observações"? → A: um texto digitado no orçamento em rascunho e impresso no PDF (D022).
 - Q: Qual biblioteca? → A: PDFKit no servidor, com o conteúdo montado por uma função testável e o desenho à parte (D023).
 
+### Sessão 2026-09-28 (revisão após uso)
+
+- A autora gerou um PDF sem observações: o texto fora digitado e o orçamento registrado sem clicar em salvar, e o texto se perdeu. → Textos com botão próprio, aviso de pendência e gravação automática ao registrar.
+- Q: O PDF deve seguir o modelo que o proprietário já usa ("Orçamento referente a… estando incluídos os seguintes itens", marcadores, "Ferragens e acabamentos:")? → A: sim; dois campos, **especificações** (alto do PDF, com marcadores e subtítulos) e **observações** (fim); a lista de materiais e serviços do sistema só entra se marcada ao baixar. Responde à Q7 (D022).
+
 ## Capacidade entregável
 
 1. **Entrega:** num orçamento registrado, o marceneiro clica em "Baixar PDF", escolhe se mostra a lista de itens ou só o total, e recebe um PDF com a marcenaria, o cliente, número, datas, projeto, itens com quantidade, preço final em número e por extenso, validade e observações — sem nenhum custo, percentual ou lucro. No rascunho, pode escrever as observações.
@@ -49,4 +54,4 @@ Cobertura: RF41, RF42, RF43, RNF19.
 
 ## Perguntas em aberto
 
-- Q7 (proprietário): o que ele costuma mostrar ao cliente define o padrão da escolha. Não bloqueia: as duas opções existem.
+- Nenhuma. A Q7 foi respondida pelo modelo de orçamento do proprietário (D022).

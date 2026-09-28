@@ -39,12 +39,30 @@ export function desenharOrcamento(conteudo: ConteudoPdf): Promise<Buffer> {
   for (const linha of conteudo.cliente.slice(1)) doc.text(linha)
   doc.moveDown()
 
-  secao(doc, 'Projeto')
-  doc.font('Helvetica').fontSize(11).fillColor(TINTA).text(conteudo.projeto)
-  doc.moveDown()
+  if (conteudo.especificacoes) {
+    // Como no modelo do proprietário: "Orçamento referente a <projeto>, estando incluídos…" e o texto dele.
+    secao(doc, 'Especificações do orçamento')
+    const [antes, depois] = conteudo.especificacoes.introducao.split(conteudo.projeto)
+    doc.font('Helvetica').fontSize(11).fillColor(TINTA).text(antes, { continued: true })
+      .font('Helvetica-Bold').text(conteudo.projeto, { continued: true })
+      .font('Helvetica').text(depois)
+    doc.moveDown(0.5)
+    for (const linha of conteudo.especificacoes.linhas) {
+      if (linha.tipo === 'espaco') { doc.moveDown(0.5); continue }
+      if (linha.tipo === 'subtitulo') { doc.moveDown(0.3); doc.font('Helvetica-Bold').fontSize(11).text(linha.texto, MARGEM, doc.y, { width: LARGURA }); continue }
+      if (linha.tipo === 'marcador') { doc.font('Helvetica').fontSize(11).text(`•  ${linha.texto}`, MARGEM + 10, doc.y, { width: LARGURA - 10 }); continue }
+      doc.font('Helvetica').fontSize(11).text(linha.texto, MARGEM, doc.y, { width: LARGURA })
+    }
+    doc.x = MARGEM
+    doc.moveDown()
+  } else {
+    secao(doc, 'Projeto')
+    doc.font('Helvetica').fontSize(11).fillColor(TINTA).text(conteudo.projeto)
+    doc.moveDown()
+  }
 
   if (conteudo.itens) {
-    secao(doc, 'Itens')
+    secao(doc, 'Materiais e serviços')
     const colunaQuantidade = MARGEM + LARGURA - 110
     for (const item of conteudo.itens) {
       if (doc.y > 760) doc.addPage()

@@ -20,7 +20,8 @@ export interface Cabecalho {
   modoLucro: ModoLucro
   percentualLucro: string
   regraArredondamento: RegraArredondamento
-  observacoes: string // impressas no PDF (D022); vazio vira nulo
+  especificacoes: string // impressas no alto do PDF (D022); vazio vira nulo
+  observacoes: string // impressas no fim do PDF (D022); vazio vira nulo
 }
 
 export interface NovoItem {
@@ -38,10 +39,10 @@ export async function inserirOrcamento(c: PoolClient, marcenariaId: string, dado
   const id = randomUUID()
   await c.query(
     `INSERT INTO orcamento (id, marcenaria_id, cliente_id, descricao_projeto, data_emissao, data_validade,
-       modo_lucro, percentual_lucro, regra_arredondamento, observacoes)
-     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)`,
+       modo_lucro, percentual_lucro, regra_arredondamento, observacoes, especificacoes)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
     [id, marcenariaId, dados.clienteId, dados.descricaoProjeto, dados.dataEmissao, dados.dataValidade,
-      dados.modoLucro, dados.percentualLucro, dados.regraArredondamento, dados.observacoes || null],
+      dados.modoLucro, dados.percentualLucro, dados.regraArredondamento, dados.observacoes || null, dados.especificacoes || null],
   )
   return id
 }
@@ -57,10 +58,10 @@ export async function travarOrcamento(c: PoolClient, id: string, marcenariaId: s
 export async function atualizarCabecalho(c: PoolClient, id: string, marcenariaId: string, dados: Cabecalho) {
   const resultado = await c.query(
     `UPDATE orcamento SET cliente_id=$3, descricao_projeto=$4, data_emissao=$5, data_validade=$6,
-       modo_lucro=$7, percentual_lucro=$8, regra_arredondamento=$9, observacoes=$10, atualizado_em=now()
+       modo_lucro=$7, percentual_lucro=$8, regra_arredondamento=$9, observacoes=$10, especificacoes=$11, atualizado_em=now()
      WHERE id=$1 AND marcenaria_id=$2`,
     [id, marcenariaId, dados.clienteId, dados.descricaoProjeto, dados.dataEmissao, dados.dataValidade,
-      dados.modoLucro, dados.percentualLucro, dados.regraArredondamento, dados.observacoes || null],
+      dados.modoLucro, dados.percentualLucro, dados.regraArredondamento, dados.observacoes || null, dados.especificacoes || null],
   )
   return resultado.rowCount === 1
 }
