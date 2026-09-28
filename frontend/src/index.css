@@ -68,12 +68,13 @@ a:hover { color: var(--laranja-escuro); }
 
 /* ---------- Formulários ---------- */
 label { display: grid; gap: 6px; font-weight: 600; font-size: .9rem; color: var(--tinta); }
-input, select {
+input, select, textarea {
   font: inherit; font-weight: 400; color: var(--tinta); background: #fff;
   border: 1.5px solid #b9b19c; border-radius: 4px; padding: 10px 12px; min-height: 44px; width: 100%;
 }
-input:hover, select:hover { border-color: var(--verde); }
-input:focus, select:focus { outline: 3px solid var(--laranja-claro); border-color: var(--laranja-escuro); }
+input:hover, select:hover, textarea:hover { border-color: var(--verde); }
+textarea { resize: vertical; min-height: 88px; }
+input:focus, select:focus, textarea:focus { outline: 3px solid var(--laranja-claro); border-color: var(--laranja-escuro); }
 input::placeholder { color: #8a8672; }
 
 .campos { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px; align-items: end; }
@@ -127,6 +128,11 @@ th.valor { text-align: right; }
 .resumo { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px; }
 .resumo dt { font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; color: var(--tinta-suave); font-weight: 700; }
 .resumo dd { margin: 4px 0 0; }
+.resumo .largo { grid-column: 1 / -1; }
+.opcoes { border: 0; padding: 0; margin: 0; display: grid; gap: 10px; }
+.opcoes label { display: flex; align-items: center; gap: 10px; font-weight: 400; font-size: 1rem; }
+.opcoes input { width: 20px; min-height: 20px; accent-color: var(--verde); }
+button:disabled { opacity: .6; cursor: wait; }
 .campo-com-unidade { display: flex; align-items: center; gap: 8px; }
 td input { min-width: 90px; }
 td form { display: inline; }

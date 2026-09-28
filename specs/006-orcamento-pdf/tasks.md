@@ -9,7 +9,7 @@
 
 ## Fase 2 — Tela
 
-- [ ] T005 Campo Observações no rascunho; "Baixar PDF" com a escolha no orçamento registrado.
+- [x] T005 Campo Observações no rascunho; "Baixar PDF" com a escolha no orçamento registrado.
 
 ## Fase 3 — Evidências e fechamento
 

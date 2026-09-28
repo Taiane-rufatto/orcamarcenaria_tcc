@@ -1,4 +1,4 @@
-import { requisitar } from './api'
+import { baixarArquivo, requisitar } from './api'
 
 // O frontend só envia alterações e exibe o que a API devolveu (AGENTS §4.1, D005, D019).
 // Todo valor chega como texto decimal ("2760.00") e continua texto: nada aqui soma, multiplica ou arredonda.
@@ -21,6 +21,7 @@ export type Cabecalho = {
   modoLucro?: ModoLucro
   percentualLucro?: string
   regraArredondamento?: RegraArredondamento
+  observacoes?: string // impressas no PDF (D022)
 }
 
 export type Item = {
@@ -73,6 +74,10 @@ export const removerCustoAdicional = (id: string, custoId: string) =>
 export const registrarOrcamento = (id: string) => requisitar<Orcamento>(rota(id, '/registrar'), 'POST')
 export const mudarSituacao = (id: string, situacao: 'aprovado' | 'recusado') =>
   requisitar<Orcamento>(rota(id, '/situacao'), 'POST', { situacao })
+
+// PDF para o cliente (RF41–RF43): com a lista de itens (sem valores) ou só com o preço final (D022).
+export const baixarPdf = (id: string, mostrarItens: boolean) =>
+  baixarArquivo(rota(id, `/pdf?itens=${mostrarItens ? 'sim' : 'nao'}`))
 
 // ---------- Exibição (só texto) ----------
 

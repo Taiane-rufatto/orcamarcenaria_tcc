@@ -5,7 +5,7 @@ import { listarMateriais, listarServicos, type Material, type Servico } from '..
 import { listarClientes, type Cliente } from '../servicos/clientes'
 import {
   adicionarCustoAdicional, adicionarItem, alterarCabecalho, alterarItem, consultarOrcamento, exibirData, exibirMoeda, exibirNumero,
-  mudarSituacao, paraCampo, registrarOrcamento, removerCustoAdicional, removerItem, SITUACOES,
+  baixarPdf, mudarSituacao, paraCampo, registrarOrcamento, removerCustoAdicional, removerItem, SITUACOES,
   type ModoLucro, type NovoItem, type Orcamento as DadosOrcamento, type RegraArredondamento, type TipoItem,
 } from '../servicos/orcamentos'
 
@@ -28,6 +28,8 @@ export function Orcamento() {
   const [clientes, setClientes] = useState<Cliente[]>([])
   const [origem, setOrigem] = useState<Origem>('material')
   const [erro, setErro] = useState('')
+  const [mostrarItensPdf, setMostrarItensPdf] = useState(true)
+  const [baixando, setBaixando] = useState(false)
 
   useEffect(() => {
     let atual = true
@@ -58,6 +60,25 @@ export function Orcamento() {
 
   const editavel = orcamento.situacao === 'rascunho'
 
+  // RF43: baixa o PDF gerado no servidor e o salva com o número do orçamento.
+  async function baixar() {
+    setBaixando(true)
+    try {
+      const arquivo = await baixarPdf(id, mostrarItensPdf)
+      const endereco = URL.createObjectURL(arquivo)
+      const link = document.createElement('a')
+      link.href = endereco
+      link.download = `orcamento-${orcamento!.numero}.pdf`
+      link.click()
+      URL.revokeObjectURL(endereco)
+      setErro('')
+    } catch (causa) {
+      setErro(causa instanceof Error ? causa.message : 'Não foi possível gerar o PDF')
+    } finally {
+      setBaixando(false)
+    }
+  }
+
   // Registrar = enviar (D020): o número é atribuído e a edição trava. A confirmação evita registro por engano.
   function registrar() {
     if (!window.confirm('Registrar este orçamento? Ele recebe um número e os itens e valores não poderão mais ser alterados.')) return
@@ -75,6 +96,7 @@ export function Orcamento() {
       modoLucro: String(dados.get('modoLucro')) as ModoLucro,
       percentualLucro: String(dados.get('percentualLucro')),
       regraArredondamento: String(dados.get('regraArredondamento')) as RegraArredondamento,
+      observacoes: String(dados.get('observacoes') ?? ''),
     }))
   }
 
@@ -149,13 +171,25 @@ export function Orcamento() {
           {orcamento.memorial.multiplicadorEquivalente && ` (${paraCampo(orcamento.memorial.multiplicadorEquivalente)}× o custo)`}
         </dd></div>
         <div><dt>Arredondamento</dt><dd>{REGRAS[orcamento.regraArredondamento]}</dd></div>
+        {orcamento.observacoes && <div className="largo"><dt>Observações</dt><dd>{orcamento.observacoes}</dd></div>}
       </dl>
+    </section>}
+
+    {!editavel && <section className="folha">
+      <h2>PDF para o cliente</h2>
+      <p className="ajuda">O PDF nunca mostra custos, lucro ou valor por item: só o que será feito e o preço final.</p>
+      <fieldset className="opcoes">
+        <legend className="sr-only">O que mostrar no PDF</legend>
+        <label><input type="radio" name="conteudoPdf" checked={mostrarItensPdf} onChange={() => setMostrarItensPdf(true)} /> Lista de itens com quantidades e o preço final</label>
+        <label><input type="radio" name="conteudoPdf" checked={!mostrarItensPdf} onChange={() => setMostrarItensPdf(false)} /> Apenas o preço final</label>
+      </fieldset>
+      <div className="acoes"><button onClick={baixar} disabled={baixando}>{baixando ? 'Gerando PDF…' : 'Baixar PDF'}</button></div>
     </section>}
 
     {editavel && <section className="folha">
       <h2>Dados e lucro</h2>
       {/* key: após salvar, o formulário volta a mostrar o que a API gravou */}
-      <form key={JSON.stringify([orcamento.clienteId, orcamento.descricaoProjeto, orcamento.dataEmissao, orcamento.dataValidade, orcamento.modoLucro, orcamento.percentualLucro, orcamento.regraArredondamento])} onSubmit={salvarCabecalho}>
+      <form key={JSON.stringify([orcamento.clienteId, orcamento.descricaoProjeto, orcamento.dataEmissao, orcamento.dataValidade, orcamento.modoLucro, orcamento.percentualLucro, orcamento.regraArredondamento, orcamento.observacoes])} onSubmit={salvarCabecalho}>
         <div className="campos">
           <label>Cliente
             {/* D021: troca só para cliente ativo; o atual aparece mesmo se tiver sido inativado depois */}
@@ -178,6 +212,9 @@ export function Orcamento() {
             <select name="regraArredondamento" defaultValue={orcamento.regraArredondamento}>
               {Object.entries(REGRAS).map(([valor, rotulo]) => <option key={valor} value={valor}>{rotulo}</option>)}
             </select>
+          </label>
+          <label className="largo">Observações para o cliente (opcional, sai no PDF)
+            <textarea name="observacoes" rows={3} maxLength={1000} defaultValue={orcamento.observacoes} placeholder="Ex.: prazo de entrega, forma de pagamento" />
           </label>
         </div>
         {orcamento.memorial.multiplicadorEquivalente && <p className="aviso" style={{ marginTop: 16 }}>

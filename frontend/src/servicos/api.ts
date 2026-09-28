@@ -30,3 +30,13 @@ export async function requisitar<T>(rota: string, metodo = 'GET', corpo?: unknow
   }
   return resposta.status === 204 ? undefined as T : resposta.json() as Promise<T>
 }
+
+// Download autenticado de arquivo (ex.: PDF do orçamento): devolve o conteúdo binário para a tela salvar.
+export async function baixarArquivo(rota: string): Promise<Blob> {
+  const resposta = await fetch(`${URL_API}${rota}`, { headers: { Authorization: `Bearer ${tokenAtual()}` } })
+  if (!resposta.ok) {
+    const erro = await resposta.json().catch(() => null) as { mensagem?: string } | null
+    throw new Error(erro?.mensagem ?? `A API respondeu ${resposta.status}`)
+  }
+  return resposta.blob()
+}
