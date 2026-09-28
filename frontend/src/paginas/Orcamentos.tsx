@@ -1,6 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { alterarSenha } from '../servicos/autenticacao'
+import { obterConfiguracao } from '../servicos/configuracoes'
 import { listarClientes, type Cliente } from '../servicos/clientes'
 import {
   criarOrcamento, exibirData, exibirMoeda, hojeLocal, listarOrcamentos, SITUACOES,
@@ -8,7 +8,6 @@ import {
 } from '../servicos/orcamentos'
 
 export function Orcamentos() {
-  const [mensagem, setMensagem] = useState<{ texto: string; erro: boolean } | null>(null)
   const [erroNovo, setErroNovo] = useState('')
   const navegar = useNavigate()
   const [orcamentos, setOrcamentos] = useState<ResumoOrcamento[] | null>(null)
@@ -16,12 +15,13 @@ export function Orcamentos() {
   const [erroLista, setErroLista] = useState('')
   const filtrar = (campo: keyof FiltrosListagem, valor: string) => setFiltros((atuais) => ({ ...atuais, [campo]: valor }))
   const [clientes, setClientes] = useState<Cliente[] | null>(null)
+  const [validadeDias, setValidadeDias] = useState<number | null>(null)
 
   // Só clientes ativos podem receber orçamento novo (D021).
   useEffect(() => {
     let atual = true
-    listarClientes('', 'ativos')
-      .then((lista) => { if (atual) setClientes(lista) })
+    Promise.all([listarClientes('', 'ativos'), obterConfiguracao()])
+      .then(([lista, configuracao]) => { if (atual) { setClientes(lista); setValidadeDias(configuracao.padroes.validadeDias) } })
       .catch((causa) => { if (atual) setErroNovo(causa instanceof Error ? causa.message : 'Não foi possível carregar os clientes') })
     return () => { atual = false }
   }, [])
@@ -35,7 +35,7 @@ export function Orcamentos() {
     return () => { atual = false }
   }, [filtros])
 
-  // Lucro e arredondamento não são enviados: a API aplica os padrões (markup 150%, duas casas — D017).
+  // Lucro, arredondamento e validade em branco vêm da configuração da marcenaria (D024).
   async function criar(evento: FormEvent<HTMLFormElement>) {
     evento.preventDefault()
     const dados = new FormData(evento.currentTarget)
@@ -44,24 +44,11 @@ export function Orcamentos() {
         clienteId: String(dados.get('clienteId')),
         descricaoProjeto: String(dados.get('descricaoProjeto')),
         dataEmissao: String(dados.get('dataEmissao')),
-        dataValidade: String(dados.get('dataValidade')),
+        dataValidade: String(dados.get('dataValidade')) || undefined,
       })
       navegar(`/orcamentos/${orcamento.id}`)
     } catch (causa) {
       setErroNovo(causa instanceof Error ? causa.message : 'Não foi possível criar o orçamento.')
-    }
-  }
-
-  async function trocar(evento: FormEvent<HTMLFormElement>) {
-    evento.preventDefault()
-    const formulario = evento.currentTarget
-    const dados = new FormData(formulario)
-    try {
-      await alterarSenha(String(dados.get('senhaAtual')), String(dados.get('novaSenha')))
-      formulario.reset()
-      setMensagem({ texto: 'Senha alterada com sucesso.', erro: false })
-    } catch (causa) {
-      setMensagem({ texto: causa instanceof Error ? causa.message : 'Não foi possível alterar a senha.', erro: true })
     }
   }
 
@@ -111,23 +98,15 @@ export function Orcamentos() {
           </label>
           <label>Descrição do projeto<input name="descricaoProjeto" placeholder="Ex.: armário de cozinha" required /></label>
           <label>Data de emissão<input name="dataEmissao" type="date" defaultValue={hojeLocal()} required /></label>
-          <label>Válido até<input name="dataValidade" type="date" required /></label>
+          <label>Válido até (opcional)<input name="dataValidade" type="date" /></label>
         </div>
+        {validadeDias !== null && <p className="ajuda" style={{ marginTop: 12 }}>
+          Em branco, vale {validadeDias} dias após a emissão, como definido em <Link to="/minha-marcenaria">Minha marcenaria</Link>.
+        </p>}
         {erroNovo && <p role="alert" className="alerta" style={{ marginTop: 16 }}>{erroNovo}</p>}
         <div className="acoes"><button>Criar orçamento</button></div>
       </form>}
     </section>
 
-    <section className="folha">
-      <h2>Alterar senha</h2>
-      <form onSubmit={trocar}>
-        <div className="campos">
-          <label>Senha atual<input name="senhaAtual" type="password" autoComplete="current-password" required /></label>
-          <label>Nova senha<input name="novaSenha" type="password" minLength={8} autoComplete="new-password" required /></label>
-        </div>
-        {mensagem && <p role={mensagem.erro ? 'alert' : 'status'} className={mensagem.erro ? 'alerta' : 'aviso'} style={{ marginTop: 16 }}>{mensagem.texto}</p>}
-        <div className="acoes"><button>Alterar senha</button></div>
-      </form>
-    </section>
   </main>
 }

@@ -9,7 +9,7 @@
 
 ## Fase 2 — Tela
 
-- [ ] T005 Página "Minha marcenaria" (dados, padrões, senha) e item no menu; validade opcional no novo orçamento.
+- [x] T005 Página "Minha marcenaria" (dados, padrões, senha) e item no menu; validade opcional no novo orçamento.
 
 ## Fase 3 — Evidências e fechamento
 

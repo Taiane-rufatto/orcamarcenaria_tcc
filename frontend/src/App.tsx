@@ -7,6 +7,7 @@ import { Entrar } from './paginas/Entrar'
 import { Orcamento } from './paginas/Orcamento'
 import { Orcamentos } from './paginas/Orcamentos'
 import { Materiais } from './paginas/Materiais'
+import { MinhaMarcenaria } from './paginas/MinhaMarcenaria'
 import { Servicos } from './paginas/Servicos'
 
 export default function App() {
@@ -20,6 +21,7 @@ export default function App() {
         <Route path="/materiais" element={<Materiais />} />
         <Route path="/servicos" element={<Servicos />} />
         <Route path="/clientes" element={<Clientes />} />
+        <Route path="/minha-marcenaria" element={<MinhaMarcenaria />} />
       </Route>
     </Route>
     <Route path="*" element={<Navigate to="/entrar" replace />} />
