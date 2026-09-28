@@ -26,7 +26,8 @@ CREATE TABLE IF NOT EXISTS orcamento (
 );
 
 -- Descrição, unidade e valor unitário são cópias do catálogo (RN08); material_id/servico_id só
--- registram a origem e ficam nulos no item avulso (RN03).
+-- registram a origem e ficam nulos no item avulso (RN03). valor_unitario_catalogo guarda o valor
+-- copiado na inclusão; o ajuste manual (US08) é derivado dele pelo banco e nunca fica desatualizado.
 CREATE TABLE IF NOT EXISTS orcamento_item (
   id UUID PRIMARY KEY,
   orcamento_id UUID NOT NULL REFERENCES orcamento(id),
@@ -37,9 +38,11 @@ CREATE TABLE IF NOT EXISTS orcamento_item (
   unidade VARCHAR(3) NOT NULL CHECK (unidade IN ('un','m','m²','ml','ch','kg','L','pç','h')),
   quantidade NUMERIC(12,3) NOT NULL CHECK (quantidade > 0),
   valor_unitario NUMERIC(12,4) NOT NULL CHECK (valor_unitario >= 0),
+  valor_unitario_catalogo NUMERIC(12,4),
   valor_linha NUMERIC(12,2) NOT NULL DEFAULT 0,
-  valor_ajustado_manualmente BOOLEAN NOT NULL DEFAULT false,
-  ordem INT NOT NULL
+  valor_ajustado_manualmente BOOLEAN GENERATED ALWAYS AS (COALESCE(valor_unitario <> valor_unitario_catalogo, false)) STORED,
+  ordem INT NOT NULL,
+  CHECK ((material_id IS NULL AND servico_id IS NULL) = (valor_unitario_catalogo IS NULL))
 );
 CREATE INDEX IF NOT EXISTS orcamento_item_orcamento_idx ON orcamento_item (orcamento_id, ordem);
 

@@ -31,3 +31,5 @@
 ## Ordem
 
 T001–T003 bloqueiam o resto. T004–T005 antes de T006–T008. T009–T010 dependem da API. T011–T013 por último.
+
+> Nota T005 (revisão da autora, 2026-09-28): todo comando do repositório filtra por `marcenaria_id`, inclusive itens e custos (pelo orçamento); a marca de ajuste manual é coluna gerada, comparando com o valor copiado do catálogo; a consulta lê em `REPEATABLE READ`; e `alterar` recusa orçamento fora de `rascunho` (RN09, 409). Esse último ainda não tem teste porque o banco só admite `rascunho` — **o incremento 004 deve incluir o teste** ao introduzir as demais situações.

@@ -134,6 +134,10 @@ describe('orçamento', () => {
     const catalogo = await (await chamar(token, '/materiais')).json() as { custo_unitario: string }[]
     expect(catalogo[0].custo_unitario).toBe('250.0000')
 
+    // Voltar ao valor copiado na inclusão desliga a marca: ela compara com o catálogo, não com o valor anterior.
+    o = await esperar(chamar(token, `/orcamentos/${base.id}/itens/${itemId}`, 'PUT', { quantidade: '3', valorUnitario: '200' }), 200)
+    expect(o.itens[0].valorAjustadoManualmente).toBe(false)
+
     o = await esperar(chamar(token, `/orcamentos/${base.id}/itens/${itemId}`, 'DELETE'), 200)
     expect(o.itens).toEqual([])
     expect(o.memorial.precoFinal).toBe('0.00')
