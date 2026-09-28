@@ -27,7 +27,7 @@ const tipo = z.enum(['material', 'servico'], 'Informe se o item é material ou s
 
 export const cabecalhoSchema = z
   .object({
-    clienteNome: texto('Informe o nome do cliente'),
+    clienteId: z.uuid('Selecione o cliente'),
     descricaoProjeto: texto('Informe a descrição do projeto'),
     dataEmissao: data,
     dataValidade: data,

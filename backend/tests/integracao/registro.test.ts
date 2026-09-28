@@ -33,7 +33,18 @@ async function criarConta(rotulo: string): Promise<string> {
     body: JSON.stringify({ nomeMarcenaria: `Marcenaria ${rotulo}`, nomeResponsavel: 'Teste', email: `${rotulo}.${Date.now()}@example.test`, senha: 'teste1234' }),
   })
   expect(resposta.status).toBe(201)
-  return (await resposta.json() as { token: string }).token
+  const { token } = await resposta.json() as { token: string }
+  // Toda conta de teste nasce com um cliente fictício padrão: o orçamento exige cliente cadastrado (D021).
+  clientePadrao.set(token, await novoCliente(token, 'Cliente Fictício'))
+  return token
+}
+
+const clientePadrao = new Map<string, string>()
+
+async function novoCliente(token: string, nome: string): Promise<string> {
+  const resposta = await chamar(token, '/clientes', 'POST', { nome })
+  expect(resposta.status).toBe(201)
+  return (await resposta.json() as { id: string }).id
 }
 
 const chamar = (token: string, rota: string, metodo = 'GET', corpo?: unknown) => fetch(`${baseUrl}${rota}`, {
@@ -52,11 +63,14 @@ async function esperar<T = Orcamento>(resposta: Promise<Response>, status: numbe
 type Resumo = { id: string; numero: number | null; clienteNome: string; dataEmissao: string; precoFinal: string; situacao: string }
 
 // Dados fictícios (AGENTS §5.3). Validade no futuro, salvo nos testes de vencimento.
-const cabecalho = { clienteNome: 'Cliente Fictício', descricaoProjeto: 'Estante', dataEmissao: '2026-10-01', dataValidade: '2099-12-31' }
+const cabecalhoBase = { descricaoProjeto: 'Estante', dataEmissao: '2026-10-01', dataValidade: '2099-12-31' }
+const cabecalho = (token: string) => ({ clienteId: clientePadrao.get(token)!, ...cabecalhoBase })
 const item = { origem: 'avulso', tipo: 'material', descricao: 'Chapa', unidade: 'ch', quantidade: '1', valorUnitario: '100' }
 
-async function rascunho(token: string, dados: Partial<typeof cabecalho> = {}, comItem = true): Promise<Orcamento> {
-  const o = await esperar(chamar(token, '/orcamentos', 'POST', { ...cabecalho, ...dados }), 201)
+// `clienteNome` cria um cliente com esse nome; sem ele, usa o cliente padrão da conta.
+async function rascunho(token: string, { clienteNome, ...dados }: Partial<typeof cabecalhoBase> & { clienteNome?: string } = {}, comItem = true): Promise<Orcamento> {
+  const clienteId = clienteNome ? await novoCliente(token, clienteNome) : clientePadrao.get(token)!
+  const o = await esperar(chamar(token, '/orcamentos', 'POST', { ...cabecalhoBase, clienteId, ...dados }), 201)
   return comItem ? esperar(chamar(token, `/orcamentos/${o.id}/itens`, 'POST', item), 201) : o
 }
 
@@ -90,8 +104,8 @@ describe('registro e acompanhamento', () => {
     expect((await resposta.json() as { mensagem: string }).mensagem).toBe('Inclua ao menos um item antes de registrar o orçamento')
     expect(await esperar(chamar(token, `/orcamentos/${vazio.id}`), 200)).toMatchObject({ numero: null, situacao: 'rascunho' })
 
-    expect((await chamar(token, '/orcamentos', 'POST', { ...cabecalho, clienteNome: '' })).status).toBe(400)
-    expect((await chamar(token, '/orcamentos', 'POST', { ...cabecalho, descricaoProjeto: '' })).status).toBe(400)
+    expect((await chamar(token, '/orcamentos', 'POST', { ...cabecalho(token), clienteId: '' })).status).toBe(400)
+    expect((await chamar(token, '/orcamentos', 'POST', { ...cabecalho(token), descricaoProjeto: '' })).status).toBe(400)
   })
 
   it('bloqueia qualquer edição fora de rascunho (RF39, RN09)', async () => {
@@ -103,7 +117,7 @@ describe('registro e acompanhamento', () => {
     const custoId = comCusto.custosAdicionais[0].id
 
     for (const [rota, metodo, corpo] of [
-      [`/orcamentos/${o.id}`, 'PUT', { ...cabecalho, percentualLucro: '10' }],
+      [`/orcamentos/${o.id}`, 'PUT', { ...cabecalho(token), percentualLucro: '10' }],
       [`/orcamentos/${o.id}/itens`, 'POST', item],
       [`/orcamentos/${o.id}/itens/${itemId}`, 'PUT', { quantidade: '5', valorUnitario: '1' }],
       [`/orcamentos/${o.id}/itens/${itemId}`, 'DELETE', undefined],

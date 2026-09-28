@@ -3,6 +3,7 @@ import { pool } from '../../infra/banco/pool'
 import { ErroHttp } from '../../api/erros/erro-http'
 import { calcularOrcamento, multiplicadorEquivalente } from '../../dominio/orcamento/calculo'
 import * as repositorio from '../../infra/repositorios/orcamento-repositorio'
+import { buscarCliente } from '../../infra/repositorios/cliente-repositorio'
 import type { Cabecalho, FiltrosListagem, Situacao, TipoItem } from '../../infra/repositorios/orcamento-repositorio'
 
 // Casos de uso do orçamento (arquitetura.md §3): orquestram transação, repositório e domínio.
@@ -52,7 +53,8 @@ async function montarResposta(c: PoolClient, marcenariaId: string, id: string) {
   return {
     id: o.id,
     numero: o.numero as number | null, // nulo enquanto rascunho (D020)
-    clienteNome: o.cliente_nome,
+    clienteId: o.cliente_id,
+    clienteNome: o.cliente_nome, // do cadastro, via JOIN (D021)
     descricaoProjeto: o.descricao_projeto,
     dataEmissao: o.data_emissao,
     dataValidade: o.data_validade,
@@ -96,8 +98,15 @@ async function alterar(marcenariaId: string, id: string, alteracao: (c: PoolClie
   })
 }
 
+// D021: o cliente escolhido precisa ser da marcenaria e estar ativo.
+async function exigirClienteAtivo(c: PoolClient, marcenariaId: string, clienteId: string) {
+  const cliente = await buscarCliente(c, clienteId, marcenariaId)
+  if (!cliente?.ativo) throw new ErroHttp(400, 'Selecione um cliente ativo')
+}
+
 export function criarOrcamento(marcenariaId: string, cabecalho: Cabecalho): Promise<Orcamento> {
   return emTransacao(async (c) => {
+    await exigirClienteAtivo(c, marcenariaId, cabecalho.clienteId)
     const id = await repositorio.inserirOrcamento(c, marcenariaId, cabecalho)
     await recalcular(c, marcenariaId, id)
     return (await montarResposta(c, marcenariaId, id))!
@@ -115,8 +124,14 @@ export async function consultarOrcamento(marcenariaId: string, id: string): Prom
   }, 'BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY')
 }
 
+// Trocar o cliente de um rascunho exige cliente ativo; manter o mesmo é permitido mesmo que ele
+// tenha sido inativado depois (D021).
 export const alterarCabecalho = (marcenariaId: string, id: string, cabecalho: Cabecalho) =>
-  alterar(marcenariaId, id, (c) => repositorio.atualizarCabecalho(c, id, marcenariaId, cabecalho))
+  alterar(marcenariaId, id, async (c) => {
+    const atual = await repositorio.lerOrcamento(c, id, marcenariaId)
+    if (atual?.orcamento.cliente_id !== cabecalho.clienteId) await exigirClienteAtivo(c, marcenariaId, cabecalho.clienteId)
+    return repositorio.atualizarCabecalho(c, id, marcenariaId, cabecalho)
+  })
 
 // Item do catálogo: descrição, unidade e valor são copiados no momento da inclusão (RN08, RF14).
 export const adicionarItem = (marcenariaId: string, id: string, item: EntradaItem) =>
