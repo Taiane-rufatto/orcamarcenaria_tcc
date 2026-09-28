@@ -14,7 +14,7 @@ export const SITUACOES: Record<Situacao, string> = {
 }
 
 export type Cabecalho = {
-  clienteNome: string
+  clienteId: string
   descricaoProjeto: string
   dataEmissao: string
   dataValidade: string
@@ -36,6 +36,7 @@ export type Memorial = {
 export type Orcamento = Required<Cabecalho> & {
   id: string
   numero: number | null // nulo enquanto rascunho (D020)
+  clienteNome: string // do cadastro (D021)
   situacao: Situacao
   itens: Item[]
   custosAdicionais: { id: string; descricao: string; valor: string }[]

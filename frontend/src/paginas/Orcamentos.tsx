@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { alterarSenha } from '../servicos/autenticacao'
+import { listarClientes, type Cliente } from '../servicos/clientes'
 import {
   criarOrcamento, exibirData, exibirMoeda, hojeLocal, listarOrcamentos, SITUACOES,
   type FiltrosListagem, type ResumoOrcamento, type Situacao,
@@ -14,6 +15,16 @@ export function Orcamentos() {
   const [filtros, setFiltros] = useState<FiltrosListagem>({ busca: '', situacao: '', de: '', ate: '' })
   const [erroLista, setErroLista] = useState('')
   const filtrar = (campo: keyof FiltrosListagem, valor: string) => setFiltros((atuais) => ({ ...atuais, [campo]: valor }))
+  const [clientes, setClientes] = useState<Cliente[] | null>(null)
+
+  // Só clientes ativos podem receber orçamento novo (D021).
+  useEffect(() => {
+    let atual = true
+    listarClientes('', 'ativos')
+      .then((lista) => { if (atual) setClientes(lista) })
+      .catch((causa) => { if (atual) setErroNovo(causa instanceof Error ? causa.message : 'Não foi possível carregar os clientes') })
+    return () => { atual = false }
+  }, [])
 
   // RF37: a API filtra e já aplica o vencimento (RF36); a tela só exibe.
   useEffect(() => {
@@ -30,7 +41,7 @@ export function Orcamentos() {
     const dados = new FormData(evento.currentTarget)
     try {
       const orcamento = await criarOrcamento({
-        clienteNome: String(dados.get('clienteNome')),
+        clienteId: String(dados.get('clienteId')),
         descricaoProjeto: String(dados.get('descricaoProjeto')),
         dataEmissao: String(dados.get('dataEmissao')),
         dataValidade: String(dados.get('dataValidade')),
@@ -89,16 +100,22 @@ export function Orcamentos() {
 
     <section className="folha">
       <h2>Novo orçamento</h2>
-      <form onSubmit={criar}>
+      {clientes?.length === 0 && <p className="aviso">Cadastre um cliente antes de criar o orçamento: <Link to="/clientes">ir para Clientes</Link>.</p>}
+      {clientes && clientes.length > 0 && <form onSubmit={criar}>
         <div className="campos">
-          <label>Cliente<input name="clienteNome" required /></label>
+          <label>Cliente
+            <select name="clienteId" required defaultValue="">
+              <option value="" disabled>Selecione…</option>
+              {clientes.map((c) => <option key={c.id} value={c.id}>{c.nome}{c.telefone ? ` — ${c.telefone}` : ''}</option>)}
+            </select>
+          </label>
           <label>Descrição do projeto<input name="descricaoProjeto" placeholder="Ex.: armário de cozinha" required /></label>
           <label>Data de emissão<input name="dataEmissao" type="date" defaultValue={hojeLocal()} required /></label>
           <label>Válido até<input name="dataValidade" type="date" required /></label>
         </div>
         {erroNovo && <p role="alert" className="alerta" style={{ marginTop: 16 }}>{erroNovo}</p>}
         <div className="acoes"><button>Criar orçamento</button></div>
-      </form>
+      </form>}
     </section>
 
     <section className="folha">

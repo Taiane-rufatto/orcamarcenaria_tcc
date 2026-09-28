@@ -2,6 +2,7 @@ import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { Memorial } from '../componentes/Memorial'
 import { listarMateriais, listarServicos, type Material, type Servico } from '../servicos/catalogo'
+import { listarClientes, type Cliente } from '../servicos/clientes'
 import {
   adicionarCustoAdicional, adicionarItem, alterarCabecalho, alterarItem, consultarOrcamento, exibirData, exibirMoeda, exibirNumero,
   mudarSituacao, paraCampo, registrarOrcamento, removerCustoAdicional, removerItem, SITUACOES,
@@ -24,15 +25,16 @@ export function Orcamento() {
   const [orcamento, setOrcamento] = useState<DadosOrcamento | null>(null)
   const [materiais, setMateriais] = useState<Material[]>([])
   const [servicos, setServicos] = useState<Servico[]>([])
+  const [clientes, setClientes] = useState<Cliente[]>([])
   const [origem, setOrigem] = useState<Origem>('material')
   const [erro, setErro] = useState('')
 
   useEffect(() => {
     let atual = true
-    Promise.all([consultarOrcamento(id), listarMateriais('', 'ativos'), listarServicos('', 'ativos')])
-      .then(([dados, listaMateriais, listaServicos]) => {
+    Promise.all([consultarOrcamento(id), listarMateriais('', 'ativos'), listarServicos('', 'ativos'), listarClientes('', 'ativos')])
+      .then(([dados, listaMateriais, listaServicos, listaClientes]) => {
         if (!atual) return
-        setOrcamento(dados); setMateriais(listaMateriais); setServicos(listaServicos)
+        setOrcamento(dados); setMateriais(listaMateriais); setServicos(listaServicos); setClientes(listaClientes)
       })
       .catch((causa) => { if (atual) setErro(causa instanceof Error ? causa.message : 'Não foi possível carregar o orçamento') })
     return () => { atual = false }
@@ -66,7 +68,7 @@ export function Orcamento() {
     evento.preventDefault()
     const dados = new FormData(evento.currentTarget)
     executar(alterarCabecalho(id, {
-      clienteNome: String(dados.get('clienteNome')),
+      clienteId: String(dados.get('clienteId')),
       descricaoProjeto: String(dados.get('descricaoProjeto')),
       dataEmissao: String(dados.get('dataEmissao')),
       dataValidade: String(dados.get('dataValidade')),
@@ -153,9 +155,15 @@ export function Orcamento() {
     {editavel && <section className="folha">
       <h2>Dados e lucro</h2>
       {/* key: após salvar, o formulário volta a mostrar o que a API gravou */}
-      <form key={JSON.stringify([orcamento.clienteNome, orcamento.descricaoProjeto, orcamento.dataEmissao, orcamento.dataValidade, orcamento.modoLucro, orcamento.percentualLucro, orcamento.regraArredondamento])} onSubmit={salvarCabecalho}>
+      <form key={JSON.stringify([orcamento.clienteId, orcamento.descricaoProjeto, orcamento.dataEmissao, orcamento.dataValidade, orcamento.modoLucro, orcamento.percentualLucro, orcamento.regraArredondamento])} onSubmit={salvarCabecalho}>
         <div className="campos">
-          <label>Cliente<input name="clienteNome" defaultValue={orcamento.clienteNome} required /></label>
+          <label>Cliente
+            {/* D021: troca só para cliente ativo; o atual aparece mesmo se tiver sido inativado depois */}
+            <select name="clienteId" defaultValue={orcamento.clienteId} required>
+              {!clientes.some((c) => c.id === orcamento.clienteId) && <option value={orcamento.clienteId}>{orcamento.clienteNome} (inativo)</option>}
+              {clientes.map((c) => <option key={c.id} value={c.id}>{c.nome}{c.telefone ? ` — ${c.telefone}` : ''}</option>)}
+            </select>
+          </label>
           <label>Descrição do projeto<input name="descricaoProjeto" defaultValue={orcamento.descricaoProjeto} required /></label>
           <label>Data de emissão<input name="dataEmissao" type="date" defaultValue={orcamento.dataEmissao} required /></label>
           <label>Válido até<input name="dataValidade" type="date" defaultValue={orcamento.dataValidade} required /></label>

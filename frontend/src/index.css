@@ -156,7 +156,9 @@ td form { display: inline; }
 @media (max-width: 760px) {
   :root { font-size: 16px; }
   h1 { font-size: 1.7rem; }
-  .menu { order: 3; flex-basis: 100%; }
+  /* com quatro itens o menu não cabe em 390 px: quebra linha em vez de empurrar a página */
+  .menu { order: 3; flex-basis: 100%; flex-wrap: wrap; }
+  .menu a { padding: 8px 10px; }
   .botao-sair { margin-left: auto; }
   .filtros { grid-template-columns: 1fr; }
   /* tabela vira lista de blocos: cada linha mostra os rótulos e mantém Editar/Inativar à vista */

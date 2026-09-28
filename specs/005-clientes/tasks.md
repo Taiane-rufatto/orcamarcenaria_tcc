@@ -9,8 +9,8 @@
 
 ## Fase 2 — Telas
 
-- [ ] T005 Serviço e página de clientes; item no menu.
-- [ ] T006 Seleção de cliente no novo orçamento e nos dados do rascunho.
+- [x] T005 Serviço e página de clientes; item no menu.
+- [x] T006 Seleção de cliente no novo orçamento e nos dados do rascunho.
 
 ## Fase 3 — Evidências e fechamento
 
