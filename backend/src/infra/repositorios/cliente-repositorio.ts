@@ -46,3 +46,10 @@ export async function buscarCliente(c: PoolClient, id: string, marcenariaId: str
     'SELECT id, ativo FROM cliente WHERE id=$1 AND marcenaria_id=$2', [id, marcenariaId])
   return resultado.rows[0] ?? null
 }
+
+// Dados de contato impressos no PDF (RF41).
+export async function lerCliente(id: string, marcenariaId: string) {
+  const resultado = await pool.query<{ nome: string; telefone: string | null; email: string | null; endereco: string | null }>(
+    'SELECT nome, telefone, email, endereco FROM cliente WHERE id=$1 AND marcenaria_id=$2', [id, marcenariaId])
+  return resultado.rows[0] ?? null
+}

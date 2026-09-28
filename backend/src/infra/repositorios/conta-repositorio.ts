@@ -64,3 +64,10 @@ export async function atualizarSenha(
 ): Promise<void> {
   await executor.query('UPDATE usuario SET senha_hash = $1 WHERE id = $2 AND ativo = true', [senhaHash, usuarioId])
 }
+
+// Dados da marcenaria impressos no PDF (RF41). Telefone, CNPJ e endereço chegam com o RF05 (007).
+export async function buscarMarcenaria(id: string): Promise<{ nome: string; responsavel: string } | null> {
+  const resultado = await pool.query<{ nome: string; responsavel: string }>(
+    'SELECT nome, responsavel FROM marcenaria WHERE id=$1', [id])
+  return resultado.rows[0] ?? null
+}

@@ -36,6 +36,7 @@ export const cabecalhoSchema = z
     modoLucro: z.enum(['margem', 'markup'], 'Selecione margem ou markup').default('markup'),
     percentualLucro: percentualLucro.default('150'),
     regraArredondamento: z.enum(['duas_casas', 'real_inteiro', 'dezena'], 'Selecione a regra de arredondamento').default('duas_casas'),
+    observacoes: z.string().trim().max(1000, 'As observações devem ter até 1.000 caracteres').default(''),
   })
   // Datas ISO (AAAA-MM-DD) comparam corretamente como texto.
   .refine((d) => d.dataValidade >= d.dataEmissao, { message: 'A validade não pode ser anterior à data de emissão', path: ['dataValidade'] })

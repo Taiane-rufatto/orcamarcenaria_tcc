@@ -6,6 +6,7 @@ import {
   alteracaoItemSchema, cabecalhoSchema, custoAdicionalSchema, filtrosListagemSchema, itemSchema, mudancaSituacaoSchema,
 } from '../validacoes/orcamento'
 import * as casos from '../../aplicacao/orcamento/orcamento'
+import { gerarPdfOrcamento } from '../../aplicacao/orcamento/pdf'
 
 // Toda resposta de escrita devolve o orçamento completo, já recalculado pelo domínio (D019).
 export const rotasOrcamentos = Router()
@@ -72,4 +73,15 @@ rotasOrcamentos.post('/orcamentos/:id/registrar', async (req, res) => {
 rotasOrcamentos.post('/orcamentos/:id/situacao', async (req, res) => {
   const { situacao } = mudancaSituacaoSchema.parse(req.body)
   res.json(await casos.mudarSituacao(marcenaria(res), lerId(req.params.id), situacao))
+})
+
+// RF43: baixar o PDF de um orçamento registrado. ?itens=nao gera "apenas o preço final" (RF42, D022).
+const opcaoPdfSchema = z.object({ itens: z.enum(['sim', 'nao'], 'Escolha itens=sim ou itens=nao').default('sim') })
+
+rotasOrcamentos.get('/orcamentos/:id/pdf', async (req, res) => {
+  const { itens } = opcaoPdfSchema.parse(req.query)
+  const { nomeArquivo, pdf } = await gerarPdfOrcamento(marcenaria(res), lerId(req.params.id), itens === 'sim')
+  res.setHeader('Content-Type', 'application/pdf')
+  res.setHeader('Content-Disposition', `attachment; filename="${nomeArquivo}"`)
+  res.send(pdf)
 })
