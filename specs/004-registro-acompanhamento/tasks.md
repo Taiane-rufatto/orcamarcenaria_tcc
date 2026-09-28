@@ -9,8 +9,8 @@
 
 ## Fase 2 — Telas
 
-- [ ] T005 Lista de orçamentos com busca e filtros em `Orcamentos.tsx`.
-- [ ] T006 Número, ações de situação e modo somente leitura em `Orcamento.tsx`.
+- [x] T005 Lista de orçamentos com busca e filtros em `Orcamentos.tsx`.
+- [x] T006 Número, ações de situação e modo somente leitura em `Orcamento.tsx`.
 
 ## Fase 3 — Evidências e fechamento
 

@@ -88,7 +88,7 @@ async function alterar(marcenariaId: string, id: string, alteracao: (c: PoolClie
   return emTransacao(async (c) => {
     const situacao = await repositorio.travarOrcamento(c, id, marcenariaId)
     if (!situacao) throw new ErroHttp(404, 'Orçamento não encontrado')
-    // RN09: itens e valores só mudam em rascunho. Hoje o banco só tem rascunho; a regra já vale para o 004.
+    // RN09 e RF39: itens e valores só mudam em rascunho; depois do registro, só a situação muda.
     if (situacao !== 'rascunho') throw new ErroHttp(409, 'Só é possível alterar um orçamento em rascunho')
     if (!await alteracao(c)) throw new ErroHttp(404, 'Registro não encontrado')
     await recalcular(c, marcenariaId, id)
