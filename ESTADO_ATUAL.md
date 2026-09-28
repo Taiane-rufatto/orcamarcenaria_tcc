@@ -2,11 +2,11 @@
 
 **Atualizado em:** 2026-09-28
 
-> **Incremento 003 — Composição e cálculo do orçamento: implementado e verificado em 2026-09-28** na branch `spec/003-composicao-calculo` (CT01–CT10 com diferença nula, 77 testes de backend, 13 de frontend, percurso no Edge e validação manual da autora). **Falta apenas a revisão do diff pela autora (B13)** para abrir o PR e integrar em `main`.
+> **Incremento 004 — Registro e acompanhamento: implementado e verificado em 2026-09-28** na branch `spec/004-registro-acompanhamento` (85 testes de backend, 13 de frontend, regressão dos dez casos, percurso no Edge e validação manual da autora). **Falta a revisão do diff pela autora (B14)** para o PR e o merge.
 
 ## Onde o projeto está
 
-Incrementos 000, 001 e 002 entregues; 003 pronto para integração. O cálculo do orçamento existe em `backend/src/dominio/orcamento/calculo.ts` e é o único ponto do sistema que calcula preço. O próximo incremento é o 004 (registro, numeração, situações e listagem de orçamentos).
+Incrementos 000 a 003 entregues e integrados; 004 pronto para integração. O próximo é o 005 (clientes). O cálculo do orçamento existe em `backend/src/dominio/orcamento/calculo.ts` e é o único ponto do sistema que calcula preço.
 
 ## Pronto
 
@@ -36,13 +36,14 @@ Incrementos 000, 001 e 002 entregues; 003 pronto para integração. O cálculo d
 - [x] **Incremento 002 — Catálogo de materiais e serviços** (RF11–RF13, RF15, RF17, RF18): cadastro, busca, filtro de situação, edição, inativação e reativação (D015); custo/valor decimal exato com até 4 casas (D016); TI01 verificado (`evidencias/testes/002-catalogo-2026-09-19.md`)
 - [x] **Identidade visual do frontend** (D014): verde musgo, laranja de cedro, layout responsivo
 - [x] **Respostas do proprietário a Q1–Q5** (D017): markup sobre o custo (2,5× a 2,8×), sem arredondamento, custos adicionais com lucro, chapa inteira
-- [x] **Incremento 003 — Composição e cálculo** (RF14, RF23–RF31): orçamento em rascunho com itens do catálogo e avulsos, custos adicionais, margem/markup com multiplicador (D018), arredondamento, memorial de cálculo; recálculo a cada alteração (D019); CT01–CT10 e TI01/TI02 verificados (`evidencias/testes/003-calculo-2026-09-28.md`) — pendente só a revisão do diff (B13)
+- [x] **Incremento 003 — Composição e cálculo** (RF14, RF23–RF31): orçamento em rascunho com itens do catálogo e avulsos, custos adicionais, margem/markup com multiplicador (D018), arredondamento, memorial de cálculo; recálculo a cada alteração (D019); CT01–CT10 e TI01/TI02 verificados (`evidencias/testes/003-calculo-2026-09-28.md`); integrado em `main` (PR #4)
+- [x] **Incremento 004 — Registro e acompanhamento** (RF32, RF34–RF39): lista com busca e filtros, rascunho reaberto para edição, registrar = enviar com número sequencial (D020), aprovado/recusado, vencimento automático, somente leitura fora de rascunho; CN05/CN06, TI01/TI02 verificados (`evidencias/testes/004-registro-2026-09-28.md`) — pendente a revisão do diff (B14)
 
 ## Próximo passo (nesta ordem)
 
-1. Autora revisar o diff completo (`git diff main...spec/003-composicao-calculo`) e autorizar PR e merge (B13).
-2. Abrir o incremento 004 (registro e acompanhamento) com a rotina `abrir-incremento`, a partir de `main` atualizada. Incluir o teste da RN09 (alteração fora de rascunho → 409) e os casos CN05/CN06.
-3. Transcrever as notas da conversa com o proprietário em `evidencias/entrevista/` e responder Q6–Q10 (B01); confirmar o termo de consentimento (B06). Q6 (validade) interessa ao 004.
+1. Autora revisar o diff (`main...spec/004-registro-acompanhamento`), abrir o PR e fazer o merge (B14).
+2. Abrir o incremento 005 (clientes: cadastro, busca, inativação e vínculo com o orçamento, RF08–RF10) a partir de `main` atualizada. Ele substitui o `cliente_nome` em texto livre (D018) por vínculo ao cadastro.
+3. Transcrever as notas da conversa com o proprietário em `evidencias/entrevista/` e responder Q6–Q10 (B01); confirmar o termo de consentimento (B06).
 4. Conferir em planilha os valores de referência dos 10 casos (B08), no mais tardar antes do incremento 008.
 
 ## Não fazer agora

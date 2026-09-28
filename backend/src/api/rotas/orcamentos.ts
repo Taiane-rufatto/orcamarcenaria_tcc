@@ -2,7 +2,9 @@ import { Router, type Response } from 'express'
 import { z } from 'zod'
 import { ErroHttp } from '../erros/erro-http'
 import { exigirAutenticacao } from '../middlewares/autenticacao'
-import { alteracaoItemSchema, cabecalhoSchema, custoAdicionalSchema, itemSchema } from '../validacoes/orcamento'
+import {
+  alteracaoItemSchema, cabecalhoSchema, custoAdicionalSchema, filtrosListagemSchema, itemSchema, mudancaSituacaoSchema,
+} from '../validacoes/orcamento'
 import * as casos from '../../aplicacao/orcamento/orcamento'
 
 // Toda resposta de escrita devolve o orçamento completo, já recalculado pelo domínio (D019).
@@ -18,6 +20,10 @@ function lerId(valor: unknown): string {
   if (!id.success) throw new ErroHttp(404, 'Registro não encontrado')
   return id.data
 }
+
+rotasOrcamentos.get('/orcamentos', async (req, res) => {
+  res.json(await casos.listarOrcamentos(marcenaria(res), filtrosListagemSchema.parse(req.query)))
+})
 
 rotasOrcamentos.post('/orcamentos', async (req, res) => {
   res.status(201).json(await casos.criarOrcamento(marcenaria(res), cabecalhoSchema.parse(req.body)))
@@ -56,4 +62,14 @@ rotasOrcamentos.put('/orcamentos/:id/custos-adicionais/:custoId', async (req, re
 
 rotasOrcamentos.delete('/orcamentos/:id/custos-adicionais/:custoId', async (req, res) => {
   res.json(await casos.removerCustoAdicional(marcenaria(res), lerId(req.params.id), lerId(req.params.custoId)))
+})
+
+// Registrar = enviar (D020): número sequencial e edição travada.
+rotasOrcamentos.post('/orcamentos/:id/registrar', async (req, res) => {
+  res.json(await casos.registrarOrcamento(marcenaria(res), lerId(req.params.id)))
+})
+
+rotasOrcamentos.post('/orcamentos/:id/situacao', async (req, res) => {
+  const { situacao } = mudancaSituacaoSchema.parse(req.body)
+  res.json(await casos.mudarSituacao(marcenaria(res), lerId(req.params.id), situacao))
 })

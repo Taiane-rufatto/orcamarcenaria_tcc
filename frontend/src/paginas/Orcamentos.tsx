@@ -1,12 +1,28 @@
-import { useState, type FormEvent } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useState, type FormEvent } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { alterarSenha } from '../servicos/autenticacao'
-import { criarOrcamento, hojeLocal } from '../servicos/orcamentos'
+import {
+  criarOrcamento, exibirData, exibirMoeda, hojeLocal, listarOrcamentos, SITUACOES,
+  type FiltrosListagem, type ResumoOrcamento, type Situacao,
+} from '../servicos/orcamentos'
 
 export function Orcamentos() {
   const [mensagem, setMensagem] = useState<{ texto: string; erro: boolean } | null>(null)
   const [erroNovo, setErroNovo] = useState('')
   const navegar = useNavigate()
+  const [orcamentos, setOrcamentos] = useState<ResumoOrcamento[] | null>(null)
+  const [filtros, setFiltros] = useState<FiltrosListagem>({ busca: '', situacao: '', de: '', ate: '' })
+  const [erroLista, setErroLista] = useState('')
+  const filtrar = (campo: keyof FiltrosListagem, valor: string) => setFiltros((atuais) => ({ ...atuais, [campo]: valor }))
+
+  // RF37: a API filtra e já aplica o vencimento (RF36); a tela só exibe.
+  useEffect(() => {
+    let atual = true
+    listarOrcamentos(filtros)
+      .then((lista) => { if (atual) { setOrcamentos(lista); setErroLista('') } })
+      .catch((causa) => { if (atual) setErroLista(causa instanceof Error ? causa.message : 'Não foi possível carregar os orçamentos') })
+    return () => { atual = false }
+  }, [filtros])
 
   // Lucro e arredondamento não são enviados: a API aplica os padrões (markup 150%, duas casas — D017).
   async function criar(evento: FormEvent<HTMLFormElement>) {
@@ -41,8 +57,35 @@ export function Orcamentos() {
   return <main className="pagina">
     <div className="cabecalho-pagina">
       <h1>Orçamentos</h1>
-      <p>Comece pelos dados do cliente e do projeto. Depois você inclui materiais, serviços e custos, e o sistema calcula o preço.</p>
+      <p>Seus orçamentos, dos mais recentes aos mais antigos. Rascunhos ficam aqui até serem registrados e podem ser reabertos para edição.</p>
     </div>
+
+    <section className="folha">
+      <h2>Meus orçamentos</h2>
+      <div className="filtros filtros-orcamento">
+        <label>Buscar por cliente<input value={filtros.busca} onChange={(e) => filtrar('busca', e.target.value)} placeholder="Nome do cliente" /></label>
+        <label>Situação
+          <select value={filtros.situacao} onChange={(e) => filtrar('situacao', e.target.value)}>
+            <option value="">Todas</option>
+            {(Object.keys(SITUACOES) as Situacao[]).map((s) => <option key={s} value={s}>{SITUACOES[s]}</option>)}
+          </select>
+        </label>
+        <label>Emitido a partir de<input type="date" value={filtros.de} onChange={(e) => filtrar('de', e.target.value)} /></label>
+        <label>Emitido até<input type="date" value={filtros.ate} onChange={(e) => filtrar('ate', e.target.value)} /></label>
+      </div>
+      {erroLista && <p role="alert" className="alerta">{erroLista}</p>}
+      {orcamentos && (orcamentos.length === 0 ? <p className="vazio">Nenhum orçamento encontrado.</p> : <div className="tabela-rolagem"><table>
+        <thead><tr><th>Nº</th><th>Cliente e projeto</th><th>Emissão</th><th>Validade</th><th className="valor">Preço final</th><th>Situação</th></tr></thead>
+        <tbody>{orcamentos.map((o) => <tr key={o.id}>
+          <td><Link to={`/orcamentos/${o.id}`}>{o.numero === null ? 'Rascunho' : `Nº ${o.numero}`}</Link></td>
+          <td data-label="Cliente">{o.clienteNome}<small>{o.descricaoProjeto}</small></td>
+          <td data-label="Emissão">{exibirData(o.dataEmissao)}</td>
+          <td data-label="Validade">{exibirData(o.dataValidade)}</td>
+          <td className="valor" data-label="Preço final">{exibirMoeda(o.precoFinal)}</td>
+          <td data-label="Situação"><span className={`selo ${o.situacao}`}>{SITUACOES[o.situacao]}</span></td>
+        </tr>)}</tbody>
+      </table></div>)}
+    </section>
 
     <section className="folha">
       <h2>Novo orçamento</h2>

@@ -118,6 +118,15 @@ th.valor { text-align: right; }
 .subtitulo { font-family: var(--titulo); font-weight: 400; font-size: 1.05rem; color: var(--verde-escuro); margin: 24px 0 12px; }
 .ajuda { color: var(--tinta-suave); margin-bottom: 16px; max-width: 60ch; }
 .selo.ajustado { background: var(--laranja-claro); color: var(--laranja-escuro); margin-top: 4px; }
+/* situações do orçamento (RN09): em andamento em laranja, aprovado em verde, encerrados em cinza */
+.selo.rascunho { background: #e6e1d3; color: var(--tinta); }
+.selo.enviado { background: var(--laranja-claro); color: var(--laranja-escuro); }
+.selo.aprovado { background: var(--verde-claro); color: var(--verde-escuro); }
+.selo.recusado, .selo.vencido { background: #e6e1d3; color: var(--tinta-suave); }
+.filtros-orcamento { grid-template-columns: 2fr 1fr 1fr 1fr; }
+.resumo { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px; }
+.resumo dt { font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; color: var(--tinta-suave); font-weight: 700; }
+.resumo dd { margin: 4px 0 0; }
 .campo-com-unidade { display: flex; align-items: center; gap: 8px; }
 td input { min-width: 90px; }
 td form { display: inline; }

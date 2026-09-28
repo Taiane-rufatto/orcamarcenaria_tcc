@@ -129,13 +129,13 @@ Preenchida ao fim de cada incremento e consolidada antes da defesa.
 | RF14 | 003 | Teste de integração: reajuste do catálogo após a inclusão não altera o item (D013) | verificado em 2026-09-28 (`evidencias/testes/003-calculo-2026-09-28.md`) |
 | RF16 | pós-TCC | — | fora do escopo |
 | RF23–RF31 | 003 | CT01–CT10 + testes de unidade do domínio + integração + percurso de tela | verificado em 2026-09-28 (`evidencias/testes/003-calculo-2026-09-28.md`); execução formal dos dez casos pela tela no 008 |
-| RF32–RF39 | 004 | Teste manual do ciclo de vida + CN05, CN06 | pendente |
+| RF32, RF34–RF39 | 004 | Integração do ciclo de vida + CN05, CN06 + percurso de tela + validação manual | verificado em 2026-09-28 (`evidencias/testes/004-registro-2026-09-28.md`) |
 | RF08–RF10 | 005 | Teste manual dos cadastros de cliente | pendente |
 | RF41–RF43 | 006 | Inspeção do PDF gerado + medição de tempo | pendente |
 | RF05, RF19–RF22 | 007 | Teste manual das configurações + CT03/CT04/CT06 | pendente |
 | RNF06, RNF21 | 008 | Execução completa dos casos de teste | pendente |
 | RNF01 | 009 | Avaliação exploratória de uso | pendente |
-| RNF12, RNF13 | 001–005 e 010 | TI04 na Spec 001; TI01–TI03 quando suas entidades existirem; reexecução completa no 010 | parcial: TI04 (001), TI01 (002 e 003) e TI02 (003) verificados; TI03 pendente (005) |
+| RNF12, RNF13 | 001–005 e 010 | TI04 na Spec 001; TI01–TI03 quando suas entidades existirem; reexecução completa no 010 | parcial: TI04 (001), TI01 (002–004) e TI02 (003–004) verificados; TI03 pendente (005) |
 
 ## 7. Definição de pronto (Definition of Done)
 

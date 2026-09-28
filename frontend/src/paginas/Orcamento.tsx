@@ -1,10 +1,10 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { Memorial } from '../componentes/Memorial'
 import { listarMateriais, listarServicos, type Material, type Servico } from '../servicos/catalogo'
 import {
-  adicionarCustoAdicional, adicionarItem, alterarCabecalho, alterarItem, consultarOrcamento, exibirMoeda, exibirNumero,
-  paraCampo, removerCustoAdicional, removerItem,
+  adicionarCustoAdicional, adicionarItem, alterarCabecalho, alterarItem, consultarOrcamento, exibirData, exibirMoeda, exibirNumero,
+  mudarSituacao, paraCampo, registrarOrcamento, removerCustoAdicional, removerItem, SITUACOES,
   type ModoLucro, type NovoItem, type Orcamento as DadosOrcamento, type RegraArredondamento, type TipoItem,
 } from '../servicos/orcamentos'
 
@@ -16,8 +16,9 @@ const REGRAS: Record<RegraArredondamento, string> = {
 }
 type Origem = 'material' | 'servico' | 'avulso'
 
-// Tela de composição do orçamento (US07–US11). Toda ação envia a alteração e troca o orçamento
-// inteiro pela resposta da API, que já vem recalculada pelo servidor (D019). Esta tela não faz contas.
+// Tela de composição do orçamento (US07–US11) e do seu acompanhamento (US12, US13). Toda ação envia a
+// alteração e troca o orçamento inteiro pela resposta da API, que já vem recalculada pelo servidor (D019).
+// Esta tela não faz contas. Fora de rascunho, é somente leitura: só a situação muda (RF39).
 export function Orcamento() {
   const { id = '' } = useParams()
   const [orcamento, setOrcamento] = useState<DadosOrcamento | null>(null)
@@ -51,6 +52,14 @@ export function Orcamento() {
 
   if (!orcamento) {
     return <main className="pagina">{erro ? <p role="alert" className="alerta">{erro}</p> : <p>Carregando orçamento…</p>}</main>
+  }
+
+  const editavel = orcamento.situacao === 'rascunho'
+
+  // Registrar = enviar (D020): o número é atribuído e a edição trava. A confirmação evita registro por engano.
+  function registrar() {
+    if (!window.confirm('Registrar este orçamento? Ele recebe um número e os itens e valores não poderão mais ser alterados.')) return
+    executar(registrarOrcamento(id))
   }
 
   function salvarCabecalho(evento: FormEvent<HTMLFormElement>) {
@@ -98,13 +107,50 @@ export function Orcamento() {
 
   return <main className="pagina">
     <div className="cabecalho-pagina">
-      <h1>{orcamento.descricaoProjeto}</h1>
-      <p>Cliente: {orcamento.clienteNome} · <span className="selo">Rascunho</span></p>
+      <p><Link to="/orcamentos">← Orçamentos</Link></p>
+      <h1>{orcamento.numero === null ? orcamento.descricaoProjeto : `Orçamento nº ${orcamento.numero}`}</h1>
+      <p>
+        {orcamento.numero !== null && <>{orcamento.descricaoProjeto} · </>}Cliente: {orcamento.clienteNome}
+        {' · '}<span className={`selo ${orcamento.situacao}`}>{SITUACOES[orcamento.situacao]}</span>
+      </p>
     </div>
 
     {erro && <p role="alert" className="alerta">{erro}</p>}
 
     <section className="folha">
+      <h2>Situação</h2>
+      {orcamento.situacao === 'rascunho' && <>
+        <p className="ajuda">Quando o orçamento estiver pronto, registre-o. Ele recebe um número, passa a "Enviado" e os itens e valores ficam travados.</p>
+        <div className="acoes"><button onClick={registrar}>Registrar e marcar como enviado</button></div>
+      </>}
+      {orcamento.situacao === 'enviado' && <>
+        <p className="ajuda">Enviado ao cliente, válido até {exibirData(orcamento.dataValidade)}. Registre a resposta dele:</p>
+        <div className="acoes">
+          <button onClick={() => executar(mudarSituacao(id, 'aprovado'))}>Cliente aprovou</button>
+          <button className="secundario" onClick={() => executar(mudarSituacao(id, 'recusado'))}>Cliente recusou</button>
+        </div>
+      </>}
+      {orcamento.situacao === 'aprovado' && <p className="ajuda">O cliente aprovou este orçamento.</p>}
+      {orcamento.situacao === 'recusado' && <p className="ajuda">O cliente recusou este orçamento.</p>}
+      {orcamento.situacao === 'vencido' && <p className="ajuda">A validade terminou em {exibirData(orcamento.dataValidade)} sem resposta do cliente.</p>}
+    </section>
+
+    {!editavel && <section className="folha">
+      <h2>Dados e lucro</h2>
+      <dl className="resumo">
+        <div><dt>Cliente</dt><dd>{orcamento.clienteNome}</dd></div>
+        <div><dt>Projeto</dt><dd>{orcamento.descricaoProjeto}</dd></div>
+        <div><dt>Emissão</dt><dd>{exibirData(orcamento.dataEmissao)}</dd></div>
+        <div><dt>Válido até</dt><dd>{exibirData(orcamento.dataValidade)}</dd></div>
+        <div><dt>Lucro</dt><dd>
+          {orcamento.modoLucro === 'markup' ? 'Markup' : 'Margem'} de {paraCampo(orcamento.percentualLucro)}%
+          {orcamento.memorial.multiplicadorEquivalente && ` (${paraCampo(orcamento.memorial.multiplicadorEquivalente)}× o custo)`}
+        </dd></div>
+        <div><dt>Arredondamento</dt><dd>{REGRAS[orcamento.regraArredondamento]}</dd></div>
+      </dl>
+    </section>}
+
+    {editavel && <section className="folha">
       <h2>Dados e lucro</h2>
       {/* key: após salvar, o formulário volta a mostrar o que a API gravou */}
       <form key={JSON.stringify([orcamento.clienteNome, orcamento.descricaoProjeto, orcamento.dataEmissao, orcamento.dataValidade, orcamento.modoLucro, orcamento.percentualLucro, orcamento.regraArredondamento])} onSubmit={salvarCabecalho}>
@@ -132,33 +178,39 @@ export function Orcamento() {
         </p>}
         <div className="acoes"><button>Salvar dados e lucro</button></div>
       </form>
-    </section>
+    </section>}
 
     <section className="folha">
       <h2>Itens</h2>
       {orcamento.itens.length === 0 ? <p className="vazio">Nenhum item incluído.</p> : <div className="tabela-rolagem"><table>
         <thead><tr>
-          <th>Item</th><th>Tipo</th><th>Quantidade</th><th>Valor unitário (R$)</th><th className="valor">Valor</th><th><span className="sr-only">Ações</span></th>
+          <th>Item</th><th>Tipo</th><th>Quantidade</th><th>Valor unitário (R$)</th><th className="valor">Valor</th>{editavel && <th><span className="sr-only">Ações</span></th>}
         </tr></thead>
         <tbody>{orcamento.itens.map((item) => {
           const formulario = `item-${item.id}`
           return <tr key={`${item.id}-${item.quantidade}-${item.valorUnitario}`}>
             <td>{item.descricao}{item.valorAjustadoManualmente && <small><span className="selo ajustado">Valor ajustado neste orçamento</span></small>}</td>
             <td data-label="Tipo">{item.tipo === 'material' ? 'Material' : 'Serviço'}</td>
-            <td data-label="Quantidade"><span className="campo-com-unidade">
-              <input form={formulario} name="quantidade" inputMode="decimal" aria-label={`Quantidade de ${item.descricao}`} defaultValue={exibirNumero(item.quantidade)} required />
-              {item.unidade}
-            </span></td>
-            <td data-label="Valor unitário"><input form={formulario} name="valorUnitario" inputMode="decimal" aria-label={`Valor unitário de ${item.descricao}`} defaultValue={paraCampo(item.valorUnitario)} required /></td>
+            {editavel ? <>
+              <td data-label="Quantidade"><span className="campo-com-unidade">
+                <input form={formulario} name="quantidade" inputMode="decimal" aria-label={`Quantidade de ${item.descricao}`} defaultValue={exibirNumero(item.quantidade)} required />
+                {item.unidade}
+              </span></td>
+              <td data-label="Valor unitário"><input form={formulario} name="valorUnitario" inputMode="decimal" aria-label={`Valor unitário de ${item.descricao}`} defaultValue={paraCampo(item.valorUnitario)} required /></td>
+            </> : <>
+              <td data-label="Quantidade">{exibirNumero(item.quantidade)} {item.unidade}</td>
+              <td data-label="Valor unitário">{paraCampo(item.valorUnitario)}</td>
+            </>}
             <td className="valor" data-label="Valor">{exibirMoeda(item.valorLinha)}</td>
-            <td className="acoes-linha">
+            {editavel && <td className="acoes-linha">
               <form id={formulario} onSubmit={(evento) => atualizarItem(evento, item.id)}><button className="discreto">Atualizar</button></form>
               <button className="discreto" onClick={() => executar(removerItem(id, item.id))}>Remover</button>
-            </td>
+            </td>}
           </tr>
         })}</tbody>
       </table></div>}
 
+      {editavel && <>
       <h3 className="subtitulo">Incluir item</h3>
       <form key={origem} onSubmit={incluirItem}>
         <div className="campos">
@@ -186,26 +238,28 @@ export function Orcamento() {
         </div>
         <div className="acoes"><button>Incluir item</button></div>
       </form>
+      </>}
     </section>
 
     <section className="folha">
       <h2>Custos adicionais</h2>
       <p className="ajuda">Frete, deslocamento, instalação e outros gastos de valor fixo. Eles entram no custo e recebem lucro.</p>
+      {!editavel && orcamento.custosAdicionais.length === 0 && <p className="vazio">Nenhum custo adicional.</p>}
       {orcamento.custosAdicionais.length > 0 && <div className="tabela-rolagem"><table>
-        <thead><tr><th>Descrição</th><th className="valor">Valor</th><th><span className="sr-only">Ações</span></th></tr></thead>
+        <thead><tr><th>Descrição</th><th className="valor">Valor</th>{editavel && <th><span className="sr-only">Ações</span></th>}</tr></thead>
         <tbody>{orcamento.custosAdicionais.map((custo) => <tr key={custo.id}>
           <td>{custo.descricao}</td>
           <td className="valor" data-label="Valor">{exibirMoeda(custo.valor)}</td>
-          <td className="acoes-linha"><button className="discreto" onClick={() => executar(removerCustoAdicional(id, custo.id))}>Remover</button></td>
+          {editavel && <td className="acoes-linha"><button className="discreto" onClick={() => executar(removerCustoAdicional(id, custo.id))}>Remover</button></td>}
         </tr>)}</tbody>
       </table></div>}
-      <form onSubmit={incluirCusto}>
+      {editavel && <form onSubmit={incluirCusto}>
         <div className="campos">
           <label>Descrição<input name="descricao" placeholder="Ex.: frete de entrega" required /></label>
           <label>Valor (R$)<input name="valor" inputMode="decimal" placeholder="0,00" required /></label>
         </div>
         <div className="acoes"><button>Incluir custo</button></div>
-      </form>
+      </form>}
     </section>
 
     <section className="folha">

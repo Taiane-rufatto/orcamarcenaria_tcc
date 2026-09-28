@@ -6,6 +6,19 @@ Formato: contexto → decisão → consequência → situação (`provisória` e
 
 ---
 
+## D020 — Registrar é enviar: número atribuído na saída do rascunho
+**Data:** 2026-09-28 · **Situação:** firme (decidido pela autora)
+
+**Contexto.** A RN11 atribui o número "no momento do registro"; a RN09 leva o orçamento de `rascunho` direto a `enviado`; o RF39 trava itens após o envio; a RN10 exige ao menos um item "para sair de rascunho". Não havia definição se "registrar" é um passo próprio.
+
+**Decisão.** Registrar e enviar são o mesmo passo: a ação "Registrar e marcar como enviado" confere RF32 (cliente, descrição e ao menos um item), atribui o próximo número da marcenaria (RN11) e muda a situação para `enviado`, travando itens e valores (RF39). Rascunhos não têm número e aparecem na listagem para serem reabertos e editados.
+
+**Alternativa rejeitada.** Um passo "registrar" separado, com orçamento numerado e ainda editável: exigiria uma situação `registrado` inexistente na RN09 e mudaria RF35.
+
+**Consequência.** A RN09 permanece como está. Número só existe em orçamento que saiu do rascunho, o que garante que um número entregue ao cliente nunca corresponde a valores alterados depois.
+
+---
+
 ## D019 — Recálculo embutido em cada alteração do orçamento
 **Data:** 2026-09-28 · **Situação:** firme
 

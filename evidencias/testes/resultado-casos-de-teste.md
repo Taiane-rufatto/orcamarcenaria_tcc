@@ -32,14 +32,14 @@ Preencher a cada execução completa. Os valores de referência vêm de `casos-d
 | CN02 | Quantidade zero ou negativa é bloqueada | 400 com mensagem (domínio e API) | Aprovado |
 | CN03 | Valor unitário negativo é bloqueado | 400 com mensagem (domínio e API) | Aprovado |
 | CN04 | Validade anterior à emissão é bloqueada | 400 com mensagem (API) | Aprovado |
-| CN05 | Orçamento sem itens não é registrado | Registro (RF32) ainda não existe | Pendente — incremento 004 |
-| CN06 | Orçamento sem cliente não é registrado | Rascunho sem cliente já é recusado (400); regra de registro no 004 | Parcial — concluir no 004 |
+| CN05 | Orçamento sem itens não é registrado | Execução nº 2 (004): registro recusado com "Inclua ao menos um item antes de registrar o orçamento"; continua rascunho sem número | Aprovado |
+| CN06 | Orçamento sem cliente não é registrado | Orçamento sem cliente ou sem descrição não chega a existir (400 na criação), logo não pode ser registrado (004) | Aprovado |
 
 ## Testes de isolamento entre contas
 
 | Caso | Esperado | Observado | Situação |
 |---|---|---|---|
-| TI01 | Listagem vazia para a outra marcenaria | Catálogo (002) e orçamento (003): outra marcenaria recebe 404 e não usa material alheio | Aprovado para o que existe; listagem de orçamentos no 004 |
+| TI01 | Listagem vazia para a outra marcenaria | Catálogo (002), orçamento (003) e listagem de orçamentos (004): lista vazia e 404 para a outra marcenaria | Aprovado |
 | TI02 | "Não encontrado" ao acessar orçamento alheio por ID | 404 ao consultar e alterar orçamento alheio (integração, 003) | Aprovado |
 | TI03 | "Não encontrado" ao editar cliente alheio | | |
 | TI04 | Redirecionamento ao login sem sessão | Verificado na Spec 001 | Aprovado |
@@ -53,3 +53,5 @@ Preencher a cada execução completa. Os valores de referência vêm de `casos-d
 ## Conclusão da execução
 
 Execução nº 1 (2026-09-28): 10 de 10 casos com diferença nula no domínio; CN01–CN04 aprovados; CN05 e CN06 dependem do registro (004). Não substitui a execução formal: falta a conferência em planilha (B08) e o lançamento dos dez casos pela tela (incremento 008). Detalhes em `003-calculo-2026-09-28.md`.
+
+Execução nº 2 (2026-09-28, commit `e983f7b`, Spec 004 — regressão): domínio do cálculo sem alteração; 10 de 10 casos com diferença nula; registro preserva itens e memorial idênticos (integração); CN05 e CN06 aprovados. Detalhes em `004-registro-2026-09-28.md`.

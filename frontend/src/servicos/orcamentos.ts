@@ -6,6 +6,12 @@ import { requisitar } from './api'
 export type ModoLucro = 'margem' | 'markup'
 export type RegraArredondamento = 'duas_casas' | 'real_inteiro' | 'dezena'
 export type TipoItem = 'material' | 'servico'
+export type Situacao = 'rascunho' | 'enviado' | 'aprovado' | 'recusado' | 'vencido'
+
+// Rótulos das situações da RN09, na ordem do ciclo de vida.
+export const SITUACOES: Record<Situacao, string> = {
+  rascunho: 'Rascunho', enviado: 'Enviado', aprovado: 'Aprovado', recusado: 'Recusado', vencido: 'Vencido',
+}
 
 export type Cabecalho = {
   clienteNome: string
@@ -29,11 +35,19 @@ export type Memorial = {
 
 export type Orcamento = Required<Cabecalho> & {
   id: string
-  situacao: string
+  numero: number | null // nulo enquanto rascunho (D020)
+  situacao: Situacao
   itens: Item[]
   custosAdicionais: { id: string; descricao: string; valor: string }[]
   memorial: Memorial
 }
+
+export type ResumoOrcamento = {
+  id: string; numero: number | null; clienteNome: string; descricaoProjeto: string
+  dataEmissao: string; dataValidade: string; precoFinal: string; situacao: Situacao
+}
+
+export type FiltrosListagem = { busca: string; situacao: Situacao | ''; de: string; ate: string }
 
 export type NovoItem =
   | { origem: 'catalogo'; tipo: TipoItem; catalogoId: string; quantidade: string }
@@ -41,6 +55,8 @@ export type NovoItem =
 
 const rota = (id: string, resto = '') => `/orcamentos/${id}${resto}`
 
+export const listarOrcamentos = (filtros: FiltrosListagem) =>
+  requisitar<ResumoOrcamento[]>(`/orcamentos?${new URLSearchParams(filtros)}`)
 export const criarOrcamento = (dados: Cabecalho) => requisitar<Orcamento>('/orcamentos', 'POST', dados)
 export const consultarOrcamento = (id: string) => requisitar<Orcamento>(rota(id))
 export const alterarCabecalho = (id: string, dados: Cabecalho) => requisitar<Orcamento>(rota(id), 'PUT', dados)
@@ -52,6 +68,10 @@ export const adicionarCustoAdicional = (id: string, descricao: string, valor: st
   requisitar<Orcamento>(rota(id, '/custos-adicionais'), 'POST', { descricao, valor })
 export const removerCustoAdicional = (id: string, custoId: string) =>
   requisitar<Orcamento>(rota(id, `/custos-adicionais/${custoId}`), 'DELETE')
+
+export const registrarOrcamento = (id: string) => requisitar<Orcamento>(rota(id, '/registrar'), 'POST')
+export const mudarSituacao = (id: string, situacao: 'aprovado' | 'recusado') =>
+  requisitar<Orcamento>(rota(id, '/situacao'), 'POST', { situacao })
 
 // ---------- Exibição (só texto) ----------
 
@@ -65,6 +85,9 @@ export function exibirMoeda(valor: string): string {
 
 // "2.500" → "2,5"; "30.000" → "30". Remove só zeros à direita do texto.
 export const exibirNumero = (valor: string) => (valor.includes('.') ? valor.replace(/\.?0+$/, '') : valor).replace('.', ',')
+
+// "2026-10-01" → "01/10/2026".
+export const exibirData = (data: string) => data.split('-').reverse().join('/')
 
 // "150.00" → "150,00" para preencher campos de formulário.
 export const paraCampo = (valor: string) => valor.replace('.', ',')
