@@ -119,13 +119,6 @@ export function calcularOrcamento(entrada: EntradaCalculo): ResultadoCalculo {
   const valorLucro = precoBruto.minus(custoDiretoTotal)
   const precoFinal = aplicarArredondamentoComercial(precoBruto, entrada.regraArredondamento)
 
-  // D018: informativo, para "cobro 2,5× o custo" não virar markup de 250%. Não entra no cálculo.
-  let multiplicadorEquivalente: string | null = null
-  if (entrada.modoLucro === 'markup') {
-    const multiplicador = new Decimal(1).plus(percentual.div(CEM))
-    multiplicadorEquivalente = multiplicador.toFixed(Math.max(2, multiplicador.decimalPlaces()))
-  }
-
   return {
     valoresLinha: linhas.map((l) => moeda(l.valor)),
     subtotalMateriais: moeda(subtotalMateriais),
@@ -136,6 +129,14 @@ export function calcularOrcamento(entrada: EntradaCalculo): ResultadoCalculo {
     valorLucro: moeda(valorLucro),
     ajusteArredondamento: moeda(precoFinal.minus(precoBruto)),
     precoFinal: moeda(precoFinal),
-    multiplicadorEquivalente,
+    multiplicadorEquivalente: multiplicadorEquivalente(entrada.modoLucro, entrada.percentualLucro),
   }
+}
+
+// D018: informativo, para "cobro 2,5× o custo" não virar markup de 250%. Não entra no cálculo.
+// Exportado para a consulta do orçamento exibi-lo sem recalcular preço nem repetir a fórmula.
+export function multiplicadorEquivalente(modo: ModoLucro, percentualLucro: string): string | null {
+  if (modo !== 'markup') return null
+  const multiplicador = new Decimal(1).plus(lerDecimal(percentualLucro, 2, 'Percentual de lucro inválido').div(CEM))
+  return multiplicador.toFixed(Math.max(2, multiplicador.decimalPlaces()))
 }

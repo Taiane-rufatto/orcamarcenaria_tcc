@@ -2,7 +2,7 @@
 
 **Atualizado em:** 2026-09-28
 
-> **Incremento 003 — Composição e cálculo do orçamento: aberto em 2026-09-28** na branch `spec/003-composicao-calculo`. Spec, plano e tarefas escritos em `specs/003-composicao-calculo/`. Fase 1 (domínio do cálculo, T001–T003) concluída: CT01–CT10 passam com diferença nula. Próximo: persistência (T004). Respostas do proprietário a Q1–Q5 registradas em D017 e D018.
+> **Incremento 003 — Composição e cálculo do orçamento: aberto em 2026-09-28** na branch `spec/003-composicao-calculo`. Spec, plano e tarefas escritos em `specs/003-composicao-calculo/`. Fases 1–3 concluídas (domínio, banco e API, T001–T008): CT01–CT10 no domínio e CT03/CT04 pela API com diferença nula; migração 003 aplicada nos bancos de teste e principal. Próximo: telas (T009–T010). Respostas do proprietário a Q1–Q5 registradas em D017 e D018.
 
 ## Onde o projeto está
 
@@ -38,7 +38,7 @@ Incrementos 000 (preparação), 001 (conta e acesso) e 002 (catálogo) entregues
 
 ## Próximo passo (nesta ordem)
 
-1. Autora revisar `backend/src/dominio/orcamento/calculo.ts`; seguir para a Fase 2 (migração e repositório).
+1. Autora revisar as Fases 2–3 (`backend/src/aplicacao/orcamento/`, repositório, rotas); seguir para as telas (Fase 4).
 2. Transcrever as notas da conversa com o proprietário em `evidencias/entrevista/` e responder Q6–Q10 (B01); confirmar o termo de consentimento (B06).
 3. Conferir em planilha os valores de referência dos 10 casos (B08), no mais tardar antes do incremento 008.
 

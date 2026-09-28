@@ -8,14 +8,14 @@
 
 ## Fase 2 — Persistência
 
-- [ ] T004 Criar `backend/migracoes/003-orcamento.sql` (orcamento, orcamento_item, orcamento_custo_adicional), aplicar no banco de teste e no principal.
-- [ ] T005 Criar `backend/src/infra/repositorios/orcamento-repositorio.ts`, sempre filtrado por `marcenaria_id`, com escrita + recálculo em transação.
+- [x] T004 Criar `backend/migracoes/003-orcamento.sql` (orcamento, orcamento_item, orcamento_custo_adicional), aplicar no banco de teste e no principal.
+- [x] T005 Criar `backend/src/infra/repositorios/orcamento-repositorio.ts`, sempre filtrado por `marcenaria_id`, com escrita + recálculo em transação.
 
 ## Fase 3 — API (US07–US11)
 
-- [ ] T006 [P] Escrever `backend/tests/integracao/orcamento.test.ts`: criar rascunho, adicionar/alterar/remover itens e adicionais, CT03 pela API, RF14, item inativo recusado, isolamento entre marcenarias, CN04.
-- [ ] T007 Validações Zod em `backend/src/api/validacoes/orcamento.ts` (quantidade 3 casas, valor 4 casas, percentual 2 casas, datas).
-- [ ] T008 Rotas em `backend/src/api/rotas/orcamentos.ts`, com `ErroCalculo` traduzido para 400.
+- [x] T006 [P] Escrever `backend/tests/integracao/orcamento.test.ts`: criar rascunho, adicionar/alterar/remover itens e adicionais, CT03 pela API, RF14, item inativo recusado, isolamento entre marcenarias, CN04.
+- [x] T007 Validações Zod em `backend/src/api/validacoes/orcamento.ts` (quantidade 3 casas, valor 4 casas, percentual 2 casas, datas).
+- [x] T008 Rotas em `backend/src/api/rotas/orcamentos.ts`, com `ErroCalculo` traduzido para 400.
 
 ## Fase 4 — Telas
 
