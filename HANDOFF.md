@@ -1,8 +1,8 @@
 # Handoff
 
-**Atualizado em:** 2026-09-28 · Última sessão: Spec 003 integrada (PR #4); Spec 004 (registro e acompanhamento) aberta, implementada e verificada.
+**Atualizado em:** 2026-09-28 · Última sessão: Specs 003 e 004 integradas (PR #4 e #5); Spec 005 (clientes) aberta, implementada e verificada.
 
-> **Próxima sessão:** a autora revisa o diff da Spec 004 e faz PR e merge (B14); depois, abrir o incremento 005 (clientes) a partir de `main`. Estado detalhado em `ESTADO_ATUAL.md`.
+> **Próxima sessão:** a autora revisa o diff da Spec 005 e faz PR e merge (B15); depois, abrir o incremento 006 (PDF) a partir de `main`. Estado detalhado em `ESTADO_ATUAL.md`.
 
 Para qualquer nova sessão, agente ou ferramenta assumir o trabalho sem reconstruir contexto pelo histórico de conversa.
 
@@ -17,18 +17,18 @@ Para qualquer nova sessão, agente ou ferramenta assumir o trabalho sem reconstr
 
 ## O que foi feito na última sessão
 
-1. **Spec 003 fechada e integrada** em `main` (PR #4, aberto e mesclado pela autora).
-2. **Spec 004 implementada:** migração `004-situacoes.sql`; registrar = enviar com número sequencial por marcenaria (D020); transições da RN09 numa tabela única (`TRANSICOES` em `aplicacao/orcamento/orcamento.ts`); vencimento automático; `GET /orcamentos` com busca e filtros; lista na página de orçamentos e tela somente leitura fora de rascunho.
-3. **Verificação:** 85 testes de backend (8 novos em `registro.test.ts`, incluindo o teste da RN09 pendente do 003 e CN05/CN06), regressão dos dez casos (domínio não mudou), percurso no Edge e validação manual da autora. Evidência: `evidencias/testes/004-registro-2026-09-28.md`.
+1. **Specs 003 e 004 fechadas e integradas** em `main` (PR #4 e #5, abertos e mesclados pela autora).
+2. **Spec 005 implementada:** cadastro de clientes (`/clientes`, página Clientes) no formato do catálogo, com reativação; orçamento ligado ao cliente por `cliente_id` (D021); migração `005-clientes.sql` converteu o texto livre do 003 em clientes cadastrados.
+3. **Verificação:** 89 testes de backend (TI03 incluído), regressão dos dez casos, migração conferida no banco principal, percurso no Edge e validação manual da autora. Evidência: `evidencias/testes/005-clientes-2026-09-28.md`.
 
-Decisões firmes: D001–D020. Nenhuma provisória no momento.
+Decisões firmes: D001–D021. Nenhuma provisória no momento.
 
 ## O que **não** foi feito
 
-- Revisão do diff da Spec 004 pela autora (B14), PR e merge.
-- Cliente continua em texto livre (D018): cadastro e vínculo no 005.
-- Duplicar ou reabrir orçamento vencido ou enviado (RF40) e desconto (RF33): pós-TCC. Um orçamento registrado com erro não pode ser corrigido; só criando um novo rascunho.
-- Entrevista: notas não transcritas; Q6–Q10 sem resposta; consentimento (B06) não confirmado.
+- Revisão do diff da Spec 005 pela autora (B15), PR e merge.
+- Histórico de orçamentos na tela do cliente: não pedido pelos requisitos.
+- Duplicar ou reabrir orçamento (RF40) e desconto (RF33): pós-TCC.
+- Entrevista: notas não transcritas; Q6–Q10 sem resposta (Q7 interessa ao 006); consentimento (B06) não confirmado.
 - Conferência dos 10 casos em planilha (B08) e execução formal pela tela (008).
 - Edição de custo adicional pela tela (a API tem `PUT`; a tela só inclui e remove).
 
@@ -54,11 +54,15 @@ Decisões firmes: D001–D020. Nenhuma provisória no momento.
 - **Vencimento é aplicado na leitura** (`vencerOrcamentos` antes de listar, consultar e mudar situação), com a data de São Paulo explícita no SQL. Não há tarefa agendada: um orçamento só aparece vencido quando alguém abre a lista ou o orçamento.
 - **Migrações são reaplicadas por inteiro** a cada `npm run migrar`: toda migração nova precisa ser idempotente (`DROP CONSTRAINT IF EXISTS` antes de `ADD CONSTRAINT`, `IF NOT EXISTS` em índices).
 - **O classificador de segurança dos comandos falhou por um período** e bloqueou commits; a autora fez o commit manualmente. Se acontecer de novo, pedir a ela o `git commit` e seguir.
+- **Testes de integração criam um cliente padrão por conta** (`clientePadrao` em `orcamento.test.ts` e `registro.test.ts`): todo orçamento exige cliente cadastrado desde o 005.
+- **A migração 005 só converte enquanto a coluna `cliente_nome` existir** (bloco `DO`); em banco novo, o 003 ainda cria a coluna e o 005 a remove em seguida.
+- **Menu no celular:** com quatro itens ele quebra linha; um quinto item pede conferir de novo a largura em 390 px.
 - **Commits vão para o GitHub só com `git push`**; a autora estranhou não ver os commits. A branch do 003 já está publicada.
 
 
 ## Perguntas a fazer à autora antes de avançar
 
-1. Revisou o diff da Spec 004? Fez PR e merge?
-2. Onde estão as anotações da conversa com o proprietário, e em que data ocorreu? Q6–Q10 foram perguntadas? Houve consentimento?
-3. Há prazo definido pela coordenação para a apresentação de andamento (B07)? O roadmap pede os incrementos 001–005 fechados para ela.
+1. Revisou o diff da Spec 005? Fez PR e merge?
+2. Q7: no orçamento que o cliente recebe, o proprietário mostra os itens com valores ou só o total? Define o padrão do PDF (006).
+3. Onde estão as anotações da conversa com o proprietário, e em que data ocorreu? Q6–Q10 foram perguntadas? Houve consentimento?
+4. Há data para a apresentação de andamento (B07)? Com o 005 integrado, os incrementos pedidos para ela (001–005) estão fechados.

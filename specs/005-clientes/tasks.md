@@ -14,6 +14,6 @@
 
 ## Fase 3 — Evidências e fechamento
 
-- [ ] T007 Testes, builds, lint, regressão dos dez casos; percurso de tela; registrar em `evidencias/testes/`.
-- [ ] T008 Validação manual da autora.
-- [ ] T009 Atualizar documentação (arquitetura, matriz, TI03) e fechar com `fechar-spec` após revisão do diff.
+- [x] T007 Testes, builds, lint, regressão dos dez casos; percurso de tela; registrar em `evidencias/testes/`.
+- [x] T008 Validação manual da autora.
+- [x] T009 Atualizar documentação (arquitetura, matriz, TI03) e fechar com `fechar-spec` após revisão do diff.
