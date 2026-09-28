@@ -10,7 +10,6 @@ Itens que dependem de decisão humana, acesso ou ação externa. Um agente **nã
 | B05 | Três orçamentos reais da marcenaria ainda não coletados e anonimizados | Validação das regras de cálculo contra a prática e refinamento dos casos de teste | Taiane | Aberto — pedir na entrevista |
 | B06 | Termo de consentimento do participante (RNF16) não elaborado | Entrevista (OE1) e avaliação exploratória de uso (OE7) | Taiane | Aberto — verificar exigência com o orientador |
 | B07 | Data da apresentação de andamento não confirmada com a coordenação | Ajuste fino do calendário do `roadmap.md` §3 | Taiane | Aberto |
-| B15 | Revisão humana do diff da Spec 005 (DoD §7.3) | PR e merge do incremento 005; abertura do 006 | Taiane | Aberto — revisar `main...spec/005-clientes` |
 | B08 | Valores de referência dos 10 casos de teste ainda não conferidos em planilha pela autora | Uso dos casos como evidência formal (o método da proposta exige cálculo prévio em planilha) | Taiane | Aberto — conferir antes do incremento 008 |
 
 ## Como usar este arquivo
@@ -32,3 +31,4 @@ Itens que dependem de decisão humana, acesso ou ação externa. Um agente **nã
 | B12 | Revisão humana do diff da Spec 002 (DoD §7.3) | 2026-09-19 | A autora informou que revisou o diff (`git diff main...spec/002-catalogo-materiais`) e autorizou o fechamento, o PR e o merge. |
 | B13 | Revisão humana do diff da Spec 003 (DoD §7.3) | 2026-09-28 | A autora autorizou o PR, abriu-o manualmente e fez o merge em `main` (PR #4). |
 | B14 | Revisão humana do diff da Spec 004 (DoD §7.3) | 2026-09-28 | A autora revisou, abriu o PR e fez o merge em `main` (PR #5). |
+| B15 | Revisão humana do diff da Spec 005 (DoD §7.3) | 2026-09-28 | A autora revisou, abriu o PR e fez o merge em `main` (PR #6). |

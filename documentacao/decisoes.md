@@ -6,6 +6,36 @@ Formato: contexto → decisão → consequência → situação (`provisória` e
 
 ---
 
+## D023 — PDF gerado no servidor com PDFKit, conteúdo separado do desenho
+**Data:** 2026-09-28 · **Situação:** firme
+
+**Contexto.** A arquitetura deixou a biblioteca de PDF para o 006 (§6) e registrou o risco de uma ferramenta complexa atrasar o incremento (§9).
+
+**Decisão.** Usar **PDFKit** no servidor: biblioteca JavaScript sem navegador embutido, com as fontes padrão do PDF (que cobrem acentos do português). O PDF é montado em duas etapas: uma função pura monta o **conteúdo** (textos e linhas a imprimir) a partir do orçamento já calculado, e outra apenas o **desenha** com PDFKit. O valor por extenso é escrito por uma função própria, a partir do texto decimal, sem `Number`.
+
+**Alternativas rejeitadas.** Navegador sem interface (Puppeteer): baixa um navegador inteiro e pesa na instalação e na VPS. pdfmake: tabelas declarativas, mas exige empacotar fontes; a tabela deste PDF é simples.
+
+**Consequência.** O conteúdo é testável sem abrir o PDF, inclusive a garantia de que não aparece custo, lucro ou percentual (RF42). O PDF usa os valores gravados pelo domínio; não há segundo cálculo.
+
+---
+
+## D022 — PDF sem valores por item, só de orçamento registrado, com observações
+**Data:** 2026-09-28 · **Situação:** firme (decidido pela autora); o padrão da escolha aguarda a Q7
+
+**Contexto.** O RF41 pede "itens com quantidade e valor" e o RF42 "lista de itens com valores ou apenas valor total", sem revelar custo e lucro. Mas o valor de cada item é **custo** (RN01): listá-lo ao lado do preço final revela o lucro por diferença. Ratear o preço entre os itens exigiria uma regra de cálculo nova. Também não estava definido se rascunho gera PDF nem o que é o "campo de observações".
+
+**Decisão.**
+1. O PDF nunca mostra valor por item. O marceneiro escolhe, ao baixar: **itens com quantidade e unidade, sem valores, e o preço final** (padrão provisório até a Q7) ou **apenas o preço final**.
+2. Só orçamento registrado (com número) gera PDF (US14).
+3. O orçamento ganha o campo `observacoes`, editável em rascunho e impresso no PDF.
+4. Dados da marcenaria no PDF: nome e responsável; telefone, e-mail, CNPJ e endereço entram quando o RF05 (incremento 007) existir.
+
+**Alternativa rejeitada.** Valores de venda por item (custo × fator, com sobra de centavos): mudaria `regras-de-calculo.md` e os casos de teste por um detalhe de apresentação.
+
+**Consequência.** RF41 e RF42 reescritos em `requisitos.md`. O RF42 fica atendido sem regra nova, e o PDF não expõe a composição de custo em nenhuma das duas opções.
+
+---
+
 ## D021 — Cliente vinculado ao orçamento, sem cópia do nome, e reativável
 **Data:** 2026-09-28 · **Situação:** firme (decidido pela autora)
 
