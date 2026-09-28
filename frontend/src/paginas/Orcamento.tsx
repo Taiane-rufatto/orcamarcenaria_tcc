@@ -208,7 +208,7 @@ export function Orcamento() {
       <div className="opcoes">
         <label><input type="checkbox" checked={mostrarItensPdf} onChange={(e) => setMostrarItensPdf(e.target.checked)} /> Incluir também a lista de materiais e serviços (só quantidades, sem valores)</label>
       </div>
-      <div className="acoes"><button onClick={baixar} disabled={baixando}>{baixando ? 'Gerando PDF…' : 'Baixar PDF'}</button></div>
+      <div className="acoes"><button onClick={baixar} disabled={baixando} aria-busy={baixando}>{baixando ? 'Gerando PDF…' : 'Baixar PDF'}</button></div>
     </section>}
 
     {editavel && <section className="folha">
@@ -263,7 +263,12 @@ export function Orcamento() {
         </label>
       </div>
       {textosPendentes && <p className="aviso" style={{ marginTop: 16 }}>Há alterações não salvas. Elas também são salvas ao registrar.</p>}
-      <div className="acoes"><button onClick={salvarTextos} disabled={!textosPendentes}>Salvar textos</button></div>
+      {/* Sem pendência, o botão some e a tela diz que está tudo salvo: botão apagado parecia "carregando". */}
+      <div className="acoes">
+        {textosPendentes
+          ? <button onClick={salvarTextos}>Salvar textos</button>
+          : <span className="salvo" role="status">✓ Textos salvos</span>}
+      </div>
     </section>}
 
     <section className="folha">

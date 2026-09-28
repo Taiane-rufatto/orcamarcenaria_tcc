@@ -59,3 +59,5 @@ Execução nº 2 (2026-09-28, commit `e983f7b`, Spec 004 — regressão): domín
 Execução nº 3 (2026-09-28, commit `d746dea`, Spec 005 — regressão): domínio do cálculo sem alteração; 10 de 10 casos com diferença nula; migração do cliente preservou número, situação e preço dos orçamentos do banco principal; TI03 aprovado. Detalhes em `005-clientes-2026-09-28.md`.
 
 Execução nº 4 (2026-09-28, commit `9578030`, Spec 006 — regressão): domínio do cálculo sem alteração; 10 de 10 casos com diferença nula; PDF usa o preço final gravado e o conteúdo do CT03 não contém nenhum valor interno. Detalhes em `006-pdf-2026-09-28.md`.
+
+Execução nº 5 (2026-09-28, Spec 007 — regressão): `validarLucro` extraído do domínio sem mudar fórmula; 10 de 10 casos com diferença nula; CT03, CT04 e CT06 reproduzidos pela API partindo só da configuração da marcenaria (R$ 2.760,00, R$ 2.520,00 e R$ 934,00). Detalhes em `007-configuracoes-2026-09-28.md`.

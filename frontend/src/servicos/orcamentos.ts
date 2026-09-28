@@ -17,7 +17,7 @@ export type Cabecalho = {
   clienteId: string
   descricaoProjeto: string
   dataEmissao: string
-  dataValidade: string
+  dataValidade?: string // em branco na criação: emissão + dias da configuração (D024)
   modoLucro?: ModoLucro
   percentualLucro?: string
   regraArredondamento?: RegraArredondamento

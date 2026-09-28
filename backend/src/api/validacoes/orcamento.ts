@@ -19,7 +19,7 @@ const valorUnitario = decimal(8, 4, 'Informe o valor unitário, sem sinal negati
 const valorCustoAdicional = decimal(10, 2, 'Informe o valor do custo adicional com até 2 casas decimais')
   .refine(maiorQueZero, 'O custo adicional deve ser maior que zero')
 // NUMERIC(5,2): até 999,99%. O limite da margem (< 100) é conferido pelo domínio.
-const percentualLucro = decimal(3, 2, 'Informe o percentual de lucro com até 2 casas decimais (máximo 999,99)')
+export const percentualLucro = decimal(3, 2, 'Informe o percentual de lucro com até 2 casas decimais (máximo 999,99)')
 
 const texto = (mensagem: string) => z.string(mensagem).trim().min(1, mensagem)
 const data = z.iso.date('Informe uma data válida')
@@ -30,17 +30,15 @@ export const cabecalhoSchema = z
     clienteId: z.uuid('Selecione o cliente'),
     descricaoProjeto: texto('Informe a descrição do projeto'),
     dataEmissao: data,
-    dataValidade: data,
-    // Padrões do 003 até existir a configuração da marcenaria (007): markup de 150% (2,5× o custo)
-    // e sem arredondamento, conforme a prática do proprietário (D017).
-    modoLucro: z.enum(['margem', 'markup'], 'Selecione margem ou markup').default('markup'),
-    percentualLucro: percentualLucro.default('150'),
-    regraArredondamento: z.enum(['duas_casas', 'real_inteiro', 'dezena'], 'Selecione a regra de arredondamento').default('duas_casas'),
-    especificacoes: z.string().trim().max(4000, 'As especificações devem ter até 4.000 caracteres').default(''),
-    observacoes: z.string().trim().max(1000, 'As observações devem ter até 1.000 caracteres').default(''),
+    // Campos omitidos: na criação vêm da configuração da marcenaria (D024; validade = emissão + dias);
+    // na edição de um rascunho, mantêm o valor atual do orçamento.
+    dataValidade: data.optional(),
+    modoLucro: z.enum(['margem', 'markup'], 'Selecione margem ou markup').optional(),
+    percentualLucro: percentualLucro.optional(),
+    regraArredondamento: z.enum(['duas_casas', 'real_inteiro', 'dezena'], 'Selecione a regra de arredondamento').optional(),
+    especificacoes: z.string().trim().max(4000, 'As especificações devem ter até 4.000 caracteres').optional(),
+    observacoes: z.string().trim().max(1000, 'As observações devem ter até 1.000 caracteres').optional(),
   })
-  // Datas ISO (AAAA-MM-DD) comparam corretamente como texto.
-  .refine((d) => d.dataValidade >= d.dataEmissao, { message: 'A validade não pode ser anterior à data de emissão', path: ['dataValidade'] })
 
 export const itemSchema = z.discriminatedUnion('origem', [
   z.object({ origem: z.literal('catalogo'), tipo, catalogoId: z.uuid('Item do catálogo não encontrado ou inativo'), quantidade }),

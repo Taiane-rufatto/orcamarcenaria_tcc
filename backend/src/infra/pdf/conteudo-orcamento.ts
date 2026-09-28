@@ -14,7 +14,7 @@ export interface DadosPdf {
   precoFinal: string // texto decimal gravado pelo domínio (D019), ex.: "2760.00"
   itens: { descricao: string; quantidade: string; unidade: string }[]
   cliente: { nome: string; telefone: string | null; email: string | null; endereco: string | null }
-  marcenaria: { nome: string; responsavel: string }
+  marcenaria: { nome: string; responsavel: string; telefone: string | null; email: string | null; cnpj: string | null; endereco: string | null }
 }
 
 export interface ConteudoPdf {
@@ -66,7 +66,15 @@ export function montarConteudoPdf(dados: DadosPdf, mostrarItens: boolean): Conte
   return {
     nomeArquivo: `orcamento-${dados.numero}.pdf`,
     titulo: `Orçamento nº ${dados.numero}`,
-    marcenaria: [dados.marcenaria.nome, `Responsável: ${dados.marcenaria.responsavel}`],
+    // RF05: contatos da marcenaria só quando preenchidos na configuração (D024).
+    marcenaria: [
+      dados.marcenaria.nome,
+      `Responsável: ${dados.marcenaria.responsavel}`,
+      ...(dados.marcenaria.cnpj ? [`CNPJ: ${dados.marcenaria.cnpj}`] : []),
+      ...[dados.marcenaria.telefone, dados.marcenaria.email].filter(Boolean).length
+        ? [[dados.marcenaria.telefone, dados.marcenaria.email].filter(Boolean).join(' · ')] : [],
+      ...(dados.marcenaria.endereco ? [dados.marcenaria.endereco] : []),
+    ],
     cliente: [
       cliente.nome,
       ...(cliente.telefone ? [`Telefone: ${cliente.telefone}`] : []),

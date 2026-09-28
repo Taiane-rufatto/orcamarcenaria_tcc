@@ -133,7 +133,9 @@ th.valor { text-align: right; }
 .opcoes { border: 0; padding: 0; margin: 0; display: grid; gap: 10px; }
 .opcoes label { display: flex; align-items: center; gap: 10px; font-weight: 400; font-size: 1rem; }
 .opcoes input { width: 20px; min-height: 20px; accent-color: var(--verde); }
-button:disabled { opacity: .6; cursor: wait; }
+button:disabled { opacity: .6; cursor: not-allowed; box-shadow: none; }
+button[aria-busy="true"] { cursor: progress; }
+.salvo { color: var(--verde); font-weight: 600; align-self: center; }
 .campo-com-unidade { display: flex; align-items: center; gap: 8px; }
 td input { min-width: 90px; }
 td form { display: inline; }

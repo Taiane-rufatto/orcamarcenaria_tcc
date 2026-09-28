@@ -15,7 +15,7 @@ O marceneiro cadastra uma vez seus materiais e serviços com os respectivos cust
 
 ## Estado
 
-Incrementos 000 (preparação), 001 (conta e acesso), 002 (catálogo de materiais e serviços), 003 (composição e cálculo do orçamento), 004 (registro e acompanhamento), 005 (clientes) e 006 (orçamento em PDF) concluídos; o próximo é o 007 (configurações da marcenaria). Ver `ESTADO_ATUAL.md`.
+Incrementos 000 (preparação), 001 (conta e acesso), 002 (catálogo de materiais e serviços), 003 (composição e cálculo do orçamento), 004 (registro e acompanhamento), 005 (clientes), 006 (orçamento em PDF) e 007 (configurações da marcenaria) concluídos; o próximo é o 008 (validação formal do cálculo). Ver `ESTADO_ATUAL.md`.
 
 ## Documentação
 

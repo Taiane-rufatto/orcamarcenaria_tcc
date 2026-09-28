@@ -4,12 +4,22 @@ import { ErroHttp } from '../../api/erros/erro-http'
 import { calcularOrcamento, multiplicadorEquivalente } from '../../dominio/orcamento/calculo'
 import * as repositorio from '../../infra/repositorios/orcamento-repositorio'
 import { buscarCliente } from '../../infra/repositorios/cliente-repositorio'
+import { lerPadroes } from '../../infra/repositorios/configuracao-repositorio'
 import type { Cabecalho, FiltrosListagem, Situacao, TipoItem } from '../../infra/repositorios/orcamento-repositorio'
 
 // Casos de uso do orçamento (arquitetura.md §3): orquestram transação, repositório e domínio.
 // Toda alteração segue o mesmo caminho (D019): trava o orçamento, altera a composição,
 // o domínio calcula uma única vez, os totais são gravados e a resposta volta completa.
 // Se o domínio recusar a entrada (ErroCalculo), a transação é desfeita e nada é gravado.
+
+// Cabeçalho recebido da API: lucro, arredondamento, validade e textos podem vir omitidos (D024).
+export type EntradaCabecalho = Pick<Cabecalho, 'clienteId' | 'descricaoProjeto' | 'dataEmissao'>
+  & Partial<Omit<Cabecalho, 'clienteId' | 'descricaoProjeto' | 'dataEmissao'>>
+
+// Datas ISO (AAAA-MM-DD) comparam corretamente como texto.
+function exigirValidadeCoerente(cabecalho: Cabecalho) {
+  if (cabecalho.dataValidade < cabecalho.dataEmissao) throw new ErroHttp(400, 'A validade não pode ser anterior à data de emissão')
+}
 
 export type EntradaItem =
   | { origem: 'catalogo'; tipo: TipoItem; catalogoId: string; quantidade: string }
@@ -106,9 +116,22 @@ async function exigirClienteAtivo(c: PoolClient, marcenariaId: string, clienteId
   if (!cliente?.ativo) throw new ErroHttp(400, 'Selecione um cliente ativo')
 }
 
-export function criarOrcamento(marcenariaId: string, cabecalho: Cabecalho): Promise<Orcamento> {
+// O orçamento novo copia os padrões da marcenaria (RF19–RF22, D024); mudar a configuração depois
+// não altera este orçamento (arquitetura §5.2.3).
+export function criarOrcamento(marcenariaId: string, entrada: EntradaCabecalho): Promise<Orcamento> {
   return emTransacao(async (c) => {
-    await exigirClienteAtivo(c, marcenariaId, cabecalho.clienteId)
+    await exigirClienteAtivo(c, marcenariaId, entrada.clienteId)
+    const padroes = await lerPadroes(c, marcenariaId)
+    const cabecalho: Cabecalho = {
+      ...entrada,
+      modoLucro: entrada.modoLucro ?? padroes.modoLucro,
+      percentualLucro: entrada.percentualLucro ?? padroes.percentualLucro,
+      regraArredondamento: entrada.regraArredondamento ?? padroes.regraArredondamento,
+      dataValidade: entrada.dataValidade ?? await repositorio.somarDias(c, entrada.dataEmissao, padroes.validadeDias),
+      especificacoes: entrada.especificacoes ?? '',
+      observacoes: entrada.observacoes ?? '',
+    }
+    exigirValidadeCoerente(cabecalho)
     const id = await repositorio.inserirOrcamento(c, marcenariaId, cabecalho)
     await recalcular(c, marcenariaId, id)
     return (await montarResposta(c, marcenariaId, id))!
@@ -128,10 +151,21 @@ export async function consultarOrcamento(marcenariaId: string, id: string): Prom
 
 // Trocar o cliente de um rascunho exige cliente ativo; manter o mesmo é permitido mesmo que ele
 // tenha sido inativado depois (D021).
-export const alterarCabecalho = (marcenariaId: string, id: string, cabecalho: Cabecalho) =>
+// Campos omitidos mantêm o valor atual do rascunho.
+export const alterarCabecalho = (marcenariaId: string, id: string, entrada: EntradaCabecalho) =>
   alterar(marcenariaId, id, async (c) => {
-    const atual = await repositorio.lerOrcamento(c, id, marcenariaId)
-    if (atual?.orcamento.cliente_id !== cabecalho.clienteId) await exigirClienteAtivo(c, marcenariaId, cabecalho.clienteId)
+    const { orcamento: o } = (await repositorio.lerOrcamento(c, id, marcenariaId))!
+    if (o.cliente_id !== entrada.clienteId) await exigirClienteAtivo(c, marcenariaId, entrada.clienteId)
+    const cabecalho: Cabecalho = {
+      ...entrada,
+      dataValidade: entrada.dataValidade ?? o.data_validade,
+      modoLucro: entrada.modoLucro ?? o.modo_lucro,
+      percentualLucro: entrada.percentualLucro ?? o.percentual_lucro,
+      regraArredondamento: entrada.regraArredondamento ?? o.regra_arredondamento,
+      especificacoes: entrada.especificacoes ?? o.especificacoes ?? '',
+      observacoes: entrada.observacoes ?? o.observacoes ?? '',
+    }
+    exigirValidadeCoerente(cabecalho)
     return repositorio.atualizarCabecalho(c, id, marcenariaId, cabecalho)
   })
 

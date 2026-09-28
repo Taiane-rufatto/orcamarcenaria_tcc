@@ -7,6 +7,7 @@ import { tratamentoDeErros } from './api/middlewares/tratamento-de-erros'
 import { rotasCatalogo } from './api/rotas/catalogo'
 import { rotasOrcamentos } from './api/rotas/orcamentos'
 import { rotasClientes } from './api/rotas/clientes'
+import { rotasConfiguracoes } from './api/rotas/configuracoes'
 
 export const app = express()
 
@@ -16,6 +17,7 @@ app.use('/auth', rotasAutenticacao)
 app.use(rotasCatalogo)
 app.use(rotasOrcamentos)
 app.use(rotasClientes)
+app.use(rotasConfiguracoes)
 
 app.get('/saude', async (_requisicao, resposta) => {
   try {
