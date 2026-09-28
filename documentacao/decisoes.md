@@ -6,6 +6,36 @@ Formato: contexto → decisão → consequência → situação (`provisória` e
 
 ---
 
+## D023 — PDF gerado no servidor com PDFKit, conteúdo separado do desenho
+**Data:** 2026-09-28 · **Situação:** firme
+
+**Contexto.** A arquitetura deixou a biblioteca de PDF para o 006 (§6) e registrou o risco de uma ferramenta complexa atrasar o incremento (§9).
+
+**Decisão.** Usar **PDFKit** no servidor: biblioteca JavaScript sem navegador embutido, com as fontes padrão do PDF (que cobrem acentos do português). O PDF é montado em duas etapas: uma função pura monta o **conteúdo** (textos e linhas a imprimir) a partir do orçamento já calculado, e outra apenas o **desenha** com PDFKit. O valor por extenso é escrito por uma função própria, a partir do texto decimal, sem `Number`.
+
+**Alternativas rejeitadas.** Navegador sem interface (Puppeteer): baixa um navegador inteiro e pesa na instalação e na VPS. pdfmake: tabelas declarativas, mas exige empacotar fontes; a tabela deste PDF é simples.
+
+**Consequência.** O conteúdo é testável sem abrir o PDF, inclusive a garantia de que não aparece custo, lucro ou percentual (RF42). O PDF usa os valores gravados pelo domínio; não há segundo cálculo.
+
+---
+
+## D022 — PDF sem valores por item, só de orçamento registrado, com observações
+**Data:** 2026-09-28 · **Situação:** firme (decidido pela autora; revisado no mesmo dia com o modelo de orçamento do proprietário)
+
+**Contexto.** O RF41 pede "itens com quantidade e valor" e o RF42 "lista de itens com valores ou apenas valor total", sem revelar custo e lucro. Mas o valor de cada item é **custo** (RN01): listá-lo ao lado do preço final revela o lucro por diferença. Ratear o preço entre os itens exigiria uma regra de cálculo nova. Também não estava definido se rascunho gera PDF nem o que é o "campo de observações".
+
+**Decisão.**
+1. O PDF nunca mostra valor por item. Por padrão ele segue o modelo de orçamento que o proprietário já usa (responde à Q7): **especificações** digitadas pelo marceneiro ("Orçamento referente a <projeto>, estando incluídos os seguintes itens:" seguido do texto dele, com marcadores e subtítulos) e o **preço final**. Ao baixar, pode-se incluir também a lista de materiais e serviços do sistema, só com quantidades.
+2. Só orçamento registrado (com número) gera PDF (US14).
+3. O orçamento ganha dois textos editáveis em rascunho: `especificacoes` (o que o cliente recebe, no alto do PDF) e `observacoes` (prazo, pagamento, no fim). Na tela, eles têm botão próprio e são salvos automaticamente ao registrar, para não se perderem.
+4. Dados da marcenaria no PDF: nome e responsável; telefone, e-mail, CNPJ e endereço entram quando o RF05 (incremento 007) existir.
+
+**Alternativa rejeitada.** Valores de venda por item (custo × fator, com sobra de centavos): mudaria `regras-de-calculo.md` e os casos de teste por um detalhe de apresentação.
+
+**Consequência.** RF41 e RF42 reescritos em `requisitos.md`. O RF42 fica atendido sem regra nova, e o PDF não expõe a composição de custo em nenhuma das duas opções.
+
+---
+
 ## D021 — Cliente vinculado ao orçamento, sem cópia do nome, e reativável
 **Data:** 2026-09-28 · **Situação:** firme (decidido pela autora)
 
@@ -289,7 +319,7 @@ Enquanto não respondidas, valem as decisões provisórias acima. Espelhadas em 
 | Q4 | Frete, deslocamento e instalação entram no preço com lucro ou são repassados a custo? | Muda D006 |
 | Q5 | Costuma arredondar o preço final? Para real inteiro, dezena ou não arredonda? | Define o padrão de D003 |
 | Q6 | Qual o prazo de validade que costuma dar ao orçamento? O que faz quando vence? | Ajusta RF22 e RN09 |
-| Q7 | O que o cliente vê hoje: lista de itens com valores ou só o total? | Define o padrão de RF42 |
+| Q7 | O que o cliente vê hoje: lista de itens com valores ou só o total? | Define o padrão de RF42 — **respondida pelo modelo de orçamento do proprietário (D022): descrição do que está incluído, sem valores, e o total** |
 | Q8 | Quantos orçamentos faz por mês e quanto tempo leva em cada um? | Base de comparação para a observação de uso (RNF01) |
 | Q9 | Já perdeu dinheiro por esquecer algum custo? Qual? | Evidência qualitativa forte para a justificativa da monografia |
 | Q10 | Usa o computador na oficina ou apenas no escritório? Em qual tela? | Confirma ou revisa RNF05 |

@@ -2,7 +2,7 @@
 
 **Branch:** `spec/005-clientes`  
 **Data:** 2026-09-28  
-**Status:** implementada e verificada em 2026-09-28; fechamento pendente da revisão do diff pela autora (B15)
+**Status:** fechada em 2026-09-28 (PR #6)
 
 ## Clarificações
 

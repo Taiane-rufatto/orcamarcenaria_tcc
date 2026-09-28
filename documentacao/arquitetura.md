@@ -85,7 +85,7 @@ erDiagram
 
 **servico** — `id`, `marcenaria_id`, `nome` (único por marcenaria, inclusive entre inativos), `descricao?` (até 300), `tipo_cobranca` (`hora` | `unidade`), `valor_unitario` NUMERIC(12,4), `ativo`, `criado_em`, `atualizado_em`
 
-**orcamento** — `id`, `marcenaria_id`, `numero` INT (nulo em rascunho e obrigatório fora dele — registrar = enviar, D020), `cliente_id` (obrigatório; nome e contato vêm do cadastro, sem cópia — D021. O texto livre `cliente_nome` do 003 foi convertido pela migração 005), `descricao_projeto`, `data_emissao`, `data_validade`, `situacao` (`rascunho` | `enviado` | `aprovado` | `recusado` | `vencido`, RN09; `vencido` aplicado ao listar e consultar, com a data de São Paulo), `modo_lucro`, `percentual_lucro` NUMERIC(5,2), `regra_arredondamento`, `subtotal_materiais` NUMERIC(12,2), `subtotal_servicos` NUMERIC(12,2), `total_adicionais` NUMERIC(12,2), `custo_direto_total` NUMERIC(12,2), `valor_lucro` NUMERIC(12,2), `ajuste_arredondamento` NUMERIC(12,2), `preco_final` NUMERIC(12,2), `observacoes?` (ainda não criado), `criado_em`, `atualizado_em`
+**orcamento** — `id`, `marcenaria_id`, `numero` INT (nulo em rascunho e obrigatório fora dele — registrar = enviar, D020), `cliente_id` (obrigatório; nome e contato vêm do cadastro, sem cópia — D021. O texto livre `cliente_nome` do 003 foi convertido pela migração 005), `descricao_projeto`, `data_emissao`, `data_validade`, `situacao` (`rascunho` | `enviado` | `aprovado` | `recusado` | `vencido`, RN09; `vencido` aplicado ao listar e consultar, com a data de São Paulo), `modo_lucro`, `percentual_lucro` NUMERIC(5,2), `regra_arredondamento`, `subtotal_materiais` NUMERIC(12,2), `subtotal_servicos` NUMERIC(12,2), `total_adicionais` NUMERIC(12,2), `custo_direto_total` NUMERIC(12,2), `valor_lucro` NUMERIC(12,2), `ajuste_arredondamento` NUMERIC(12,2), `preco_final` NUMERIC(12,2), `especificacoes?` (até 4.000; o que o cliente recebe, no alto do PDF — D022), `observacoes?` (até 1.000; prazo e pagamento, no fim do PDF), `criado_em`, `atualizado_em`
 - Único: (`marcenaria_id`, `numero`)
 
 **orcamento_item** — `id`, `orcamento_id`, `tipo` (`material` | `servico`), `material_id?`, `servico_id?`, `descricao`, `unidade`, `quantidade` NUMERIC(12,3), `valor_unitario` NUMERIC(12,4), `valor_unitario_catalogo` NUMERIC(12,4) (valor copiado na inclusão; nulo no item avulso), `valor_linha` NUMERIC(12,2), `valor_ajustado_manualmente` BOOL (coluna gerada: `valor_unitario <> valor_unitario_catalogo`), `ordem` INT
@@ -109,7 +109,7 @@ Stack confirmada em 2026-09-02 (D007), na direção indicada pela proposta:
 | Front-end | React com TypeScript (Vite) | Projeto separado em `frontend/`; não calcula preço |
 | Back-end | Node.js com TypeScript | Projeto separado em `backend/`; concentra o domínio de cálculo |
 | Banco | PostgreSQL | Tipo `NUMERIC` nativo, exigido por RNF07 |
-| PDF | Biblioteca de geração no servidor | Escolha da biblioteca fica para o incremento 006 |
+| PDF | Biblioteca de geração no servidor | **PDFKit** (D023): conteúdo montado por função pura em `infra/pdf/conteudo-orcamento.ts`, desenho em `infra/pdf/desenhar-orcamento.ts` |
 | Testes | Framework de testes do ecossistema Node/TypeScript | Definido no incremento 000 |
 | Versionamento | Git + GitHub | — |
 | Editor / harness | Visual Studio Code + Claude Code | Skills do projeto em `.claude/skills/` |

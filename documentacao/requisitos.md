@@ -102,8 +102,8 @@ Versão 1.0 · Fonte canônica dos requisitos do projeto. Qualquer mudança aqui
 
 | ID | Requisito | Prioridade | OE | Incremento |
 |---|---|---|---|---|
-| RF41 | O sistema deve gerar o orçamento em PDF contendo: identificação da marcenaria, dados do cliente, número e data, descrição do projeto, itens com quantidade e valor, preço final por extenso e numérico, validade e campo de observações. | Essencial | OE5 | 006 |
-| RF42 | O PDF deve apresentar os itens sem revelar a composição interna de custo e lucro, exibindo apenas o que o marceneiro optar por mostrar: lista de itens com valores ou apenas valor total. | Importante | OE5, OE7 | 006 |
+| RF41 | O sistema deve gerar o orçamento em PDF contendo: identificação da marcenaria, dados do cliente, número e data, descrição do projeto, especificações do que está incluído e, se escolhido, itens com quantidade (sem valor por item, D022), preço final por extenso e numérico, validade e observações. | Essencial | OE5 | 006 |
+| RF42 | O PDF deve apresentar os itens sem revelar a composição interna de custo e lucro, exibindo apenas o que o marceneiro optar por mostrar: especificações e preço final, com a opção de incluir a lista de itens só com quantidades (D022). | Importante | OE5, OE7 | 006 |
 | RF43 | O sistema deve permitir baixar o PDF gerado a partir da tela do orçamento. | Essencial | OE5 | 006 |
 
 ---

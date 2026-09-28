@@ -5,7 +5,7 @@ import { listarMateriais, listarServicos, type Material, type Servico } from '..
 import { listarClientes, type Cliente } from '../servicos/clientes'
 import {
   adicionarCustoAdicional, adicionarItem, alterarCabecalho, alterarItem, consultarOrcamento, exibirData, exibirMoeda, exibirNumero,
-  mudarSituacao, paraCampo, registrarOrcamento, removerCustoAdicional, removerItem, SITUACOES,
+  baixarPdf, mudarSituacao, paraCampo, registrarOrcamento, removerCustoAdicional, removerItem, SITUACOES,
   type ModoLucro, type NovoItem, type Orcamento as DadosOrcamento, type RegraArredondamento, type TipoItem,
 } from '../servicos/orcamentos'
 
@@ -28,6 +28,11 @@ export function Orcamento() {
   const [clientes, setClientes] = useState<Cliente[]>([])
   const [origem, setOrigem] = useState<Origem>('material')
   const [erro, setErro] = useState('')
+  // Padrão sem a lista de materiais, como no modelo de orçamento do proprietário (Q7, D022).
+  const [mostrarItensPdf, setMostrarItensPdf] = useState(false)
+  // Textos para o cliente: controlados aqui para não se perderem ao registrar sem salvar.
+  const [textos, setTextos] = useState({ especificacoes: '', observacoes: '' })
+  const [baixando, setBaixando] = useState(false)
 
   useEffect(() => {
     let atual = true
@@ -35,6 +40,7 @@ export function Orcamento() {
       .then(([dados, listaMateriais, listaServicos, listaClientes]) => {
         if (!atual) return
         setOrcamento(dados); setMateriais(listaMateriais); setServicos(listaServicos); setClientes(listaClientes)
+        setTextos({ especificacoes: dados.especificacoes, observacoes: dados.observacoes })
       })
       .catch((causa) => { if (atual) setErro(causa instanceof Error ? causa.message : 'Não foi possível carregar o orçamento') })
     return () => { atual = false }
@@ -57,10 +63,51 @@ export function Orcamento() {
   }
 
   const editavel = orcamento.situacao === 'rascunho'
+  const textosPendentes = textos.especificacoes !== orcamento.especificacoes || textos.observacoes !== orcamento.observacoes
+
+  // Cabeçalho gravado + textos da tela: salvar os textos não mexe nos demais dados.
+  const cabecalhoAtual = (o: DadosOrcamento) => ({
+    clienteId: o.clienteId, descricaoProjeto: o.descricaoProjeto, dataEmissao: o.dataEmissao, dataValidade: o.dataValidade,
+    modoLucro: o.modoLucro, percentualLucro: o.percentualLucro, regraArredondamento: o.regraArredondamento, ...textos,
+  })
+
+  async function salvarTextos(): Promise<boolean> {
+    try {
+      const salvo = await alterarCabecalho(id, cabecalhoAtual(orcamento!))
+      setOrcamento(salvo)
+      setTextos({ especificacoes: salvo.especificacoes, observacoes: salvo.observacoes })
+      setErro('')
+      return true
+    } catch (causa) {
+      setErro(causa instanceof Error ? causa.message : 'Não foi possível salvar os textos')
+      return false
+    }
+  }
+
+  // RF43: baixa o PDF gerado no servidor e o salva com o número do orçamento.
+  async function baixar() {
+    setBaixando(true)
+    try {
+      const arquivo = await baixarPdf(id, mostrarItensPdf)
+      const endereco = URL.createObjectURL(arquivo)
+      const link = document.createElement('a')
+      link.href = endereco
+      link.download = `orcamento-${orcamento!.numero}.pdf`
+      link.click()
+      URL.revokeObjectURL(endereco)
+      setErro('')
+    } catch (causa) {
+      setErro(causa instanceof Error ? causa.message : 'Não foi possível gerar o PDF')
+    } finally {
+      setBaixando(false)
+    }
+  }
 
   // Registrar = enviar (D020): o número é atribuído e a edição trava. A confirmação evita registro por engano.
-  function registrar() {
-    if (!window.confirm('Registrar este orçamento? Ele recebe um número e os itens e valores não poderão mais ser alterados.')) return
+  // Textos ainda não salvos são gravados antes, para não se perderem.
+  async function registrar() {
+    if (!window.confirm('Registrar este orçamento? Ele recebe um número e os itens, valores e textos não poderão mais ser alterados.')) return
+    if (textosPendentes && !await salvarTextos()) return
     executar(registrarOrcamento(id))
   }
 
@@ -75,6 +122,7 @@ export function Orcamento() {
       modoLucro: String(dados.get('modoLucro')) as ModoLucro,
       percentualLucro: String(dados.get('percentualLucro')),
       regraArredondamento: String(dados.get('regraArredondamento')) as RegraArredondamento,
+      ...textos,
     }))
   }
 
@@ -149,7 +197,18 @@ export function Orcamento() {
           {orcamento.memorial.multiplicadorEquivalente && ` (${paraCampo(orcamento.memorial.multiplicadorEquivalente)}× o custo)`}
         </dd></div>
         <div><dt>Arredondamento</dt><dd>{REGRAS[orcamento.regraArredondamento]}</dd></div>
+        {orcamento.especificacoes && <div className="largo"><dt>Especificações</dt><dd className="texto-livre">{orcamento.especificacoes}</dd></div>}
+        {orcamento.observacoes && <div className="largo"><dt>Observações</dt><dd className="texto-livre">{orcamento.observacoes}</dd></div>}
       </dl>
+    </section>}
+
+    {!editavel && <section className="folha">
+      <h2>PDF para o cliente</h2>
+      <p className="ajuda">O PDF traz as especificações, o preço final e as observações. Nunca mostra custos, lucro ou valor por item.</p>
+      <div className="opcoes">
+        <label><input type="checkbox" checked={mostrarItensPdf} onChange={(e) => setMostrarItensPdf(e.target.checked)} /> Incluir também a lista de materiais e serviços (só quantidades, sem valores)</label>
+      </div>
+      <div className="acoes"><button onClick={baixar} disabled={baixando}>{baixando ? 'Gerando PDF…' : 'Baixar PDF'}</button></div>
     </section>}
 
     {editavel && <section className="folha">
@@ -186,6 +245,25 @@ export function Orcamento() {
         </p>}
         <div className="acoes"><button>Salvar dados e lucro</button></div>
       </form>
+    </section>}
+
+    {editavel && <section className="folha">
+      <h2>Texto para o cliente</h2>
+      <p className="ajuda">Sai no PDF. Escreva o que o cliente recebe; linhas começando com "-" viram marcadores e linhas terminando com ":" viram subtítulos.</p>
+      <div className="campos">
+        <label className="largo">Especificações (o que está incluído)
+          <textarea rows={8} maxLength={4000} value={textos.especificacoes}
+            onChange={(e) => setTextos({ ...textos, especificacoes: e.target.value })}
+            placeholder={'Armário com cinco portas\n- Canto em 45°\n\nFerragens e acabamentos:\n- Dobradiça anti-impacto'} />
+        </label>
+        <label className="largo">Observações (prazo, pagamento, garantia)
+          <textarea rows={3} maxLength={1000} value={textos.observacoes}
+            onChange={(e) => setTextos({ ...textos, observacoes: e.target.value })}
+            placeholder="Ex.: entrega em 20 dias úteis; 50% na aprovação e 50% na entrega" />
+        </label>
+      </div>
+      {textosPendentes && <p className="aviso" style={{ marginTop: 16 }}>Há alterações não salvas. Elas também são salvas ao registrar.</p>}
+      <div className="acoes"><button onClick={salvarTextos} disabled={!textosPendentes}>Salvar textos</button></div>
     </section>}
 
     <section className="folha">
