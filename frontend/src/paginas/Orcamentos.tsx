@@ -1,8 +1,29 @@
 import { useState, type FormEvent } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { alterarSenha } from '../servicos/autenticacao'
+import { criarOrcamento, hojeLocal } from '../servicos/orcamentos'
 
 export function Orcamentos() {
   const [mensagem, setMensagem] = useState<{ texto: string; erro: boolean } | null>(null)
+  const [erroNovo, setErroNovo] = useState('')
+  const navegar = useNavigate()
+
+  // Lucro e arredondamento não são enviados: a API aplica os padrões (markup 150%, duas casas — D017).
+  async function criar(evento: FormEvent<HTMLFormElement>) {
+    evento.preventDefault()
+    const dados = new FormData(evento.currentTarget)
+    try {
+      const orcamento = await criarOrcamento({
+        clienteNome: String(dados.get('clienteNome')),
+        descricaoProjeto: String(dados.get('descricaoProjeto')),
+        dataEmissao: String(dados.get('dataEmissao')),
+        dataValidade: String(dados.get('dataValidade')),
+      })
+      navegar(`/orcamentos/${orcamento.id}`)
+    } catch (causa) {
+      setErroNovo(causa instanceof Error ? causa.message : 'Não foi possível criar o orçamento.')
+    }
+  }
 
   async function trocar(evento: FormEvent<HTMLFormElement>) {
     evento.preventDefault()
@@ -20,8 +41,22 @@ export function Orcamentos() {
   return <main className="pagina">
     <div className="cabecalho-pagina">
       <h1>Orçamentos</h1>
-      <p>Nenhum orçamento cadastrado neste momento.</p>
+      <p>Comece pelos dados do cliente e do projeto. Depois você inclui materiais, serviços e custos, e o sistema calcula o preço.</p>
     </div>
+
+    <section className="folha">
+      <h2>Novo orçamento</h2>
+      <form onSubmit={criar}>
+        <div className="campos">
+          <label>Cliente<input name="clienteNome" required /></label>
+          <label>Descrição do projeto<input name="descricaoProjeto" placeholder="Ex.: armário de cozinha" required /></label>
+          <label>Data de emissão<input name="dataEmissao" type="date" defaultValue={hojeLocal()} required /></label>
+          <label>Válido até<input name="dataValidade" type="date" required /></label>
+        </div>
+        {erroNovo && <p role="alert" className="alerta" style={{ marginTop: 16 }}>{erroNovo}</p>}
+        <div className="acoes"><button>Criar orçamento</button></div>
+      </form>
+    </section>
 
     <section className="folha">
       <h2>Alterar senha</h2>

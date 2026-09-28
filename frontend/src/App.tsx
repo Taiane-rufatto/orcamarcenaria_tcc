@@ -3,6 +3,7 @@ import { Layout } from './componentes/Layout'
 import { RotaProtegida } from './componentes/RotaProtegida'
 import { Cadastro } from './paginas/Cadastro'
 import { Entrar } from './paginas/Entrar'
+import { Orcamento } from './paginas/Orcamento'
 import { Orcamentos } from './paginas/Orcamentos'
 import { Materiais } from './paginas/Materiais'
 import { Servicos } from './paginas/Servicos'
@@ -14,6 +15,7 @@ export default function App() {
     <Route element={<RotaProtegida />}>
       <Route element={<Layout />}>
         <Route path="/orcamentos" element={<Orcamentos />} />
+        <Route path="/orcamentos/:id" element={<Orcamento />} />
         <Route path="/materiais" element={<Materiais />} />
         <Route path="/servicos" element={<Servicos />} />
       </Route>

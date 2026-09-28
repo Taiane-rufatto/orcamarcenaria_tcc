@@ -1,25 +1,10 @@
-import { tokenAtual } from './autenticacao'
-
-const api = import.meta.env.VITE_API_URL ?? 'http://localhost:3333'
+import { requisitar } from './api'
 
 export type Situacao = 'ativos' | 'inativos' | 'todos'
 export type Material = { id: string; nome: string; descricao: string | null; unidade: string; custo_unitario: string; ativo: boolean }
 export type Servico = { id: string; nome: string; descricao: string | null; tipo_cobranca: 'hora' | 'unidade'; valor_unitario: string; ativo: boolean }
 export type DadosMaterial = { nome: string; descricao?: string; unidade: string; custoUnitario: string }
 export type DadosServico = { nome: string; descricao?: string; tipoCobranca: string; valorUnitario: string }
-
-async function requisitar<T>(rota: string, metodo = 'GET', corpo?: unknown): Promise<T> {
-  const resposta = await fetch(`${api}${rota}`, {
-    method: metodo,
-    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${tokenAtual()}` },
-    body: corpo === undefined ? undefined : JSON.stringify(corpo),
-  })
-  if (!resposta.ok) {
-    const erro = await resposta.json().catch(() => null) as { mensagem?: string } | null
-    throw new Error(erro?.mensagem ?? `A API respondeu ${resposta.status}`)
-  }
-  return resposta.status === 204 ? undefined as T : resposta.json() as Promise<T>
-}
 
 const consulta = (busca: string, situacao: Situacao) => `?${new URLSearchParams({ busca, situacao })}`
 

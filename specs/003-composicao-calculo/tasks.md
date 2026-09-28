@@ -19,8 +19,8 @@
 
 ## Fase 4 — Telas
 
-- [ ] T009 Serviço `frontend/src/servicos/orcamentos.ts` e tela de novo orçamento.
-- [ ] T010 Tela do orçamento: itens do catálogo e avulsos, custos adicionais, lucro, arredondamento e memorial (RF31), sem nenhuma conta no frontend.
+- [x] T009 Serviço `frontend/src/servicos/orcamentos.ts` e formulário de novo orçamento na página `Orcamentos.tsx` (sem página separada).
+- [x] T010 Tela do orçamento (`Orcamento.tsx`, componente `Memorial.tsx`): itens do catálogo e avulsos, custos adicionais, lucro, arredondamento e memorial (RF31), sem nenhuma conta no frontend.
 
 ## Fase 5 — Evidências e fechamento
 
