@@ -79,13 +79,13 @@ erDiagram
 
 **configuracao** — `marcenaria_id` (PK), `modo_lucro` (`margem` | `markup`), `percentual_lucro_padrao` NUMERIC(5,2), `regra_arredondamento` (`duas_casas` | `real_inteiro` | `dezena`), `validade_padrao_dias` INT
 
-**cliente** — `id`, `marcenaria_id`, `nome`, `telefone?`, `email?`, `endereco?`, `ativo`, `criado_em`
+**cliente** — `id`, `marcenaria_id`, `nome` (não único: homônimos se distinguem pelo telefone, D021), `telefone?` (até 30), `email?` (até 200), `endereco?` (até 300), `ativo` (inativa e reativa, sem exclusão), `criado_em`, `atualizado_em`
 
 **material** — `id`, `marcenaria_id`, `nome` (único por marcenaria, inclusive entre inativos), `descricao?` (até 300), `unidade` (`un`, `m`, `m²`, `ml`, `ch`, `kg`, `L`, `pç`), `custo_unitario` NUMERIC(12,4), `ativo`, `criado_em`, `atualizado_em`
 
 **servico** — `id`, `marcenaria_id`, `nome` (único por marcenaria, inclusive entre inativos), `descricao?` (até 300), `tipo_cobranca` (`hora` | `unidade`), `valor_unitario` NUMERIC(12,4), `ativo`, `criado_em`, `atualizado_em`
 
-**orcamento** — `id`, `marcenaria_id`, `numero` INT (nulo em rascunho e obrigatório fora dele — registrar = enviar, D020), `cliente_nome` (texto livre no 003, D018; o 005 acrescenta `cliente_id`), `descricao_projeto`, `data_emissao`, `data_validade`, `situacao` (`rascunho` | `enviado` | `aprovado` | `recusado` | `vencido`, RN09; `vencido` aplicado ao listar e consultar, com a data de São Paulo), `modo_lucro`, `percentual_lucro` NUMERIC(5,2), `regra_arredondamento`, `subtotal_materiais` NUMERIC(12,2), `subtotal_servicos` NUMERIC(12,2), `total_adicionais` NUMERIC(12,2), `custo_direto_total` NUMERIC(12,2), `valor_lucro` NUMERIC(12,2), `ajuste_arredondamento` NUMERIC(12,2), `preco_final` NUMERIC(12,2), `observacoes?` (ainda não criado), `criado_em`, `atualizado_em`
+**orcamento** — `id`, `marcenaria_id`, `numero` INT (nulo em rascunho e obrigatório fora dele — registrar = enviar, D020), `cliente_id` (obrigatório; nome e contato vêm do cadastro, sem cópia — D021. O texto livre `cliente_nome` do 003 foi convertido pela migração 005), `descricao_projeto`, `data_emissao`, `data_validade`, `situacao` (`rascunho` | `enviado` | `aprovado` | `recusado` | `vencido`, RN09; `vencido` aplicado ao listar e consultar, com a data de São Paulo), `modo_lucro`, `percentual_lucro` NUMERIC(5,2), `regra_arredondamento`, `subtotal_materiais` NUMERIC(12,2), `subtotal_servicos` NUMERIC(12,2), `total_adicionais` NUMERIC(12,2), `custo_direto_total` NUMERIC(12,2), `valor_lucro` NUMERIC(12,2), `ajuste_arredondamento` NUMERIC(12,2), `preco_final` NUMERIC(12,2), `observacoes?` (ainda não criado), `criado_em`, `atualizado_em`
 - Único: (`marcenaria_id`, `numero`)
 
 **orcamento_item** — `id`, `orcamento_id`, `tipo` (`material` | `servico`), `material_id?`, `servico_id?`, `descricao`, `unidade`, `quantidade` NUMERIC(12,3), `valor_unitario` NUMERIC(12,4), `valor_unitario_catalogo` NUMERIC(12,4) (valor copiado na inclusão; nulo no item avulso), `valor_linha` NUMERIC(12,2), `valor_ajustado_manualmente` BOOL (coluna gerada: `valor_unitario <> valor_unitario_catalogo`), `ordem` INT

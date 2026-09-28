@@ -6,6 +6,23 @@ Formato: contexto → decisão → consequência → situação (`provisória` e
 
 ---
 
+## D021 — Cliente vinculado ao orçamento, sem cópia do nome, e reativável
+**Data:** 2026-09-28 · **Situação:** firme (decidido pela autora)
+
+**Contexto.** O incremento 003 guardou o cliente como texto livre (`cliente_nome`, D018) até existir o cadastro. O 005 cria o cadastro (RF08–RF10) e precisa ligar os orçamentos a ele, inclusive os que já existem no banco. Também era preciso decidir se cliente inativado pode voltar, como materiais e serviços (D015).
+
+**Decisão.**
+1. O orçamento passa a ter `cliente_id` obrigatório e deixa de ter `cliente_nome`. Nome, telefone e demais dados vêm do cadastro: corrigir o cliente atualiza todos os seus orçamentos. Os valores continuam congelados (RN08); só os dados de contato acompanham o cadastro.
+2. A migração cria um cliente para cada nome distinto já usado em orçamentos da mesma marcenaria e liga os orçamentos a ele, sem perder nenhum.
+3. Cliente inativado pode ser reativado (mesma regra de D015). Inativo não pode ser escolhido para um orçamento novo nem para trocar o cliente de um rascunho, mas continua ligado aos orçamentos que já tem.
+4. Nome de cliente não é único: homônimos são comuns e se distinguem pelo telefone ou endereço.
+
+**Alternativa rejeitada.** Copiar o nome para o orçamento no registro, como os preços: mais fiel ao documento enviado, porém duplica dados de contato e exige regra de sincronização enquanto rascunho. Pode ser revista no 006 (PDF), se o documento precisar reproduzir o nome da época.
+
+**Consequência.** Uma única fonte para os dados do cliente. A busca da lista de orçamentos passa a procurar no nome do cadastro.
+
+---
+
 ## D020 — Registrar é enviar: número atribuído na saída do rascunho
 **Data:** 2026-09-28 · **Situação:** firme (decidido pela autora)
 

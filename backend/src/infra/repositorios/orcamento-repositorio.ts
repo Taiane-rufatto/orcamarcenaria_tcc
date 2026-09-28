@@ -13,7 +13,7 @@ const DO_ORCAMENTO_DA_MARCENARIA = 'orcamento_id IN (SELECT id FROM orcamento WH
 export type TipoItem = 'material' | 'servico'
 
 export interface Cabecalho {
-  clienteNome: string
+  clienteId: string
   descricaoProjeto: string
   dataEmissao: string
   dataValidade: string
@@ -36,10 +36,10 @@ export interface NovoItem {
 export async function inserirOrcamento(c: PoolClient, marcenariaId: string, dados: Cabecalho): Promise<string> {
   const id = randomUUID()
   await c.query(
-    `INSERT INTO orcamento (id, marcenaria_id, cliente_nome, descricao_projeto, data_emissao, data_validade,
+    `INSERT INTO orcamento (id, marcenaria_id, cliente_id, descricao_projeto, data_emissao, data_validade,
        modo_lucro, percentual_lucro, regra_arredondamento)
      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
-    [id, marcenariaId, dados.clienteNome, dados.descricaoProjeto, dados.dataEmissao, dados.dataValidade,
+    [id, marcenariaId, dados.clienteId, dados.descricaoProjeto, dados.dataEmissao, dados.dataValidade,
       dados.modoLucro, dados.percentualLucro, dados.regraArredondamento],
   )
   return id
@@ -55,10 +55,10 @@ export async function travarOrcamento(c: PoolClient, id: string, marcenariaId: s
 
 export async function atualizarCabecalho(c: PoolClient, id: string, marcenariaId: string, dados: Cabecalho) {
   const resultado = await c.query(
-    `UPDATE orcamento SET cliente_nome=$3, descricao_projeto=$4, data_emissao=$5, data_validade=$6,
+    `UPDATE orcamento SET cliente_id=$3, descricao_projeto=$4, data_emissao=$5, data_validade=$6,
        modo_lucro=$7, percentual_lucro=$8, regra_arredondamento=$9, atualizado_em=now()
      WHERE id=$1 AND marcenaria_id=$2`,
-    [id, marcenariaId, dados.clienteNome, dados.descricaoProjeto, dados.dataEmissao, dados.dataValidade,
+    [id, marcenariaId, dados.clienteId, dados.descricaoProjeto, dados.dataEmissao, dados.dataValidade,
       dados.modoLucro, dados.percentualLucro, dados.regraArredondamento],
   )
   return resultado.rowCount === 1
@@ -130,7 +130,10 @@ export async function removerCustoAdicional(c: PoolClient, id: string, marcenari
 }
 
 export async function lerOrcamento(c: PoolClient, id: string, marcenariaId: string) {
-  const orcamento = (await c.query('SELECT * FROM orcamento WHERE id=$1 AND marcenaria_id=$2', [id, marcenariaId])).rows[0]
+  // O nome do cliente vem do cadastro, não de uma cópia no orçamento (D021).
+  const orcamento = (await c.query(
+    `SELECT o.*, cl.nome AS cliente_nome FROM orcamento o JOIN cliente cl ON cl.id = o.cliente_id
+     WHERE o.id=$1 AND o.marcenaria_id=$2`, [id, marcenariaId])).rows[0]
   if (!orcamento) return null
   const itens = (await c.query(
     `SELECT * FROM orcamento_item WHERE ${DO_ORCAMENTO_DA_MARCENARIA} ORDER BY ordem`, [id, marcenariaId])).rows
@@ -181,17 +184,19 @@ export async function vencerOrcamentos(c: PoolClient, marcenariaId: string) {
 const escaparCuringas = (texto: string) => texto.replace(/[\\%_]/g, '\\$&')
 
 export async function listarOrcamentos(c: PoolClient, marcenariaId: string, filtros: FiltrosListagem) {
-  const condicoes = ['marcenaria_id = $1']
+  const condicoes = ['o.marcenaria_id = $1']
   const valores: unknown[] = [marcenariaId]
   const filtrar = (condicao: string, valor: unknown) => { valores.push(valor); condicoes.push(condicao.replace('?', `$${valores.length}`)) }
-  if (filtros.busca?.trim()) filtrar(`cliente_nome ILIKE ? ESCAPE '\\'`, `%${escaparCuringas(filtros.busca.trim())}%`)
-  if (filtros.situacao) filtrar('situacao = ?', filtros.situacao)
-  if (filtros.de) filtrar('data_emissao >= ?', filtros.de)
-  if (filtros.ate) filtrar('data_emissao <= ?', filtros.ate)
+  if (filtros.busca?.trim()) filtrar(`cl.nome ILIKE ? ESCAPE '\\'`, `%${escaparCuringas(filtros.busca.trim())}%`)
+  if (filtros.situacao) filtrar('o.situacao = ?', filtros.situacao)
+  if (filtros.de) filtrar('o.data_emissao >= ?', filtros.de)
+  if (filtros.ate) filtrar('o.data_emissao <= ?', filtros.ate)
   const resultado = await c.query(
-    `SELECT id, numero, cliente_nome, descricao_projeto, data_emissao, data_validade, preco_final, situacao
-     FROM orcamento WHERE ${condicoes.join(' AND ')}
-     ORDER BY data_emissao DESC, criado_em DESC`,
+    `SELECT o.id, o.numero, cl.nome AS cliente_nome, o.descricao_projeto, o.data_emissao, o.data_validade,
+       o.preco_final, o.situacao
+     FROM orcamento o JOIN cliente cl ON cl.id = o.cliente_id
+     WHERE ${condicoes.join(' AND ')}
+     ORDER BY o.data_emissao DESC, o.criado_em DESC`,
     valores,
   )
   return resultado.rows

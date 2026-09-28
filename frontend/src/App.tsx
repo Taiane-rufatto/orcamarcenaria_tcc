@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { Layout } from './componentes/Layout'
 import { RotaProtegida } from './componentes/RotaProtegida'
 import { Cadastro } from './paginas/Cadastro'
+import { Clientes } from './paginas/Clientes'
 import { Entrar } from './paginas/Entrar'
 import { Orcamento } from './paginas/Orcamento'
 import { Orcamentos } from './paginas/Orcamentos'
@@ -18,6 +19,7 @@ export default function App() {
         <Route path="/orcamentos/:id" element={<Orcamento />} />
         <Route path="/materiais" element={<Materiais />} />
         <Route path="/servicos" element={<Servicos />} />
+        <Route path="/clientes" element={<Clientes />} />
       </Route>
     </Route>
     <Route path="*" element={<Navigate to="/entrar" replace />} />

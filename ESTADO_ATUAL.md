@@ -2,11 +2,11 @@
 
 **Atualizado em:** 2026-09-28
 
-> **Incremento 004 — Registro e acompanhamento: implementado e verificado em 2026-09-28** na branch `spec/004-registro-acompanhamento` (85 testes de backend, 13 de frontend, regressão dos dez casos, percurso no Edge e validação manual da autora). **Falta a revisão do diff pela autora (B14)** para o PR e o merge.
+> **Incremento 005 — Clientes: implementado e verificado em 2026-09-28** na branch `spec/005-clientes` (89 testes de backend, 13 de frontend, regressão dos dez casos, migração conferida no banco principal, percurso no Edge e validação manual da autora). **Falta a revisão do diff pela autora (B15)** para o PR e o merge. Com ele, os incrementos 001–005 pedidos para a apresentação de andamento ficam fechados.
 
 ## Onde o projeto está
 
-Incrementos 000 a 003 entregues e integrados; 004 pronto para integração. O próximo é o 005 (clientes). O cálculo do orçamento existe em `backend/src/dominio/orcamento/calculo.ts` e é o único ponto do sistema que calcula preço.
+Incrementos 000 a 004 entregues e integrados; 005 pronto para integração. O próximo é o 006 (orçamento em PDF). O cálculo do orçamento existe em `backend/src/dominio/orcamento/calculo.ts` e é o único ponto do sistema que calcula preço.
 
 ## Pronto
 
@@ -37,12 +37,13 @@ Incrementos 000 a 003 entregues e integrados; 004 pronto para integração. O pr
 - [x] **Identidade visual do frontend** (D014): verde musgo, laranja de cedro, layout responsivo
 - [x] **Respostas do proprietário a Q1–Q5** (D017): markup sobre o custo (2,5× a 2,8×), sem arredondamento, custos adicionais com lucro, chapa inteira
 - [x] **Incremento 003 — Composição e cálculo** (RF14, RF23–RF31): orçamento em rascunho com itens do catálogo e avulsos, custos adicionais, margem/markup com multiplicador (D018), arredondamento, memorial de cálculo; recálculo a cada alteração (D019); CT01–CT10 e TI01/TI02 verificados (`evidencias/testes/003-calculo-2026-09-28.md`); integrado em `main` (PR #4)
-- [x] **Incremento 004 — Registro e acompanhamento** (RF32, RF34–RF39): lista com busca e filtros, rascunho reaberto para edição, registrar = enviar com número sequencial (D020), aprovado/recusado, vencimento automático, somente leitura fora de rascunho; CN05/CN06, TI01/TI02 verificados (`evidencias/testes/004-registro-2026-09-28.md`) — pendente a revisão do diff (B14)
+- [x] **Incremento 004 — Registro e acompanhamento** (RF32, RF34–RF39): lista com busca e filtros, rascunho reaberto para edição, registrar = enviar com número sequencial (D020), aprovado/recusado, vencimento automático, somente leitura fora de rascunho; CN05/CN06, TI01/TI02 verificados (`evidencias/testes/004-registro-2026-09-28.md`); integrado em `main` (PR #5)
+- [x] **Incremento 005 — Clientes** (RF08–RF10): cadastro, busca, edição, inativação e reativação; orçamento ligado ao cliente por `cliente_id` (D021), com migração dos nomes em texto livre; TI03 verificado (`evidencias/testes/005-clientes-2026-09-28.md`) — pendente a revisão do diff (B15)
 
 ## Próximo passo (nesta ordem)
 
-1. Autora revisar o diff (`main...spec/004-registro-acompanhamento`), abrir o PR e fazer o merge (B14).
-2. Abrir o incremento 005 (clientes: cadastro, busca, inativação e vínculo com o orçamento, RF08–RF10) a partir de `main` atualizada. Ele substitui o `cliente_nome` em texto livre (D018) por vínculo ao cadastro.
+1. Autora revisar o diff (`main...spec/005-clientes`), abrir o PR e fazer o merge (B15).
+2. Abrir o incremento 006 (orçamento em PDF, RF41–RF43) a partir de `main` atualizada. A Q7 (o que o cliente vê: itens ou só o total) define o padrão do RF42.
 3. Transcrever as notas da conversa com o proprietário em `evidencias/entrevista/` e responder Q6–Q10 (B01); confirmar o termo de consentimento (B06).
 4. Conferir em planilha os valores de referência dos 10 casos (B08), no mais tardar antes do incremento 008.
 

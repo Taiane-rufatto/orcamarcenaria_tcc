@@ -41,7 +41,7 @@ Preencher a cada execução completa. Os valores de referência vêm de `casos-d
 |---|---|---|---|
 | TI01 | Listagem vazia para a outra marcenaria | Catálogo (002), orçamento (003) e listagem de orçamentos (004): lista vazia e 404 para a outra marcenaria | Aprovado |
 | TI02 | "Não encontrado" ao acessar orçamento alheio por ID | 404 ao consultar e alterar orçamento alheio (integração, 003) | Aprovado |
-| TI03 | "Não encontrado" ao editar cliente alheio | | |
+| TI03 | "Não encontrado" ao editar cliente alheio | Spec 005: outra marcenaria recebe 404 ao editar, inativar e reativar cliente alheio, lista vazia, e não usa o cliente num orçamento | Aprovado |
 | TI04 | Redirecionamento ao login sem sessão | Verificado na Spec 001 | Aprovado |
 
 ## Defeitos encontrados
@@ -55,3 +55,5 @@ Preencher a cada execução completa. Os valores de referência vêm de `casos-d
 Execução nº 1 (2026-09-28): 10 de 10 casos com diferença nula no domínio; CN01–CN04 aprovados; CN05 e CN06 dependem do registro (004). Não substitui a execução formal: falta a conferência em planilha (B08) e o lançamento dos dez casos pela tela (incremento 008). Detalhes em `003-calculo-2026-09-28.md`.
 
 Execução nº 2 (2026-09-28, commit `e983f7b`, Spec 004 — regressão): domínio do cálculo sem alteração; 10 de 10 casos com diferença nula; registro preserva itens e memorial idênticos (integração); CN05 e CN06 aprovados. Detalhes em `004-registro-2026-09-28.md`.
+
+Execução nº 3 (2026-09-28, commit `d746dea`, Spec 005 — regressão): domínio do cálculo sem alteração; 10 de 10 casos com diferença nula; migração do cliente preservou número, situação e preço dos orçamentos do banco principal; TI03 aprovado. Detalhes em `005-clientes-2026-09-28.md`.

@@ -33,7 +33,18 @@ async function criarConta(rotulo: string): Promise<string> {
     body: JSON.stringify({ nomeMarcenaria: `Marcenaria ${rotulo}`, nomeResponsavel: 'Teste', email: `${rotulo}.${Date.now()}@example.test`, senha: 'teste1234' }),
   })
   expect(resposta.status).toBe(201)
-  return (await resposta.json() as { token: string }).token
+  const { token } = await resposta.json() as { token: string }
+  // Toda conta de teste nasce com um cliente fictício padrão: o orçamento exige cliente cadastrado (D021).
+  clientePadrao.set(token, await novoCliente(token, 'Cliente Fictício'))
+  return token
+}
+
+const clientePadrao = new Map<string, string>()
+
+async function novoCliente(token: string, nome: string): Promise<string> {
+  const resposta = await chamar(token, '/clientes', 'POST', { nome })
+  expect(resposta.status).toBe(201)
+  return (await resposta.json() as { id: string }).id
 }
 
 const chamar = (token: string, rota: string, metodo = 'GET', corpo?: unknown) => fetch(`${baseUrl}${rota}`, {
@@ -56,7 +67,9 @@ async function cadastrar(token: string, rota: 'materiais' | 'servicos', corpo: o
 }
 
 // Dados fictícios (AGENTS §5.3).
-const cabecalho = { clienteNome: 'Cliente Fictício', descricaoProjeto: 'Armário de cozinha', dataEmissao: '2026-10-01', dataValidade: '2026-10-31' }
+const cabecalho = (token: string) => ({
+  clienteId: clientePadrao.get(token)!, descricaoProjeto: 'Armário de cozinha', dataEmissao: '2026-10-01', dataValidade: '2026-10-31',
+})
 
 describe('orçamento', () => {
   it('exige autenticação', async () => {
@@ -72,7 +85,7 @@ describe('orçamento', () => {
     const corte = await cadastrar(token, 'servicos', { nome: 'Corte e usinagem', tipoCobranca: 'hora', valorUnitario: '45' })
     const montagem = await cadastrar(token, 'servicos', { nome: 'Montagem e instalação', tipoCobranca: 'hora', valorUnitario: '55' })
 
-    let o = await esperar(chamar(token, '/orcamentos', 'POST', { ...cabecalho, modoLucro: 'margem', percentualLucro: '30', regraArredondamento: 'dezena' }), 201)
+    let o = await esperar(chamar(token, '/orcamentos', 'POST', { ...cabecalho(token), modoLucro: 'margem', percentualLucro: '30', regraArredondamento: 'dezena' }), 201)
     const id = o.id
     for (const [tipo, catalogoId, quantidade] of [
       ['material', mdf, '2,5'], ['material', fita, '30'], ['material', corredica, '6'], ['material', dobradica, '12'],
@@ -91,7 +104,7 @@ describe('orçamento', () => {
     })
 
     // CT04: só o modo muda, e o recálculo acontece na própria alteração (D019).
-    o = await esperar(chamar(token, `/orcamentos/${id}`, 'PUT', { ...cabecalho, modoLucro: 'markup', percentualLucro: '30', regraArredondamento: 'dezena' }), 200)
+    o = await esperar(chamar(token, `/orcamentos/${id}`, 'PUT', { ...cabecalho(token), modoLucro: 'markup', percentualLucro: '30', regraArredondamento: 'dezena' }), 200)
     expect(o.memorial).toMatchObject({ valorLucro: '579.33', multiplicadorEquivalente: '1.30', ajusteArredondamento: '9.57', precoFinal: '2520.00' })
 
     // Consulta devolve exatamente o que foi gravado.
@@ -100,7 +113,7 @@ describe('orçamento', () => {
 
   it('usa os padrões do proprietário: markup 150% (2,50×) e duas casas (D017, D018)', async () => {
     const token = await criarConta('padroes')
-    const o = await esperar(chamar(token, '/orcamentos', 'POST', cabecalho), 201)
+    const o = await esperar(chamar(token, '/orcamentos', 'POST', cabecalho(token)), 201)
     expect(o).toMatchObject({ situacao: 'rascunho', modoLucro: 'markup', percentualLucro: '150.00', regraArredondamento: 'duas_casas' })
     expect(o.memorial.precoFinal).toBe('0.00')
 
@@ -113,7 +126,7 @@ describe('orçamento', () => {
   it('altera, ajusta e remove itens sem mexer no catálogo; congela o valor copiado (RF14, RN08)', async () => {
     const token = await criarConta('itens')
     const mdf = await cadastrar(token, 'materiais', { nome: 'MDF 15 mm', unidade: 'ch', custoUnitario: '200' })
-    const base = await esperar(chamar(token, '/orcamentos', 'POST', { ...cabecalho, percentualLucro: '0' }), 201)
+    const base = await esperar(chamar(token, '/orcamentos', 'POST', { ...cabecalho(token), percentualLucro: '0' }), 201)
     let o = await esperar(chamar(token, `/orcamentos/${base.id}/itens`, 'POST', { origem: 'catalogo', tipo: 'material', catalogoId: mdf, quantidade: '2' }), 201)
     const itemId = o.itens[0].id
     expect(o.memorial.precoFinal).toBe('400.00')
@@ -145,7 +158,7 @@ describe('orçamento', () => {
 
   it('altera e remove custos adicionais', async () => {
     const token = await criarConta('adicionais')
-    const base = await esperar(chamar(token, '/orcamentos', 'POST', { ...cabecalho, percentualLucro: '10' }), 201)
+    const base = await esperar(chamar(token, '/orcamentos', 'POST', { ...cabecalho(token), percentualLucro: '10' }), 201)
     let o = await esperar(chamar(token, `/orcamentos/${base.id}/custos-adicionais`, 'POST', { descricao: 'Frete', valor: '100' }), 201)
     expect(o.memorial).toMatchObject({ totalAdicionais: '100.00', precoFinal: '110.00' })
     const custoId = o.custosAdicionais[0].id
@@ -157,14 +170,14 @@ describe('orçamento', () => {
 
   it('recusa entradas inválidas com 400 e não grava nada (RN10, CN01–CN04)', async () => {
     const token = await criarConta('invalidos')
-    const base = await esperar(chamar(token, '/orcamentos', 'POST', cabecalho), 201)
+    const base = await esperar(chamar(token, '/orcamentos', 'POST', cabecalho(token)), 201)
     const avulso = { origem: 'avulso', tipo: 'material', descricao: 'Item', unidade: 'un', quantidade: '1', valorUnitario: '10' }
 
     for (const [rota, metodo, corpo] of [
-      ['/orcamentos', 'POST', { ...cabecalho, dataValidade: '2026-09-30' }], // CN04
-      ['/orcamentos', 'POST', { ...cabecalho, clienteNome: ' ' }],
-      [`/orcamentos/${base.id}`, 'PUT', { ...cabecalho, modoLucro: 'margem', percentualLucro: '100' }], // CN01, recusado pelo domínio
-      [`/orcamentos/${base.id}`, 'PUT', { ...cabecalho, percentualLucro: '1e3' }],
+      ['/orcamentos', 'POST', { ...cabecalho(token), dataValidade: '2026-09-30' }], // CN04
+      ['/orcamentos', 'POST', { ...cabecalho(token), clienteId: 'nao-e-uuid' }],
+      [`/orcamentos/${base.id}`, 'PUT', { ...cabecalho(token), modoLucro: 'margem', percentualLucro: '100' }], // CN01, recusado pelo domínio
+      [`/orcamentos/${base.id}`, 'PUT', { ...cabecalho(token), percentualLucro: '1e3' }],
       [`/orcamentos/${base.id}/itens`, 'POST', { ...avulso, quantidade: '0' }], // CN02
       [`/orcamentos/${base.id}/itens`, 'POST', { ...avulso, valorUnitario: '-5' }], // CN03
       [`/orcamentos/${base.id}/itens`, 'POST', { ...avulso, valorUnitario: 'NaN' }],
@@ -186,13 +199,13 @@ describe('orçamento', () => {
     const materialA = await cadastrar(tokenA, 'materiais', { nome: 'Material da A', unidade: 'un', custoUnitario: '10' })
     const inativoB = await cadastrar(tokenB, 'materiais', { nome: 'Material inativo', unidade: 'un', custoUnitario: '10' })
     await chamar(tokenB, `/materiais/${inativoB}`, 'DELETE')
-    const orcamentoA = await esperar(chamar(tokenA, '/orcamentos', 'POST', cabecalho), 201)
-    const orcamentoB = await esperar(chamar(tokenB, '/orcamentos', 'POST', cabecalho), 201)
+    const orcamentoA = await esperar(chamar(tokenA, '/orcamentos', 'POST', cabecalho(tokenA)), 201)
+    const orcamentoB = await esperar(chamar(tokenB, '/orcamentos', 'POST', cabecalho(tokenB)), 201)
     const itemA = await esperar(chamar(tokenA, `/orcamentos/${orcamentoA.id}/itens`, 'POST', { origem: 'catalogo', tipo: 'material', catalogoId: materialA, quantidade: '1' }), 201)
 
     // B não enxerga nem altera o orçamento de A.
     expect((await chamar(tokenB, `/orcamentos/${orcamentoA.id}`)).status).toBe(404)
-    expect((await chamar(tokenB, `/orcamentos/${orcamentoA.id}`, 'PUT', cabecalho)).status).toBe(404)
+    expect((await chamar(tokenB, `/orcamentos/${orcamentoA.id}`, 'PUT', cabecalho(tokenB))).status).toBe(404)
     expect((await chamar(tokenB, `/orcamentos/${orcamentoA.id}/itens/${itemA.itens[0].id}`, 'DELETE')).status).toBe(404)
     // B não usa material de A, nem item de A no próprio orçamento, nem material inativo.
     expect((await chamar(tokenB, `/orcamentos/${orcamentoB.id}/itens`, 'POST', { origem: 'catalogo', tipo: 'material', catalogoId: materialA, quantidade: '1' })).status).toBe(404)
