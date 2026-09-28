@@ -58,3 +58,20 @@ export const custoAdicionalSchema = z.object({
   descricao: texto('Informe a descrição do custo adicional'),
   valor: valorCustoAdicional,
 })
+
+// ---------- Spec 004 ----------
+
+// Campo de filtro vazio ("") vale como ausente, para a tela poder enviar o formulário inteiro.
+const opcional = <T extends z.ZodType>(schema: T) => z.preprocess((v) => (v === '' ? undefined : v), schema.optional())
+
+export const filtrosListagemSchema = z.object({
+  busca: opcional(z.string()),
+  situacao: opcional(z.enum(['rascunho', 'enviado', 'aprovado', 'recusado', 'vencido'], 'Situação inválida')),
+  de: opcional(data),
+  ate: opcional(data),
+})
+
+// Só aprovado e recusado são escolhidos pelo usuário; enviado vem do registro e vencido é automático (RN09).
+export const mudancaSituacaoSchema = z.object({
+  situacao: z.enum(['aprovado', 'recusado'], 'Escolha aprovado ou recusado'),
+})

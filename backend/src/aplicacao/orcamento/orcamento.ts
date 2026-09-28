@@ -3,7 +3,7 @@ import { pool } from '../../infra/banco/pool'
 import { ErroHttp } from '../../api/erros/erro-http'
 import { calcularOrcamento, multiplicadorEquivalente } from '../../dominio/orcamento/calculo'
 import * as repositorio from '../../infra/repositorios/orcamento-repositorio'
-import type { Cabecalho, TipoItem } from '../../infra/repositorios/orcamento-repositorio'
+import type { Cabecalho, FiltrosListagem, Situacao, TipoItem } from '../../infra/repositorios/orcamento-repositorio'
 
 // Casos de uso do orçamento (arquitetura.md §3): orquestram transação, repositório e domínio.
 // Toda alteração segue o mesmo caminho (D019): trava o orçamento, altera a composição,
@@ -51,6 +51,7 @@ async function montarResposta(c: PoolClient, marcenariaId: string, id: string) {
   const { orcamento: o, itens, custos } = dados
   return {
     id: o.id,
+    numero: o.numero as number | null, // nulo enquanto rascunho (D020)
     clienteNome: o.cliente_nome,
     descricaoProjeto: o.descricao_projeto,
     dataEmissao: o.data_emissao,
@@ -105,7 +106,8 @@ export function criarOrcamento(marcenariaId: string, cabecalho: Cabecalho): Prom
 
 // As três leituras (orçamento, itens, custos) enxergam o mesmo instante do banco: uma alteração
 // concluída no meio da consulta não produz totais que não batem com os itens.
-export function consultarOrcamento(marcenariaId: string, id: string): Promise<Orcamento> {
+export async function consultarOrcamento(marcenariaId: string, id: string): Promise<Orcamento> {
+  await emTransacao((c) => repositorio.vencerOrcamentos(c, marcenariaId))
   return emTransacao(async (c) => {
     const orcamento = await montarResposta(c, marcenariaId, id)
     if (!orcamento) throw new ErroHttp(404, 'Orçamento não encontrado')
@@ -150,3 +152,55 @@ export const alterarCustoAdicional = (marcenariaId: string, id: string, custoId:
 
 export const removerCustoAdicional = (marcenariaId: string, id: string, custoId: string) =>
   alterar(marcenariaId, id, (c) => repositorio.removerCustoAdicional(c, id, marcenariaId, custoId))
+
+// ---------- Registro e situação (Spec 004, RN09, RN11, D020) ----------
+
+// Transições permitidas pela RN09 por ação do usuário. `rascunho → enviado` acontece só pelo registro;
+// `enviado → vencido` é automático (RF36). Aprovado, recusado e vencido não saem da situação.
+const TRANSICOES: Partial<Record<Situacao, Situacao[]>> = {
+  enviado: ['aprovado', 'recusado'],
+}
+
+// Registrar = enviar (D020): confere RF32, atribui o próximo número da marcenaria e trava a edição.
+// Não recalcula: o preço registrado é o último gravado pelo domínio (D019).
+export function registrarOrcamento(marcenariaId: string, id: string): Promise<Orcamento> {
+  return emTransacao(async (c) => {
+    const situacao = await repositorio.travarOrcamento(c, id, marcenariaId)
+    if (!situacao) throw new ErroHttp(404, 'Orçamento não encontrado')
+    if (situacao !== 'rascunho') throw new ErroHttp(409, 'Este orçamento já foi registrado')
+    // Cliente e descrição já são obrigatórios desde a criação (banco e validação); falta conferir os itens.
+    if (!await repositorio.temItens(c, id, marcenariaId)) throw new ErroHttp(400, 'Inclua ao menos um item antes de registrar o orçamento')
+    const numero = await repositorio.reservarProximoNumero(c, marcenariaId)
+    await repositorio.registrarOrcamento(c, id, marcenariaId, numero)
+    return (await montarResposta(c, marcenariaId, id))!
+  })
+}
+
+export function mudarSituacao(marcenariaId: string, id: string, nova: Situacao): Promise<Orcamento> {
+  return emTransacao(async (c) => {
+    await repositorio.vencerOrcamentos(c, marcenariaId) // um enviado vencido não pode mais ser aprovado
+    const atual = await repositorio.travarOrcamento(c, id, marcenariaId) as Situacao | null
+    if (!atual) throw new ErroHttp(404, 'Orçamento não encontrado')
+    if (!TRANSICOES[atual]?.includes(nova)) throw new ErroHttp(409, `Não é possível passar um orçamento ${atual} para ${nova}`)
+    await repositorio.mudarSituacao(c, id, marcenariaId, nova)
+    return (await montarResposta(c, marcenariaId, id))!
+  })
+}
+
+// RF37: lista resumida, já com o vencimento aplicado (RF36).
+export function listarOrcamentos(marcenariaId: string, filtros: FiltrosListagem) {
+  return emTransacao(async (c) => {
+    await repositorio.vencerOrcamentos(c, marcenariaId)
+    const linhas = await repositorio.listarOrcamentos(c, marcenariaId, filtros)
+    return linhas.map((o) => ({
+      id: o.id as string,
+      numero: o.numero as number | null,
+      clienteNome: o.cliente_nome as string,
+      descricaoProjeto: o.descricao_projeto as string,
+      dataEmissao: o.data_emissao as string,
+      dataValidade: o.data_validade as string,
+      precoFinal: o.preco_final as string,
+      situacao: o.situacao as Situacao,
+    }))
+  })
+}

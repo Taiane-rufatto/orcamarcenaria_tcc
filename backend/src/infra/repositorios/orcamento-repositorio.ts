@@ -155,3 +155,72 @@ export async function gravarCalculo(c: PoolClient, id: string, marcenariaId: str
       resultado.custoDiretoTotal, resultado.valorLucro, resultado.ajusteArredondamento, resultado.precoFinal],
   )
 }
+
+// ---------- Registro e situação (Spec 004) ----------
+
+export type Situacao = 'rascunho' | 'enviado' | 'aprovado' | 'recusado' | 'vencido'
+
+export interface FiltrosListagem {
+  busca?: string
+  situacao?: Situacao
+  de?: string
+  ate?: string
+}
+
+// RF36: enviado com validade anterior a hoje passa a vencido. "Hoje" é a data de São Paulo,
+// explícita para não depender do fuso configurado no servidor do banco.
+export async function vencerOrcamentos(c: PoolClient, marcenariaId: string) {
+  await c.query(
+    `UPDATE orcamento SET situacao='vencido', atualizado_em=now()
+     WHERE marcenaria_id=$1 AND situacao='enviado'
+       AND data_validade < (now() AT TIME ZONE 'America/Sao_Paulo')::date`,
+    [marcenariaId],
+  )
+}
+
+const escaparCuringas = (texto: string) => texto.replace(/[\\%_]/g, '\\$&')
+
+export async function listarOrcamentos(c: PoolClient, marcenariaId: string, filtros: FiltrosListagem) {
+  const condicoes = ['marcenaria_id = $1']
+  const valores: unknown[] = [marcenariaId]
+  const filtrar = (condicao: string, valor: unknown) => { valores.push(valor); condicoes.push(condicao.replace('?', `$${valores.length}`)) }
+  if (filtros.busca?.trim()) filtrar(`cliente_nome ILIKE ? ESCAPE '\\'`, `%${escaparCuringas(filtros.busca.trim())}%`)
+  if (filtros.situacao) filtrar('situacao = ?', filtros.situacao)
+  if (filtros.de) filtrar('data_emissao >= ?', filtros.de)
+  if (filtros.ate) filtrar('data_emissao <= ?', filtros.ate)
+  const resultado = await c.query(
+    `SELECT id, numero, cliente_nome, descricao_projeto, data_emissao, data_validade, preco_final, situacao
+     FROM orcamento WHERE ${condicoes.join(' AND ')}
+     ORDER BY data_emissao DESC, criado_em DESC`,
+    valores,
+  )
+  return resultado.rows
+}
+
+export async function temItens(c: PoolClient, id: string, marcenariaId: string): Promise<boolean> {
+  const resultado = await c.query<{ tem: boolean }>(
+    `SELECT EXISTS (SELECT 1 FROM orcamento_item WHERE ${DO_ORCAMENTO_DA_MARCENARIA}) AS tem`, [id, marcenariaId])
+  return resultado.rows[0].tem
+}
+
+// RN11: próximo número da marcenaria. A linha da marcenaria fica travada até o fim da transação,
+// para que dois registros simultâneos não recebam o mesmo número; UNIQUE (marcenaria_id, numero) é a rede de segurança.
+export async function reservarProximoNumero(c: PoolClient, marcenariaId: string): Promise<number> {
+  await c.query('SELECT id FROM marcenaria WHERE id=$1 FOR UPDATE', [marcenariaId])
+  const resultado = await c.query<{ proximo: number }>(
+    'SELECT COALESCE(MAX(numero), 0) + 1 AS proximo FROM orcamento WHERE marcenaria_id=$1', [marcenariaId])
+  return resultado.rows[0].proximo
+}
+
+export async function registrarOrcamento(c: PoolClient, id: string, marcenariaId: string, numero: number) {
+  await c.query(
+    `UPDATE orcamento SET numero=$3, situacao='enviado', atualizado_em=now()
+     WHERE id=$1 AND marcenaria_id=$2 AND situacao='rascunho'`,
+    [id, marcenariaId, numero],
+  )
+}
+
+export async function mudarSituacao(c: PoolClient, id: string, marcenariaId: string, situacao: Situacao) {
+  await c.query(
+    'UPDATE orcamento SET situacao=$3, atualizado_em=now() WHERE id=$1 AND marcenaria_id=$2', [id, marcenariaId, situacao])
+}
