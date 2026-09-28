@@ -24,9 +24,9 @@
 
 ## Fase 5 — Evidências e fechamento
 
-- [ ] T011 Rodar migração, testes, builds e lint; executar a rotina `verificar-calculo` e registrar em `evidencias/testes/`.
-- [ ] T012 Validação manual com o exemplo de `regras-de-calculo.md` §4 e com markup 150% (2,50×), usando dados fictícios.
-- [ ] T013 Atualizar documentação (`arquitetura.md` §5 e §8, matriz de verificação) e fechar a spec com `fechar-spec` após revisão do diff pela autora.
+- [x] T011 Rodar migração, testes, builds e lint; executar a rotina `verificar-calculo` e registrar em `evidencias/testes/`.
+- [x] T012 Validação manual com o exemplo de `regras-de-calculo.md` §4 e com markup 150% (2,50×), usando dados fictícios.
+- [x] T013 Atualizar documentação (`arquitetura.md` §5 e §8, matriz de verificação) e fechar a spec com `fechar-spec` após revisão do diff pela autora.
 
 ## Ordem
 

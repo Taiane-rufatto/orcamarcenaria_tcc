@@ -85,10 +85,10 @@ erDiagram
 
 **servico** — `id`, `marcenaria_id`, `nome` (único por marcenaria, inclusive entre inativos), `descricao?` (até 300), `tipo_cobranca` (`hora` | `unidade`), `valor_unitario` NUMERIC(12,4), `ativo`, `criado_em`, `atualizado_em`
 
-**orcamento** — `id`, `marcenaria_id`, `numero` INT, `cliente_id`, `descricao_projeto`, `data_emissao`, `data_validade`, `situacao`, `modo_lucro`, `percentual_lucro` NUMERIC(5,2), `regra_arredondamento`, `subtotal_materiais` NUMERIC(12,2), `subtotal_servicos` NUMERIC(12,2), `total_adicionais` NUMERIC(12,2), `custo_direto_total` NUMERIC(12,2), `valor_lucro` NUMERIC(12,2), `ajuste_arredondamento` NUMERIC(12,2), `preco_final` NUMERIC(12,2), `observacoes?`, `criado_em`, `atualizado_em`
+**orcamento** — `id`, `marcenaria_id`, `numero` INT (nulo até o registro, 004), `cliente_nome` (texto livre no 003, D018; o 005 acrescenta `cliente_id`), `descricao_projeto`, `data_emissao`, `data_validade`, `situacao`, `modo_lucro`, `percentual_lucro` NUMERIC(5,2), `regra_arredondamento`, `subtotal_materiais` NUMERIC(12,2), `subtotal_servicos` NUMERIC(12,2), `total_adicionais` NUMERIC(12,2), `custo_direto_total` NUMERIC(12,2), `valor_lucro` NUMERIC(12,2), `ajuste_arredondamento` NUMERIC(12,2), `preco_final` NUMERIC(12,2), `observacoes?` (ainda não criado), `criado_em`, `atualizado_em`
 - Único: (`marcenaria_id`, `numero`)
 
-**orcamento_item** — `id`, `orcamento_id`, `tipo` (`material` | `servico`), `material_id?`, `servico_id?`, `descricao`, `unidade`, `quantidade` NUMERIC(12,3), `valor_unitario` NUMERIC(12,4), `valor_linha` NUMERIC(12,2), `valor_ajustado_manualmente` BOOL, `ordem` INT
+**orcamento_item** — `id`, `orcamento_id`, `tipo` (`material` | `servico`), `material_id?`, `servico_id?`, `descricao`, `unidade`, `quantidade` NUMERIC(12,3), `valor_unitario` NUMERIC(12,4), `valor_unitario_catalogo` NUMERIC(12,4) (valor copiado na inclusão; nulo no item avulso), `valor_linha` NUMERIC(12,2), `valor_ajustado_manualmente` BOOL (coluna gerada: `valor_unitario <> valor_unitario_catalogo`), `ordem` INT
 
 **orcamento_custo_adicional** — `id`, `orcamento_id`, `descricao`, `valor` NUMERIC(12,2), `ordem` INT
 
@@ -157,15 +157,16 @@ sequenceDiagram
     participant B as Banco
 
     U->>W: altera quantidade de um item
-    W->>A: POST /orcamentos/{id}/calcular (composição atual)
-    A->>B: carrega configuração da marcenaria
+    W->>A: PUT /orcamentos/{id}/itens/{itemId}
+    A->>B: BEGIN; trava o orçamento; grava a alteração
     A->>D: calcular(itens, adicionais, modo, percentual, arredondamento)
-    D-->>A: subtotais, custo direto, lucro, ajuste, preço final
-    A-->>W: totais + memorial de cálculo
+    D-->>A: valores de linha, subtotais, custo direto, lucro, ajuste, preço final
+    A->>B: grava valores de linha e totais; COMMIT
+    A-->>W: orçamento completo + memorial de cálculo
     W-->>U: exibe totais atualizados (RNF02)
 ```
 
-O mesmo módulo `D` é chamado no registro do orçamento, na geração do PDF e nos testes automatizados — nunca há um segundo caminho de cálculo.
+Cada alteração da composição segue este fluxo em uma transação (D019): se o domínio recusar a entrada, nada é gravado. O mesmo módulo `D` é chamado no registro do orçamento, na geração do PDF e nos testes automatizados — nunca há um segundo caminho de cálculo.
 
 ## 9. Riscos arquiteturais
 

@@ -2,11 +2,11 @@
 
 **Atualizado em:** 2026-09-28
 
-> **Incremento 003 — Composição e cálculo do orçamento: aberto em 2026-09-28** na branch `spec/003-composicao-calculo`. Spec, plano e tarefas escritos em `specs/003-composicao-calculo/`. Fases 1–4 concluídas (domínio, banco, API e telas, T001–T010): CT01–CT10 no domínio, CT03/CT04 pela API e o exemplo do §4 montado na tela (Edge, 1280 e 390 px) com diferença nula. Próximo: evidências e fechamento (T011–T013). Respostas do proprietário a Q1–Q5 registradas em D017 e D018.
+> **Incremento 003 — Composição e cálculo do orçamento: implementado e verificado em 2026-09-28** na branch `spec/003-composicao-calculo` (CT01–CT10 com diferença nula, 77 testes de backend, 13 de frontend, percurso no Edge e validação manual da autora). **Falta apenas a revisão do diff pela autora (B13)** para abrir o PR e integrar em `main`.
 
 ## Onde o projeto está
 
-Incrementos 000 (preparação), 001 (conta e acesso) e 002 (catálogo) entregues. O próximo é o 003 — composição e cálculo do orçamento, o núcleo do TCC. Ainda não existe nenhuma regra de cálculo implementada (`backend/src/dominio/orcamento/` está vazio).
+Incrementos 000, 001 e 002 entregues; 003 pronto para integração. O cálculo do orçamento existe em `backend/src/dominio/orcamento/calculo.ts` e é o único ponto do sistema que calcula preço. O próximo incremento é o 004 (registro, numeração, situações e listagem de orçamentos).
 
 ## Pronto
 
@@ -35,15 +35,18 @@ Incrementos 000 (preparação), 001 (conta e acesso) e 002 (catálogo) entregues
 - [x] **Incremento 001 — Conta e acesso** (RF01–RF04, RF06): cadastro, entrada, saída, troca de senha, JWT com sessão persistida, isolamento por marcenaria; TI04 verificado (`evidencias/testes/001-conta-acesso-2026-09-19.md`)
 - [x] **Incremento 002 — Catálogo de materiais e serviços** (RF11–RF13, RF15, RF17, RF18): cadastro, busca, filtro de situação, edição, inativação e reativação (D015); custo/valor decimal exato com até 4 casas (D016); TI01 verificado (`evidencias/testes/002-catalogo-2026-09-19.md`)
 - [x] **Identidade visual do frontend** (D014): verde musgo, laranja de cedro, layout responsivo
+- [x] **Respostas do proprietário a Q1–Q5** (D017): markup sobre o custo (2,5× a 2,8×), sem arredondamento, custos adicionais com lucro, chapa inteira
+- [x] **Incremento 003 — Composição e cálculo** (RF14, RF23–RF31): orçamento em rascunho com itens do catálogo e avulsos, custos adicionais, margem/markup com multiplicador (D018), arredondamento, memorial de cálculo; recálculo a cada alteração (D019); CT01–CT10 e TI01/TI02 verificados (`evidencias/testes/003-calculo-2026-09-28.md`) — pendente só a revisão do diff (B13)
 
 ## Próximo passo (nesta ordem)
 
-1. Autora validar a tela do orçamento manualmente (exemplo do §4 e markup 150%); seguir para a Fase 5 (evidências, `verificar-calculo`, `fechar-spec`).
-2. Transcrever as notas da conversa com o proprietário em `evidencias/entrevista/` e responder Q6–Q10 (B01); confirmar o termo de consentimento (B06).
-3. Conferir em planilha os valores de referência dos 10 casos (B08), no mais tardar antes do incremento 008.
+1. Autora revisar o diff completo (`git diff main...spec/003-composicao-calculo`) e autorizar PR e merge (B13).
+2. Abrir o incremento 004 (registro e acompanhamento) com a rotina `abrir-incremento`, a partir de `main` atualizada. Incluir o teste da RN09 (alteração fora de rascunho → 409) e os casos CN05/CN06.
+3. Transcrever as notas da conversa com o proprietário em `evidencias/entrevista/` e responder Q6–Q10 (B01); confirmar o termo de consentimento (B06). Q6 (validade) interessa ao 004.
+4. Conferir em planilha os valores de referência dos 10 casos (B08), no mais tardar antes do incremento 008.
 
 ## Não fazer agora
 
-- Começar o cálculo sem abrir a Spec 003 pela rotina.
+- Duplicar qualquer conta de preço fora de `backend/src/dominio/orcamento/` (inclusive no frontend).
 - Implementar qualquer item da lista de evolução pós-TCC (`documentacao/roadmap.md` §5), inclusive histórico de custo (RF16).
 - Criar pastas de spec antecipadamente: cada uma nasce quando o incremento entra no ciclo.

@@ -168,11 +168,13 @@ Serviços e mão de obra ........... R$   690,00
 Custos adicionais ................ R$   165,50
 --------------------------------------------
 Custo direto total ............... R$ 1.931,10
-Lucro (margem 30,00%) ............ R$   827,61
+Lucro (margem 30,00% sobre o preço) R$   827,61
 Ajuste de arredondamento ......... R$     1,29
 --------------------------------------------
 PREÇO FINAL ...................... R$ 2.760,00
 ```
+
+No modo markup, a linha do lucro traz também o multiplicador equivalente (D018): `Lucro (markup 150,00% · 2,50× o custo)`.
 
 Esse bloco é a evidência visual de que o sistema não é uma caixa-preta — requisito para a defesa e para os testes de conferência manual.
 
