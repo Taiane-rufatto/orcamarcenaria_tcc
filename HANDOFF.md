@@ -2,7 +2,7 @@
 
 **Atualizado em:** 2026-09-30 · Última sessão: B08 e B17 resolvidos; Spec 007 integrada (PR #8); Spec 008 (validação formal do cálculo) aberta, executada e fechada.
 
-> **Próxima sessão:** conferir se o PR do 008 foi mesclado. O 009 (avaliação de uso) só abre com o consentimento do proprietário (B06); sem ele, seguir pela transcrição da entrevista (B01). Estado detalhado em `ESTADO_ATUAL.md`.
+> **Próxima sessão:** o 008 está em `main` (PR #9). O 009 (avaliação de uso) só abre com o termo de consentimento assinado (B06); a autora vai validar o rascunho com o orientador. Material da sessão pronto em `evidencias/avaliacao-de-uso/`. Sem o termo, seguir pela transcrição da entrevista (B01). Estado detalhado em `ESTADO_ATUAL.md`.
 
 Para qualquer nova sessão, agente ou ferramenta assumir o trabalho sem reconstruir contexto pelo histórico de conversa.
 
@@ -21,6 +21,7 @@ Para qualquer nova sessão, agente ou ferramenta assumir o trabalho sem reconstr
 2. **B17 resolvido:** Spec 007 já estava integrada em `main` (PR #8).
 3. **Spec 008 aberta e fechada** sem mudança de código: roteiro dos dez casos em termos de tela (`008-roteiro-casos-pela-tela.md`, gerado do CSV), ensaio automatizado com Edge + Playwright (10 de 10 e CN01–CN06 bloqueados) e execução formal pela autora (10 de 10, execução nº 6). D025.
 4. **Anotado para o futuro** (`ESTADO_ATUAL.md`): separar "salvar" de "enviar" (D020) e corrigir a mensagem de quantidade negativa.
+5. **Spec 008 integrada** (PR #9). **Preparação do 009** na branch `docs/preparacao-avaliacao-uso`: rascunho do termo de consentimento (a validar com o orientador) e roteiro com ficha da sessão, com dados fictícios e valor esperado da tarefa 3 (R$ 2.175,00 com markup 150%).
 
 Decisões firmes: D001–D025. Nenhuma provisória no momento.
 
@@ -69,5 +70,5 @@ Decisões firmes: D001–D025. Nenhuma provisória no momento.
 
 ## Perguntas a fazer à autora antes de avançar
 
-1. Houve consentimento do proprietário (B06)? É necessário para a avaliação de uso (009).
+1. O orientador validou o termo de consentimento? O proprietário assinou (B06)? Sem isso o 009 não abre.
 2. Há data para a apresentação de andamento (B07)?
