@@ -6,6 +6,20 @@ Formato: contexto → decisão → consequência → situação (`provisória` e
 
 ---
 
+## D025 — Execução formal dos dez casos pela autora, com ensaio automatizado antes
+**Data:** 2026-09-30 · **Situação:** firme (decidido pela autora)
+
+**Contexto.** O 008 executa formalmente os dez casos "lançados na aplicação" (`qualidade-e-testes.md` §3). Faltava definir quem executa e como os itens entram na tela.
+
+**Decisão.**
+1. A execução formal é feita pela autora, à mão, na tela, seguindo `evidencias/testes/008-roteiro-casos-pela-tela.md`.
+2. Antes dela, o agente faz um ensaio com o navegador automatizado (Edge + Playwright) numa conta de ensaio, para encontrar problemas antes da execução formal. O ensaio é registrado como evidência complementar, não como a execução formal.
+3. Os itens entram como **avulsos**, com o valor unitário do caso: os casos definem o valor unitário diretamente, e o caminho pelo catálogo já foi verificado com CT03 e CT04 (003) e CT03, CT04 e CT06 (007).
+
+**Consequência.** A execução formal depende do tempo da autora (cerca de uma hora). Divergência encontrada no ensaio ou na execução formal vira defeito registrado, e a tabela inteira é reexecutada após a correção.
+
+---
+
 ## D024 — Configurações da marcenaria e padrões do orçamento
 **Data:** 2026-09-28 · **Situação:** firme (decidido pela autora)
 

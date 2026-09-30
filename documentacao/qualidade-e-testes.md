@@ -128,12 +128,12 @@ Preenchida ao fim de cada incremento e consolidada antes da defesa.
 | RF11–RF13, RF15, RF17, RF18 | 002 | Teste manual + integração dos cadastros | verificado em 2026-09-19 (`evidencias/testes/002-catalogo-2026-09-19.md`) |
 | RF14 | 003 | Teste de integração: reajuste do catálogo após a inclusão não altera o item (D013) | verificado em 2026-09-28 (`evidencias/testes/003-calculo-2026-09-28.md`) |
 | RF16 | pós-TCC | — | fora do escopo |
-| RF23–RF31 | 003 | CT01–CT10 + testes de unidade do domínio + integração + percurso de tela | verificado em 2026-09-28 (`evidencias/testes/003-calculo-2026-09-28.md`); execução formal dos dez casos pela tela no 008 |
+| RF23–RF31 | 003 | CT01–CT10 + testes de unidade do domínio + integração + percurso de tela | verificado em 2026-09-28 (`evidencias/testes/003-calculo-2026-09-28.md`); execução formal dos dez casos pela tela em 2026-09-30 (008) |
 | RF32, RF34–RF39 | 004 | Integração do ciclo de vida + CN05, CN06 + percurso de tela + validação manual | verificado em 2026-09-28 (`evidencias/testes/004-registro-2026-09-28.md`) |
 | RF08–RF10 | 005 | Integração dos cadastros + TI03 + percurso de tela + validação manual | verificado em 2026-09-28 (`evidencias/testes/005-clientes-2026-09-28.md`) |
 | RF41–RF43, RNF19 | 006 | Testes do conteúdo (RF42 sem valores internos) e do extenso + integração com tempo de dez itens + PDFs conferidos visualmente | verificado em 2026-09-28 (`evidencias/testes/006-pdf-2026-09-28.md`) |
 | RF05, RF19–RF22 | 007 | Integração + CT03/CT04/CT06 partindo da configuração + validação manual | verificado em 2026-09-28 (`evidencias/testes/007-configuracoes-2026-09-28.md`) |
-| RNF06, RNF21 | 008 | Execução completa dos casos de teste | pendente |
+| RNF06, RNF21 | 008 | Dez casos lançados pela tela pela autora após conferência em planilha + suíte automatizada + ensaio automatizado com CN01–CN06 | verificado em 2026-09-30 (`evidencias/testes/008-validacao-calculo-2026-09-30.md`) |
 | RNF01 | 009 | Avaliação exploratória de uso | pendente |
 | RNF12, RNF13 | 001–005 e 010 | TI04 na Spec 001; TI01–TI03 quando suas entidades existirem; reexecução completa no 010 | TI01–TI04 verificados cada um em sua entidade (001–005); falta a reexecução completa no 010 |
 

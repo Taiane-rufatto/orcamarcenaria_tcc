@@ -1,8 +1,8 @@
 # Handoff
 
-**Atualizado em:** 2026-09-28 · Última sessão: Specs 003 a 006 integradas (PR #4 a #7); Spec 007 (configurações) aberta, implementada e verificada; RF40 detalhado como evolução pós-TCC.
+**Atualizado em:** 2026-09-30 · Última sessão: B08 e B17 resolvidos; Spec 007 integrada (PR #8); Spec 008 (validação formal do cálculo) aberta, executada e fechada.
 
-> **Próxima sessão:** abrir o incremento 008 (validação formal do cálculo). A Spec 007 foi integrada (PR #8, B17) e a conferência dos dez casos em planilha (B08) foi feita em 2026-09-30; não há bloqueio para o 008. Estado detalhado em `ESTADO_ATUAL.md`.
+> **Próxima sessão:** conferir se o PR do 008 foi mesclado. O 009 (avaliação de uso) só abre com o consentimento do proprietário (B06); sem ele, seguir pela transcrição da entrevista (B01). Estado detalhado em `ESTADO_ATUAL.md`.
 
 Para qualquer nova sessão, agente ou ferramenta assumir o trabalho sem reconstruir contexto pelo histórico de conversa.
 
@@ -17,13 +17,12 @@ Para qualquer nova sessão, agente ou ferramenta assumir o trabalho sem reconstr
 
 ## O que foi feito na última sessão
 
-1. **Specs 003 a 006 fechadas e integradas** em `main` (PR #4 a #7, abertos e mesclados pela autora).
-2. **Spec 007 implementada:** migração `007-configuracoes.sql`; `GET /configuracoes`, `PUT /configuracoes/marcenaria` e `/padroes`; orçamento novo com os padrões e validade calculada; página "Minha marcenaria" (com "Alterar senha"); contatos da marcenaria no PDF.
-3. **Q6 respondida pela autora: 10 dias** (D024). Q7 respondida pelo modelo do proprietário (D022).
-4. **RF40 (duplicar para ajustar orçamento enviado) detalhado em `roadmap.md` §5.1** a pedido da autora, para implementar depois do TCC.
-5. **Verificação:** 139 testes de backend em três execuções seguidas, CT03/CT04/CT06 pela configuração, percurso no Edge e validação manual. Evidência: `evidencias/testes/007-configuracoes-2026-09-28.md`.
+1. **B08 resolvido:** a autora conferiu os dez casos em `evidencias/testes/conferencia-casos-de-teste.xlsx` (10 de 10 conferem, nome e data preenchidos).
+2. **B17 resolvido:** Spec 007 já estava integrada em `main` (PR #8).
+3. **Spec 008 aberta e fechada** sem mudança de código: roteiro dos dez casos em termos de tela (`008-roteiro-casos-pela-tela.md`, gerado do CSV), ensaio automatizado com Edge + Playwright (10 de 10 e CN01–CN06 bloqueados) e execução formal pela autora (10 de 10, execução nº 6). D025.
+4. **Anotado para o futuro** (`ESTADO_ATUAL.md`): separar "salvar" de "enviar" (D020) e corrigir a mensagem de quantidade negativa.
 
-Decisões firmes: D001–D024. Nenhuma provisória no momento.
+Decisões firmes: D001–D025. Nenhuma provisória no momento.
 
 ## O que **não** foi feito
 
@@ -63,6 +62,9 @@ Decisões firmes: D001–D024. Nenhuma provisória no momento.
 - **Padrões iniciais moram só no banco** (`DEFAULT` da tabela `configuracao`); a linha é criada na primeira leitura (`lerPadroes`). Não repetir valores padrão no código.
 - **Edição de rascunho mantém campos omitidos** (`alterarCabecalho`); a criação preenche os omitidos pela configuração (`criarOrcamento`).
 - **Commits vão para o GitHub só com `git push`**; a autora estranhou não ver os commits. A branch do 003 já está publicada.
+- **A autora lança casos de teste com descrições próprias** ("Armário de cozinha", "cama"), não com o código do caso. Para ler os valores, associar pelo banco (modo, percentual, arredondamento, custo direto e número de itens) e excluir a conta "Marcenaria Ensaio 008". O nome da conta dela não vai para as evidências.
+- **Ensaio do 008:** script Playwright fora do repositório; a conta "Marcenaria Ensaio 008" (dados fictícios) ficou no banco principal, isolada das demais.
+- **Mensagens de erro chegam num `[role=alert]`** da página do orçamento; CN06 (sem cliente) é barrado pela validação nativa do navegador (`select required`), não pela API.
 
 
 ## Perguntas a fazer à autora antes de avançar
