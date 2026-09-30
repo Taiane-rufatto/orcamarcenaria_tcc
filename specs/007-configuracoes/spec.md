@@ -2,7 +2,7 @@
 
 **Branch:** `spec/007-configuracoes`
 **Data:** 2026-09-28
-**Status:** implementada e verificada em 2026-09-28; fechamento pendente da revisão do diff pela autora (B17)
+**Status:** implementada e verificada em 2026-09-28; integrada em `main` (PR #8); B17 encerrado em 2026-09-30
 
 ## Clarificações
 

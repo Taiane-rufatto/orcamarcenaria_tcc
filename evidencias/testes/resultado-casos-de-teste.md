@@ -22,7 +22,7 @@ Preencher a cada execução completa. Os valores de referência vêm de `casos-d
 | CT09 | 3.482,00 | 3.482,00 | 0,00 | Aprovado | Domínio; custo direto e preço bruto também iguais |
 | CT10 | 22,50 | 22,50 | 0,00 | Aprovado | Domínio; custo direto e preço bruto também iguais |
 
-**Casos aprovados:** 10 de 10 · **Percentual:** 100% — valores de referência ainda não conferidos em planilha pela autora (B08)
+**Casos aprovados:** 10 de 10 · **Percentual:** 100% — valores de referência conferidos em planilha pela autora em 2026-09-30 (B08, `conferencia-casos-de-teste.xlsx`: 10 de 10 conferem)
 
 ## Casos negativos
 
@@ -61,3 +61,5 @@ Execução nº 3 (2026-09-28, commit `d746dea`, Spec 005 — regressão): domín
 Execução nº 4 (2026-09-28, commit `9578030`, Spec 006 — regressão): domínio do cálculo sem alteração; 10 de 10 casos com diferença nula; PDF usa o preço final gravado e o conteúdo do CT03 não contém nenhum valor interno. Detalhes em `006-pdf-2026-09-28.md`.
 
 Execução nº 5 (2026-09-28, Spec 007 — regressão): `validarLucro` extraído do domínio sem mudar fórmula; 10 de 10 casos com diferença nula; CT03, CT04 e CT06 reproduzidos pela API partindo só da configuração da marcenaria (R$ 2.760,00, R$ 2.520,00 e R$ 934,00). Detalhes em `007-configuracoes-2026-09-28.md`.
+
+Conferência em planilha (2026-09-30, B08): a autora conferiu os dez casos em `conferencia-casos-de-teste.xlsx`, com fórmulas abertas para cada etapa (linhas, subtotais, custo direto, preço bruto, lucro, ajuste e preço final). Resultado: 10 de 10 "Confere", diferença nula em todas as etapas. Os valores de referência passam a valer como evidência formal; falta o lançamento dos dez casos pela tela (incremento 008).

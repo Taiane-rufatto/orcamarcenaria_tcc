@@ -2,7 +2,7 @@
 
 **Atualizado em:** 2026-09-28 · Última sessão: Specs 003 a 006 integradas (PR #4 a #7); Spec 007 (configurações) aberta, implementada e verificada; RF40 detalhado como evolução pós-TCC.
 
-> **Próxima sessão:** a autora revisa o diff da Spec 007 e faz PR e merge (B17). O 008 depende de a autora conferir os dez casos em planilha (B08). Estado detalhado em `ESTADO_ATUAL.md`.
+> **Próxima sessão:** abrir o incremento 008 (validação formal do cálculo). A Spec 007 foi integrada (PR #8, B17) e a conferência dos dez casos em planilha (B08) foi feita em 2026-09-30; não há bloqueio para o 008. Estado detalhado em `ESTADO_ATUAL.md`.
 
 Para qualquer nova sessão, agente ou ferramenta assumir o trabalho sem reconstruir contexto pelo histórico de conversa.
 
@@ -27,8 +27,6 @@ Decisões firmes: D001–D024. Nenhuma provisória no momento.
 
 ## O que **não** foi feito
 
-- Revisão do diff da Spec 007 (B17), PR e merge.
-- **Conferência dos dez casos em planilha pela autora (B08)**: bloqueia o 008.
 - Duplicar orçamento (RF40), desconto (RF33) e demais itens do `roadmap.md` §5: pós-TCC.
 - Entrevista: notas não transcritas; Q8–Q10 sem resposta; consentimento (B06) não confirmado — necessário também para a avaliação de uso (009).
 - Edição de custo adicional pela tela (a API tem `PUT`; a tela só inclui e remove).
@@ -69,7 +67,5 @@ Decisões firmes: D001–D024. Nenhuma provisória no momento.
 
 ## Perguntas a fazer à autora antes de avançar
 
-1. Revisou o diff da Spec 007? Fez PR e merge?
-2. Conferiu em planilha os valores de referência dos dez casos (B08)? Sem isso, o 008 não abre.
-3. Houve consentimento do proprietário (B06)? É necessário para a avaliação de uso (009).
-4. Há data para a apresentação de andamento (B07)?
+1. Houve consentimento do proprietário (B06)? É necessário para a avaliação de uso (009).
+2. Há data para a apresentação de andamento (B07)?
