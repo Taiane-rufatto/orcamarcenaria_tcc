@@ -2,7 +2,7 @@
 
 **Branch:** `spec/008-validacao-calculo`
 **Data:** 2026-09-30
-**Status:** fechada em 2026-09-30 (10 de 10, diff revisado pela autora); aguardando PR e merge
+**Status:** fechada em 2026-09-30 (10 de 10, diff revisado pela autora); integrada em `main` (PR #9)
 
 ## Clarificações
 

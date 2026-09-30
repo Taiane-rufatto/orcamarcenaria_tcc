@@ -17,6 +17,8 @@ Tudo que comprova o que o sistema faz. É o material citado na monografia e apre
 - `testes/conferencia-casos-de-teste.xlsx` — conferência dos dez casos em planilha pela autora (B08).
 - `testes/008-roteiro-casos-pela-tela.md` — roteiro dos dez casos em termos de tela.
 - `testes/NNN-*-AAAA-MM-DD.md` — evidências de cada spec.
+- `avaliacao-de-uso/termo-de-consentimento-rascunho.md` — rascunho do termo (RNF16), a validar com o orientador; a via assinada fica fora do repositório.
+- `avaliacao-de-uso/roteiro-e-ficha-da-sessao.md` — preparação, tarefas com dados fictícios, ficha de registro e questionário da avaliação de uso.
 
 ## Regras
 
