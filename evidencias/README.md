@@ -13,7 +13,10 @@ Tudo que comprova o que o sistema faz. É o material citado na monografia e apre
 ## Arquivos já prontos
 
 - `testes/casos-de-teste-referencia.csv` — os dez casos com valores de referência calculados pelas regras canônicas, para conferência em planilha antes da execução no sistema.
-- `testes/resultado-casos-de-teste.md` — formulário a preencher a cada execução.
+- `testes/resultado-casos-de-teste.md` — formulário a preencher a cada execução; a execução nº 6 é a formal pela tela (008).
+- `testes/conferencia-casos-de-teste.xlsx` — conferência dos dez casos em planilha pela autora (B08).
+- `testes/008-roteiro-casos-pela-tela.md` — roteiro dos dez casos em termos de tela.
+- `testes/NNN-*-AAAA-MM-DD.md` — evidências de cada spec.
 
 ## Regras
 

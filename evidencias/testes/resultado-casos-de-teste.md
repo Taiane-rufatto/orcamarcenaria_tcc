@@ -22,7 +22,7 @@ Preencher a cada execução completa. Os valores de referência vêm de `casos-d
 | CT09 | 3.482,00 | 3.482,00 | 0,00 | Aprovado | Domínio; custo direto e preço bruto também iguais |
 | CT10 | 22,50 | 22,50 | 0,00 | Aprovado | Domínio; custo direto e preço bruto também iguais |
 
-**Casos aprovados:** 10 de 10 · **Percentual:** 100% — valores de referência ainda não conferidos em planilha pela autora (B08)
+**Casos aprovados:** 10 de 10 · **Percentual:** 100% — valores de referência conferidos em planilha pela autora em 2026-09-30 (B08, `conferencia-casos-de-teste.xlsx`: 10 de 10 conferem)
 
 ## Casos negativos
 
@@ -61,3 +61,29 @@ Execução nº 3 (2026-09-28, commit `d746dea`, Spec 005 — regressão): domín
 Execução nº 4 (2026-09-28, commit `9578030`, Spec 006 — regressão): domínio do cálculo sem alteração; 10 de 10 casos com diferença nula; PDF usa o preço final gravado e o conteúdo do CT03 não contém nenhum valor interno. Detalhes em `006-pdf-2026-09-28.md`.
 
 Execução nº 5 (2026-09-28, Spec 007 — regressão): `validarLucro` extraído do domínio sem mudar fórmula; 10 de 10 casos com diferença nula; CT03, CT04 e CT06 reproduzidos pela API partindo só da configuração da marcenaria (R$ 2.760,00, R$ 2.520,00 e R$ 934,00). Detalhes em `007-configuracoes-2026-09-28.md`.
+
+Conferência em planilha (2026-09-30, B08): a autora conferiu os dez casos em `conferencia-casos-de-teste.xlsx`, com fórmulas abertas para cada etapa (linhas, subtotais, custo direto, preço bruto, lucro, ajuste e preço final). Resultado: 10 de 10 "Confere", diferença nula em todas as etapas. Os valores de referência passam a valer como evidência formal; falta o lançamento dos dez casos pela tela (incremento 008).
+
+## Execução nº 6 — formal, pela tela (Spec 008)
+
+- **Data:** 2026-09-30, das 14h44 às 15h46 (horário de Brasília)
+- **Versão / commit:** código de `main` após o PR #8 (`1282a4c`)
+- **Executado por:** a autora, à mão, na própria conta, a partir dos dados dos casos (D025). Valores lidos do banco pelo agente em seguida, sem alteração
+- **Ambiente:** local · **Navegador:** não informado
+
+| Caso | Valor de referência (R$) | Valor do sistema (R$) | Diferença (R$) | Situação | Observação / defeito |
+|---|---|---|---|---|---|
+| CT01 | 289,90 | 289,90 | 0,00 | Aprovado | Lançado com **markup** 0% em vez de margem 0%; com percentual zero o resultado é o mesmo. Margem 0% coberta pelo ensaio |
+| CT02 | 1.035,36 | 1.035,36 | 0,00 | Aprovado | Custo direto e lucro também iguais |
+| CT03 | 2.760,00 | 2.760,00 | 0,00 | Aprovado | 6 itens; custo direto, lucro e ajuste iguais |
+| CT04 | 2.520,00 | 2.520,00 | 0,00 | Aprovado | 6 itens; custo direto, lucro e ajuste iguais |
+| CT05 | 51,94 | 51,94 | 0,00 | Aprovado | Custo direto e lucro também iguais |
+| CT06 | 934,00 | 934,00 | 0,00 | Aprovado | Custo direto, lucro e ajuste iguais |
+| CT07 | 1.360,00 | 1.360,00 | 0,00 | Aprovado | Custo direto, lucro e ajuste iguais |
+| CT08 | 5.110,09 | 5.110,09 | 0,00 | Aprovado | 12 itens; custo direto e lucro iguais |
+| CT09 | 3.482,00 | 3.482,00 | 0,00 | Aprovado | Custo direto, lucro e ajuste iguais |
+| CT10 | 22,50 | 22,50 | 0,00 | Aprovado | Lançado duas vezes, mesmo resultado |
+
+**Casos aprovados:** 10 de 10 · **Percentual:** 100% · diferença nula também no custo direto, no lucro e no ajuste de cada caso.
+
+Os orçamentos foram registrados (situação "enviado"), o que confirma que o registro preserva os valores calculados. Ensaio automatizado pela tela no mesmo dia, com os dez casos e CN01–CN06, também 10 de 10. Detalhes em `008-validacao-calculo-2026-09-30.md`.

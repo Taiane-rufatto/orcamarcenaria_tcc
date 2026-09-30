@@ -1,12 +1,12 @@
 # Estado Atual
 
-**Atualizado em:** 2026-09-28
+**Atualizado em:** 2026-09-30
 
-> **Incremento 007 — Configurações da marcenaria: implementado e verificado em 2026-09-28** na branch `spec/007-configuracoes` (139 testes de backend em três execuções, CT03/CT04/CT06 pela configuração, percurso no Edge e validação manual da autora). **Falta a revisão do diff pela autora (B17)** para o PR e o merge.
+> **Incremento 008 — Validação formal do cálculo: fechado em 2026-09-30** na branch `spec/008-validacao-calculo`, diff revisado pela autora. Execução formal pela autora: 10 de 10 casos com diferença R$ 0,00 (RNF06). **Falta o PR e o merge.** O 009 depende do consentimento do proprietário (B06).
 
 ## Onde o projeto está
 
-Incrementos 000 a 006 entregues e integrados; 007 pronto para integração. O próximo é o 008 (validação formal do cálculo), que depende da conferência dos dez casos em planilha (B08). O cálculo do orçamento existe em `backend/src/dominio/orcamento/calculo.ts` e é o único ponto do sistema que calcula preço.
+Incrementos 000 a 008 entregues; 000 a 007 integrados em `main` (007 no PR #8) e 008 aguardando PR. O critério de aprovação do TCC (diferença nula nos dez casos) está verificado. O cálculo do orçamento existe em `backend/src/dominio/orcamento/calculo.ts` e é o único ponto do sistema que calcula preço.
 
 ## Pronto
 
@@ -40,14 +40,20 @@ Incrementos 000 a 006 entregues e integrados; 007 pronto para integração. O pr
 - [x] **Incremento 004 — Registro e acompanhamento** (RF32, RF34–RF39): lista com busca e filtros, rascunho reaberto para edição, registrar = enviar com número sequencial (D020), aprovado/recusado, vencimento automático, somente leitura fora de rascunho; CN05/CN06, TI01/TI02 verificados (`evidencias/testes/004-registro-2026-09-28.md`); integrado em `main` (PR #5)
 - [x] **Incremento 005 — Clientes** (RF08–RF10): cadastro, busca, edição, inativação e reativação; orçamento ligado ao cliente por `cliente_id` (D021), com migração dos nomes em texto livre; TI03 verificado (`evidencias/testes/005-clientes-2026-09-28.md`); integrado em `main` (PR #6)
 - [x] **Incremento 006 — Orçamento em PDF** (RF41–RF43, RNF19): PDF de orçamento registrado no formato do modelo do proprietário (especificações, preço em número e por extenso, observações), sem custo nem lucro, lista de materiais opcional (D022); PDFKit (D023); integrado em `main` (PR #7)
-- [x] **Incremento 007 — Configurações** (RF05, RF19–RF22): página "Minha marcenaria" com dados da empresa (saem no PDF), padrões de lucro, arredondamento e validade de 10 dias para orçamentos novos (D024) — pendente a revisão do diff (B17)
+- [x] **Incremento 007 — Configurações** (RF05, RF19–RF22): página "Minha marcenaria" com dados da empresa (saem no PDF), padrões de lucro, arredondamento e validade de 10 dias para orçamentos novos (D024); integrado em `main` (PR #8)
+- [x] **Incremento 008 — Validação formal do cálculo** (RNF06, RNF21, US15): valores de referência conferidos em planilha pela autora (B08); dez casos lançados pela tela pela autora com diferença R$ 0,00 (execução nº 6); ensaio automatizado com CN01–CN06; D025 (`evidencias/testes/008-validacao-calculo-2026-09-30.md`)
 
 ## Próximo passo (nesta ordem)
 
-1. Autora revisar o diff (`main...spec/007-configuracoes`), abrir o PR e fazer o merge (B17).
-2. **Autora conferir em planilha os valores de referência dos dez casos (B08).** É pré-requisito do 008: pelo método da proposta, o valor de referência é calculado em planilha antes da execução no sistema.
-3. Abrir o 008 (validação formal: os dez casos lançados pela tela, com registro em `resultado-casos-de-teste.md`).
+1. Autora abrir o PR de `spec/008-validacao-calculo` e fazer o merge.
+2. Opcional: relançar o CT01 com **margem** 0% (foi lançado com markup 0%, mesmo resultado) e informar o navegador usado na execução formal.
+3. **Confirmar o consentimento do proprietário (B06)**: é o que falta para abrir o 009 (avaliação de uso).
 4. Transcrever as notas da conversa com o proprietário em `evidencias/entrevista/` e responder Q6–Q10 (B01); confirmar o termo de consentimento (B06).
+
+## Para ver no futuro
+
+- **Separar "salvar" de "enviar" no fluxo do orçamento.** Hoje registrar e enviar são o mesmo passo (D020): o orçamento sai de rascunho direto para `enviado`. Verificar se o certo é primeiro salvar/registrar, depois mudar a situação para `enviado` e, em seguida, para `aprovado` ou `recusado`. Se mudar, é preciso rever a D020, a RN09 (`regras-de-calculo.md` §3) e o incremento 004.
+- **Mensagem de quantidade negativa.** Quantidade −1 é bloqueada, mas a tela diz "Informe a quantidade com até 3 casas decimais". Trocar por uma mensagem sobre o sinal (achado no ensaio do 008; não afeta o cálculo).
 
 ## Não fazer agora
 
