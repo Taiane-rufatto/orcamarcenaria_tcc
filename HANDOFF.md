@@ -1,8 +1,8 @@
 # Handoff
 
-**Atualizado em:** 2026-09-30 · Última sessão: B08 e B17 resolvidos; Spec 007 integrada (PR #8); Spec 008 (validação formal do cálculo) aberta, executada e fechada.
+**Atualizado em:** 2026-10-01 · Última sessão: 011 (refinamento visual) implementado com a autora (D026, D027); falta o ensaio dos dez casos.
 
-> **Próxima sessão:** o 008 está em `main` (PR #9). O 009 (avaliação de uso) só abre com o termo de consentimento assinado (B06); a autora vai validar o rascunho com o orientador. Material da sessão pronto em `evidencias/avaliacao-de-uso/`. Sem o termo, seguir pela transcrição da entrevista (B01). Estado detalhado em `ESTADO_ATUAL.md`.
+> **Próxima sessão:** o **011 — Refinamento visual** está implementado na branch `spec/011-refinamento-visual`; falta rodar o ensaio dos dez casos pela tela (o roteiro de 008 usa itens avulsos; os cadastros agora abrem em painel lateral e material, serviço e cliente são escolhidos por campo com busca). A autora pediu em seguida: publicar o sistema para o orientador ver e adicionar "Esqueceu sua senha?". O 009 volta quando o termo estiver assinado (material em `evidencias/avaliacao-de-uso/`).
 
 Para qualquer nova sessão, agente ou ferramenta assumir o trabalho sem reconstruir contexto pelo histórico de conversa.
 

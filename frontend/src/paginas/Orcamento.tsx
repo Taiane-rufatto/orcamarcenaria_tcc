@@ -1,5 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import { CampoBusca } from '../componentes/CampoBusca'
 import { Memorial } from '../componentes/Memorial'
 import { listarMateriais, listarServicos, type Material, type Servico } from '../servicos/catalogo'
 import { listarClientes, type Cliente } from '../servicos/clientes'
@@ -155,9 +156,9 @@ export function Orcamento() {
 
   const catalogo = origem === 'material' ? materiais : servicos
 
-  return <main className="pagina">
+  return <main className="pagina pagina-orcamento">
     <div className="cabecalho-pagina">
-      <p><Link to="/orcamentos">← Orçamentos</Link></p>
+      <Link to="/orcamentos" className="voltar"><span aria-hidden="true">←</span> Orçamentos</Link>
       <h1>{orcamento.numero === null ? orcamento.descricaoProjeto : `Orçamento nº ${orcamento.numero}`}</h1>
       <p>
         {orcamento.numero !== null && <>{orcamento.descricaoProjeto} · </>}Cliente: {orcamento.clienteNome}
@@ -165,198 +166,194 @@ export function Orcamento() {
       </p>
     </div>
 
-    {erro && <p role="alert" className="alerta">{erro}</p>}
+    {/* composição no centro; situação, PDF e memorial na coluna à direita, que acompanha a rolagem (D026) */}
+    <div className="coluna-principal">
+      {erro && <p role="alert" className="alerta">{erro}</p>}
 
-    <section className="folha">
-      <h2>Situação</h2>
-      {orcamento.situacao === 'rascunho' && <>
-        <p className="ajuda">Quando o orçamento estiver pronto, registre-o. Ele recebe um número, passa a "Enviado" e os itens e valores ficam travados.</p>
-        <div className="acoes"><button onClick={registrar}>Registrar e marcar como enviado</button></div>
-      </>}
-      {orcamento.situacao === 'enviado' && <>
-        <p className="ajuda">Enviado ao cliente, válido até {exibirData(orcamento.dataValidade)}. Registre a resposta dele:</p>
-        <div className="acoes">
-          <button onClick={() => executar(mudarSituacao(id, 'aprovado'))}>Cliente aprovou</button>
-          <button className="secundario" onClick={() => executar(mudarSituacao(id, 'recusado'))}>Cliente recusou</button>
-        </div>
-      </>}
-      {orcamento.situacao === 'aprovado' && <p className="ajuda">O cliente aprovou este orçamento.</p>}
-      {orcamento.situacao === 'recusado' && <p className="ajuda">O cliente recusou este orçamento.</p>}
-      {orcamento.situacao === 'vencido' && <p className="ajuda">A validade terminou em {exibirData(orcamento.dataValidade)} sem resposta do cliente.</p>}
-    </section>
+      {!editavel && <section className="folha">
+        <h2>Dados e lucro</h2>
+        <dl className="resumo">
+          <div><dt>Cliente</dt><dd>{orcamento.clienteNome}</dd></div>
+          <div><dt>Projeto</dt><dd>{orcamento.descricaoProjeto}</dd></div>
+          <div><dt>Emissão</dt><dd>{exibirData(orcamento.dataEmissao)}</dd></div>
+          <div><dt>Válido até</dt><dd>{exibirData(orcamento.dataValidade)}</dd></div>
+          <div><dt>Lucro</dt><dd>
+            {orcamento.modoLucro === 'markup' ? 'Markup' : 'Margem'} de {paraCampo(orcamento.percentualLucro)}%
+            {orcamento.memorial.multiplicadorEquivalente && ` (${paraCampo(orcamento.memorial.multiplicadorEquivalente)}× o custo)`}
+          </dd></div>
+          <div><dt>Arredondamento</dt><dd>{REGRAS[orcamento.regraArredondamento]}</dd></div>
+          {orcamento.especificacoes && <div className="largo"><dt>Especificações</dt><dd className="texto-livre">{orcamento.especificacoes}</dd></div>}
+          {orcamento.observacoes && <div className="largo"><dt>Observações</dt><dd className="texto-livre">{orcamento.observacoes}</dd></div>}
+        </dl>
+      </section>}
 
-    {!editavel && <section className="folha">
-      <h2>Dados e lucro</h2>
-      <dl className="resumo">
-        <div><dt>Cliente</dt><dd>{orcamento.clienteNome}</dd></div>
-        <div><dt>Projeto</dt><dd>{orcamento.descricaoProjeto}</dd></div>
-        <div><dt>Emissão</dt><dd>{exibirData(orcamento.dataEmissao)}</dd></div>
-        <div><dt>Válido até</dt><dd>{exibirData(orcamento.dataValidade)}</dd></div>
-        <div><dt>Lucro</dt><dd>
-          {orcamento.modoLucro === 'markup' ? 'Markup' : 'Margem'} de {paraCampo(orcamento.percentualLucro)}%
-          {orcamento.memorial.multiplicadorEquivalente && ` (${paraCampo(orcamento.memorial.multiplicadorEquivalente)}× o custo)`}
-        </dd></div>
-        <div><dt>Arredondamento</dt><dd>{REGRAS[orcamento.regraArredondamento]}</dd></div>
-        {orcamento.especificacoes && <div className="largo"><dt>Especificações</dt><dd className="texto-livre">{orcamento.especificacoes}</dd></div>}
-        {orcamento.observacoes && <div className="largo"><dt>Observações</dt><dd className="texto-livre">{orcamento.observacoes}</dd></div>}
-      </dl>
-    </section>}
-
-    {!editavel && <section className="folha">
-      <h2>PDF para o cliente</h2>
-      <p className="ajuda">O PDF traz as especificações, o preço final e as observações. Nunca mostra custos, lucro ou valor por item.</p>
-      <div className="opcoes">
-        <label><input type="checkbox" checked={mostrarItensPdf} onChange={(e) => setMostrarItensPdf(e.target.checked)} /> Incluir também a lista de materiais e serviços (só quantidades, sem valores)</label>
-      </div>
-      <div className="acoes"><button onClick={baixar} disabled={baixando} aria-busy={baixando}>{baixando ? 'Gerando PDF…' : 'Baixar PDF'}</button></div>
-    </section>}
-
-    {editavel && <section className="folha">
-      <h2>Dados e lucro</h2>
-      {/* key: após salvar, o formulário volta a mostrar o que a API gravou */}
-      <form key={JSON.stringify([orcamento.clienteId, orcamento.descricaoProjeto, orcamento.dataEmissao, orcamento.dataValidade, orcamento.modoLucro, orcamento.percentualLucro, orcamento.regraArredondamento])} onSubmit={salvarCabecalho}>
-        <div className="campos">
-          <label>Cliente
+      {editavel && <section className="folha">
+        <h2>Dados e lucro</h2>
+        {/* key: após salvar, o formulário volta a mostrar o que a API gravou */}
+        <form key={JSON.stringify([orcamento.clienteId, orcamento.descricaoProjeto, orcamento.dataEmissao, orcamento.dataValidade, orcamento.modoLucro, orcamento.percentualLucro, orcamento.regraArredondamento])} onSubmit={salvarCabecalho}>
+          <div className="campos">
             {/* D021: troca só para cliente ativo; o atual aparece mesmo se tiver sido inativado depois */}
-            <select name="clienteId" defaultValue={orcamento.clienteId} required>
-              {!clientes.some((c) => c.id === orcamento.clienteId) && <option value={orcamento.clienteId}>{orcamento.clienteNome} (inativo)</option>}
-              {clientes.map((c) => <option key={c.id} value={c.id}>{c.nome}{c.telefone ? ` — ${c.telefone}` : ''}</option>)}
-            </select>
-          </label>
-          <label>Descrição do projeto<input name="descricaoProjeto" defaultValue={orcamento.descricaoProjeto} required /></label>
-          <label>Data de emissão<input name="dataEmissao" type="date" defaultValue={orcamento.dataEmissao} required /></label>
-          <label>Válido até<input name="dataValidade" type="date" defaultValue={orcamento.dataValidade} required /></label>
-          <label>Forma de lucro
-            <select name="modoLucro" defaultValue={orcamento.modoLucro}>
-              <option value="markup">Markup — sobre o custo</option>
-              <option value="margem">Margem — sobre o preço de venda</option>
-            </select>
-          </label>
-          <label>Percentual de lucro (%)<input name="percentualLucro" inputMode="decimal" defaultValue={paraCampo(orcamento.percentualLucro)} required /></label>
-          <label>Arredondamento do preço
-            <select name="regraArredondamento" defaultValue={orcamento.regraArredondamento}>
-              {Object.entries(REGRAS).map(([valor, rotulo]) => <option key={valor} value={valor}>{rotulo}</option>)}
-            </select>
-          </label>
-        </div>
-        {orcamento.memorial.multiplicadorEquivalente && <p className="aviso" style={{ marginTop: 16 }}>
-          Markup de {paraCampo(orcamento.percentualLucro)}% equivale a cobrar {paraCampo(orcamento.memorial.multiplicadorEquivalente)}× o custo.
-          Para cobrar 2,5× o custo, informe 150%.
-        </p>}
-        <div className="acoes"><button>Salvar dados e lucro</button></div>
-      </form>
-    </section>}
+            <CampoBusca rotulo="Cliente" name="clienteId" required valorInicial={orcamento.clienteId} opcoes={[
+              ...(clientes.some((c) => c.id === orcamento.clienteId) ? [] : [{ valor: orcamento.clienteId, rotulo: `${orcamento.clienteNome} (inativo)` }]),
+              ...clientes.map((c) => ({ valor: c.id, rotulo: c.nome, detalhe: c.telefone ?? undefined })),
+            ]} />
+            <label>Descrição do projeto<input name="descricaoProjeto" defaultValue={orcamento.descricaoProjeto} required /></label>
+            <label>Data de emissão<input name="dataEmissao" type="date" defaultValue={orcamento.dataEmissao} required /></label>
+            <label>Válido até<input name="dataValidade" type="date" defaultValue={orcamento.dataValidade} required /></label>
+            <label>Forma de lucro
+              <select name="modoLucro" defaultValue={orcamento.modoLucro}>
+                <option value="markup">Markup — sobre o custo</option>
+                <option value="margem">Margem — sobre o preço de venda</option>
+              </select>
+            </label>
+            <label>Percentual de lucro (%)<input name="percentualLucro" inputMode="decimal" defaultValue={paraCampo(orcamento.percentualLucro)} required /></label>
+            <label>Arredondamento do preço
+              <select name="regraArredondamento" defaultValue={orcamento.regraArredondamento}>
+                {Object.entries(REGRAS).map(([valor, rotulo]) => <option key={valor} value={valor}>{rotulo}</option>)}
+              </select>
+            </label>
+          </div>
+          {orcamento.memorial.multiplicadorEquivalente && <p className="ajuda" style={{ margin: '12px 0 0' }}>
+            Markup de {paraCampo(orcamento.percentualLucro)}% = {paraCampo(orcamento.memorial.multiplicadorEquivalente)}× o custo. Para cobrar 2,5× o custo, informe 150%.
+          </p>}
+          <div className="acoes"><button>Salvar dados e lucro</button></div>
+        </form>
+      </section>}
 
-    {editavel && <section className="folha">
-      <h2>Texto para o cliente</h2>
-      <p className="ajuda">Sai no PDF. Escreva o que o cliente recebe; linhas começando com "-" viram marcadores e linhas terminando com ":" viram subtítulos.</p>
-      <div className="campos">
-        <label className="largo">Especificações (o que está incluído)
-          <textarea rows={8} maxLength={4000} value={textos.especificacoes}
-            onChange={(e) => setTextos({ ...textos, especificacoes: e.target.value })}
-            placeholder={'Armário com cinco portas\n- Canto em 45°\n\nFerragens e acabamentos:\n- Dobradiça anti-impacto'} />
-        </label>
-        <label className="largo">Observações (prazo, pagamento, garantia)
-          <textarea rows={3} maxLength={1000} value={textos.observacoes}
-            onChange={(e) => setTextos({ ...textos, observacoes: e.target.value })}
-            placeholder="Ex.: entrega em 20 dias úteis; 50% na aprovação e 50% na entrega" />
-        </label>
-      </div>
-      {textosPendentes && <p className="aviso" style={{ marginTop: 16 }}>Há alterações não salvas. Elas também são salvas ao registrar.</p>}
-      {/* Sem pendência, o botão some e a tela diz que está tudo salvo: botão apagado parecia "carregando". */}
-      <div className="acoes">
-        {textosPendentes
-          ? <button onClick={salvarTextos}>Salvar textos</button>
-          : <span className="salvo" role="status">✓ Textos salvos</span>}
-      </div>
-    </section>}
-
-    <section className="folha">
-      <h2>Itens</h2>
-      {orcamento.itens.length === 0 ? <p className="vazio">Nenhum item incluído.</p> : <div className="tabela-rolagem"><table>
-        <thead><tr>
-          <th>Item</th><th>Tipo</th><th>Quantidade</th><th>Valor unitário (R$)</th><th className="valor">Valor</th>{editavel && <th><span className="sr-only">Ações</span></th>}
-        </tr></thead>
-        <tbody>{orcamento.itens.map((item) => {
-          const formulario = `item-${item.id}`
-          return <tr key={`${item.id}-${item.quantidade}-${item.valorUnitario}`}>
-            <td>{item.descricao}{item.valorAjustadoManualmente && <small><span className="selo ajustado">Valor ajustado neste orçamento</span></small>}</td>
-            <td data-label="Tipo">{item.tipo === 'material' ? 'Material' : 'Serviço'}</td>
-            {editavel ? <>
-              <td data-label="Quantidade"><span className="campo-com-unidade">
-                <input form={formulario} name="quantidade" inputMode="decimal" aria-label={`Quantidade de ${item.descricao}`} defaultValue={exibirNumero(item.quantidade)} required />
-                {item.unidade}
-              </span></td>
-              <td data-label="Valor unitário"><input form={formulario} name="valorUnitario" inputMode="decimal" aria-label={`Valor unitário de ${item.descricao}`} defaultValue={paraCampo(item.valorUnitario)} required /></td>
-            </> : <>
-              <td data-label="Quantidade">{exibirNumero(item.quantidade)} {item.unidade}</td>
-              <td data-label="Valor unitário">{paraCampo(item.valorUnitario)}</td>
-            </>}
-            <td className="valor" data-label="Valor">{exibirMoeda(item.valorLinha)}</td>
-            {editavel && <td className="acoes-linha">
-              <form id={formulario} onSubmit={(evento) => atualizarItem(evento, item.id)}><button className="discreto">Atualizar</button></form>
-              <button className="discreto" onClick={() => executar(removerItem(id, item.id))}>Remover</button>
-            </td>}
-          </tr>
-        })}</tbody>
-      </table></div>}
-
-      {editavel && <>
-      <h3 className="subtitulo">Incluir item</h3>
-      <form key={origem} onSubmit={incluirItem}>
+      {editavel && <section className="folha">
+        <h2>Texto para o cliente</h2>
+        <p className="ajuda">Sai no PDF. Linhas com "-" viram marcadores; terminadas em ":", subtítulos.</p>
         <div className="campos">
-          <label>Origem
-            <select value={origem} onChange={(e) => setOrigem(e.target.value as Origem)}>
-              <option value="material">Material do catálogo</option>
-              <option value="servico">Serviço do catálogo</option>
-              <option value="avulso">Item avulso (fora do catálogo)</option>
-            </select>
+          <label className="largo">Especificações (o que está incluído)
+            <textarea rows={8} maxLength={4000} value={textos.especificacoes}
+              onChange={(e) => setTextos({ ...textos, especificacoes: e.target.value })}
+              placeholder={'Armário com cinco portas\n- Canto em 45°\n\nFerragens e acabamentos:\n- Dobradiça anti-impacto'} />
           </label>
-          {origem === 'avulso' ? <>
-            <label>Tipo<select name="tipo"><option value="material">Material</option><option value="servico">Serviço</option></select></label>
-            <label>Descrição<input name="descricao" required /></label>
-            <label>Unidade<select name="unidade">{UNIDADES.map((u) => <option key={u}>{u}</option>)}</select></label>
-            <label>Valor unitário (R$)<input name="valorUnitario" inputMode="decimal" placeholder="0,00" required /></label>
-          </> : <label className="largo">{origem === 'material' ? 'Material' : 'Serviço'}
-            <select name="catalogoId" required>
-              {catalogo.length === 0 && <option value="">Nenhum cadastro ativo</option>}
-              {catalogo.map((c) => <option key={c.id} value={c.id}>
-                {c.nome} — {exibirMoeda('custo_unitario' in c ? c.custo_unitario : c.valor_unitario)}
-              </option>)}
-            </select>
-          </label>}
-          <label>Quantidade<input name="quantidade" inputMode="decimal" placeholder="Ex.: 2,5" required /></label>
+          <label className="largo">Observações (prazo, pagamento, garantia)
+            <textarea rows={3} maxLength={1000} value={textos.observacoes}
+              onChange={(e) => setTextos({ ...textos, observacoes: e.target.value })}
+              placeholder="Ex.: entrega em 20 dias úteis; 50% na aprovação e 50% na entrega" />
+          </label>
         </div>
-        <div className="acoes"><button>Incluir item</button></div>
-      </form>
-      </>}
-    </section>
-
-    <section className="folha">
-      <h2>Custos adicionais</h2>
-      <p className="ajuda">Frete, deslocamento, instalação e outros gastos de valor fixo. Eles entram no custo e recebem lucro.</p>
-      {!editavel && orcamento.custosAdicionais.length === 0 && <p className="vazio">Nenhum custo adicional.</p>}
-      {orcamento.custosAdicionais.length > 0 && <div className="tabela-rolagem"><table>
-        <thead><tr><th>Descrição</th><th className="valor">Valor</th>{editavel && <th><span className="sr-only">Ações</span></th>}</tr></thead>
-        <tbody>{orcamento.custosAdicionais.map((custo) => <tr key={custo.id}>
-          <td>{custo.descricao}</td>
-          <td className="valor" data-label="Valor">{exibirMoeda(custo.valor)}</td>
-          {editavel && <td className="acoes-linha"><button className="discreto" onClick={() => executar(removerCustoAdicional(id, custo.id))}>Remover</button></td>}
-        </tr>)}</tbody>
-      </table></div>}
-      {editavel && <form onSubmit={incluirCusto}>
-        <div className="campos">
-          <label>Descrição<input name="descricao" placeholder="Ex.: frete de entrega" required /></label>
-          <label>Valor (R$)<input name="valor" inputMode="decimal" placeholder="0,00" required /></label>
+        {/* Sem pendência, o botão some e a tela diz que está tudo salvo: botão apagado parecia "carregando". */}
+        <div className="acoes">
+          {textosPendentes
+            ? <><button onClick={salvarTextos}>Salvar textos</button><span className="ajuda" style={{ margin: 0, alignSelf: 'center' }}>Alterações não salvas</span></>
+            : <span className="salvo" role="status">✓ Textos salvos</span>}
         </div>
-        <div className="acoes"><button>Incluir custo</button></div>
-      </form>}
-    </section>
+      </section>}
 
-    <section className="folha">
-      <h2>Memorial de cálculo</h2>
-      <p className="ajuda">Refaça estas contas na calculadora: o resultado é o mesmo.</p>
-      <Memorial memorial={orcamento.memorial} modoLucro={orcamento.modoLucro} percentualLucro={orcamento.percentualLucro} />
-    </section>
+      <section className="folha">
+        <h2>Itens</h2>
+        {orcamento.itens.length === 0 ? <p className="vazio">Nenhum item incluído.</p> : <div className="tabela-rolagem"><table>
+          <thead><tr>
+            <th>Item</th><th>Tipo</th><th>Quantidade</th><th>Valor unit. (R$)</th><th className="valor">Valor</th>{editavel && <th><span className="sr-only">Ações</span></th>}
+          </tr></thead>
+          <tbody>{orcamento.itens.map((item) => {
+            const formulario = `item-${item.id}`
+            return <tr key={`${item.id}-${item.quantidade}-${item.valorUnitario}`}>
+              <td>{item.descricao}{item.valorAjustadoManualmente && <small><span className="selo ajustado">Valor ajustado neste orçamento</span></small>}</td>
+              <td data-label="Tipo">{item.tipo === 'material' ? 'Material' : 'Serviço'}</td>
+              {editavel ? <>
+                <td data-label="Quantidade"><span className="campo-com-unidade">
+                  <input form={formulario} name="quantidade" inputMode="decimal" aria-label={`Quantidade de ${item.descricao}`} defaultValue={exibirNumero(item.quantidade)} required />
+                  {item.unidade}
+                </span></td>
+                <td data-label="Valor unitário"><input form={formulario} name="valorUnitario" inputMode="decimal" aria-label={`Valor unitário de ${item.descricao}`} defaultValue={paraCampo(item.valorUnitario)} required /></td>
+              </> : <>
+                <td data-label="Quantidade">{exibirNumero(item.quantidade)} {item.unidade}</td>
+                <td data-label="Valor unitário">{paraCampo(item.valorUnitario)}</td>
+              </>}
+              <td className="valor" data-label="Valor">{exibirMoeda(item.valorLinha)}</td>
+              {editavel && <td className="acoes-linha">
+                <form id={formulario} onSubmit={(evento) => atualizarItem(evento, item.id)}><button className="discreto">Atualizar</button></form>
+                <button className="discreto" onClick={() => executar(removerItem(id, item.id))}>Remover</button>
+              </td>}
+            </tr>
+          })}</tbody>
+        </table></div>}
+
+        {editavel && <>
+        <h3 className="subtitulo">Incluir item</h3>
+        <form key={origem} onSubmit={incluirItem}>
+          <div className={origem === 'avulso' ? 'campos' : 'campos em-linha'}>
+            <label>Origem
+              <select value={origem} onChange={(e) => setOrigem(e.target.value as Origem)}>
+                <option value="material">Material do catálogo</option>
+                <option value="servico">Serviço do catálogo</option>
+                <option value="avulso">Item avulso (fora do catálogo)</option>
+              </select>
+            </label>
+            {origem === 'avulso' ? <>
+              <label>Tipo<select name="tipo"><option value="material">Material</option><option value="servico">Serviço</option></select></label>
+              <label>Descrição<input name="descricao" required /></label>
+              <label>Unidade<select name="unidade">{UNIDADES.map((u) => <option key={u}>{u}</option>)}</select></label>
+              <label>Valor unitário (R$)<input name="valorUnitario" inputMode="decimal" placeholder="0,00" required /></label>
+            </> : <CampoBusca rotulo={origem === 'material' ? 'Material' : 'Serviço'} name="catalogoId" required
+              placeholder={origem === 'material' ? 'Digite para buscar o material…' : 'Digite para buscar o serviço…'}
+              vazio={origem === 'material' ? 'Nenhum material ativo no catálogo' : 'Nenhum serviço ativo no catálogo'}
+              opcoes={catalogo.map((c) => ({ valor: c.id, rotulo: c.nome, detalhe: exibirMoeda('custo_unitario' in c ? c.custo_unitario : c.valor_unitario) }))} />}
+            <label>Quantidade<input name="quantidade" inputMode="decimal" placeholder="Ex.: 2,5" required /></label>
+            <button>Incluir item</button>
+          </div>
+        </form>
+        </>}
+      </section>
+
+      <section className="folha">
+        <h2>Custos adicionais</h2>
+        <p className="ajuda">Frete, instalação e outros gastos fixos. Entram no custo e recebem lucro.</p>
+        {!editavel && orcamento.custosAdicionais.length === 0 && <p className="vazio">Nenhum custo adicional.</p>}
+        {orcamento.custosAdicionais.length > 0 && <div className="tabela-rolagem"><table>
+          <thead><tr><th>Descrição</th><th className="valor">Valor</th>{editavel && <th><span className="sr-only">Ações</span></th>}</tr></thead>
+          <tbody>{orcamento.custosAdicionais.map((custo) => <tr key={custo.id}>
+            <td>{custo.descricao}</td>
+            <td className="valor" data-label="Valor">{exibirMoeda(custo.valor)}</td>
+            {editavel && <td className="acoes-linha"><button className="discreto" onClick={() => executar(removerCustoAdicional(id, custo.id))}>Remover</button></td>}
+          </tr>)}</tbody>
+        </table></div>}
+        {editavel && <form onSubmit={incluirCusto}>
+          <div className="campos em-linha-custo">
+            <label>Descrição<input name="descricao" placeholder="Ex.: frete de entrega" required /></label>
+            <label>Valor (R$)<input name="valor" inputMode="decimal" placeholder="0,00" required /></label>
+            <button>Incluir custo</button>
+          </div>
+        </form>}
+      </section>
+    </div>
+
+    <aside className="coluna-resumo" aria-label="Situação e preço">
+      <section className="folha">
+        <h2>Situação</h2>
+        {orcamento.situacao === 'rascunho' && <>
+          <p className="ajuda">Ao registrar, o orçamento recebe número e não pode mais ser alterado.</p>
+          <div className="acoes"><button onClick={registrar}>Registrar e marcar como enviado</button></div>
+        </>}
+        {orcamento.situacao === 'enviado' && <>
+          <p className="ajuda">Válido até {exibirData(orcamento.dataValidade)}. Qual foi a resposta do cliente?</p>
+          <div className="acoes">
+            <button onClick={() => executar(mudarSituacao(id, 'aprovado'))}>Cliente aprovou</button>
+            <button className="secundario" onClick={() => executar(mudarSituacao(id, 'recusado'))}>Cliente recusou</button>
+          </div>
+        </>}
+        {orcamento.situacao === 'aprovado' && <p className="ajuda">O cliente aprovou este orçamento.</p>}
+        {orcamento.situacao === 'recusado' && <p className="ajuda">O cliente recusou este orçamento.</p>}
+        {orcamento.situacao === 'vencido' && <p className="ajuda">A validade terminou em {exibirData(orcamento.dataValidade)} sem resposta do cliente.</p>}
+      </section>
+
+      {!editavel && <section className="folha">
+        <h2>PDF para o cliente</h2>
+        <p className="ajuda">Sem custos, lucro ou valor por item.</p>
+        <div className="opcoes">
+          <label><input type="checkbox" checked={mostrarItensPdf} onChange={(e) => setMostrarItensPdf(e.target.checked)} /> Incluir a lista de itens (só quantidades)</label>
+        </div>
+        <div className="acoes"><button onClick={baixar} disabled={baixando} aria-busy={baixando}>{baixando ? 'Gerando PDF…' : 'Baixar PDF'}</button></div>
+      </section>}
+
+      <section className="folha">
+        <h2>Memorial de cálculo</h2>
+        <Memorial memorial={orcamento.memorial} />
+      </section>
+    </aside>
   </main>
 }

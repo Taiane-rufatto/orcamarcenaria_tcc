@@ -1,7 +1,9 @@
 # Estado Atual
 
-**Atualizado em:** 2026-09-30
+**Atualizado em:** 2026-10-01
 
+> **Em andamento: incremento 011 — Refinamento visual** (branch `spec/011-refinamento-visual`), executado **antes do 009** porque o 009 aguarda o termo de consentimento (B06). **Ponto de parada (2026-10-01):** visual implementado com a autora (D026, D027): menu lateral, paleta neutra com verde e laranja só em detalhes, listas com painel lateral, orçamento em duas colunas e campo com busca para material, serviço e cliente. Falta o ensaio dos dez casos pela tela (os percursos mudaram: painel lateral e campo com busca) para fechar o 011. Próximo pedido da autora: publicar o sistema para o orientador ver e incluir "Esqueceu sua senha?".
+>
 > **Incremento 008 — Validação formal do cálculo: entregue e integrado em `main` (PR #9).** Execução formal pela autora: 10 de 10 casos com diferença R$ 0,00 (RNF06). **O 009 (avaliação de uso) aguarda o termo de consentimento (B06)**, que a autora vai validar com o orientador; o material da sessão já está preparado em `evidencias/avaliacao-de-uso/`.
 
 ## Onde o projeto está
@@ -46,9 +48,11 @@ Incrementos 000 a 008 entregues e integrados em `main` (008 no PR #9). O critér
 
 ## Próximo passo (nesta ordem)
 
-1. **Autora validar o termo de consentimento com o orientador** (pontos listados no topo do rascunho) e colher a assinatura do proprietário (B06). Com o termo assinado, abrir o 009 e aplicar `roteiro-e-ficha-da-sessao.md`.
-2. Opcional: relançar o CT01 com **margem** 0% (foi lançado com markup 0%, mesmo resultado) e informar o navegador usado na execução formal.
-3. Transcrever as notas da conversa com o proprietário em `evidencias/entrevista/` e responder Q6–Q10 (B01); confirmar o termo de consentimento (B06).
+1. **Incremento 011 (refinamento visual):** rodar o ensaio dos dez casos pela tela e fechar a spec. Detalhes no topo deste arquivo.
+1a. **Publicação para o orientador e "Esqueceu sua senha?"**: pedidos da autora em 2026-10-01, a enquadrar no roadmap antes de implementar.
+2. **Autora validar o termo de consentimento com o orientador** (pontos listados no topo do rascunho) e colher a assinatura do proprietário (B06). Com o termo assinado, abrir o 009 e aplicar `roteiro-e-ficha-da-sessao.md`.
+3. Opcional: relançar o CT01 com **margem** 0% (foi lançado com markup 0%, mesmo resultado) e informar o navegador usado na execução formal.
+4. Transcrever as notas da conversa com o proprietário em `evidencias/entrevista/` e responder Q6–Q10 (B01); confirmar o termo de consentimento (B06).
 
 ## Para ver no futuro
 

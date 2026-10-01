@@ -1,4 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react'
+import { FiltroLista, RodapeLista } from '../componentes/FiltroLista'
+import { PainelLateral } from '../componentes/PainelLateral'
 import {
   criarCliente, editarCliente, inativarCliente, listarClientes, reativarCliente, type Cliente,
 } from '../servicos/clientes'
@@ -9,7 +11,9 @@ export function Clientes() {
   const [clientes, setClientes] = useState<Cliente[]>([])
   const [busca, setBusca] = useState('')
   const [situacao, setSituacao] = useState<Situacao>('ativos')
-  const [editando, setEditando] = useState<Cliente | null>(null)
+  // Painel lateral: fechado, criando (null) ou editando um cliente.
+  const [painel, setPainel] = useState<{ editando: Cliente | null } | null>(null)
+  const editando = painel?.editando ?? null
   const [erro, setErro] = useState('')
 
   // Mudar a versão dispara nova consulta (após salvar, inativar ou reativar).
@@ -24,10 +28,11 @@ export function Clientes() {
     return () => { atual = false }
   }, [busca, situacao, versao])
 
+  function abrir(cliente: Cliente | null) { setErro(''); setPainel({ editando: cliente }) }
+
   async function salvar(evento: FormEvent<HTMLFormElement>) {
     evento.preventDefault()
-    const formulario = evento.currentTarget
-    const dados = new FormData(formulario)
+    const dados = new FormData(evento.currentTarget)
     const cliente = {
       nome: String(dados.get('nome')),
       telefone: String(dados.get('telefone') ?? ''),
@@ -37,8 +42,7 @@ export function Clientes() {
     try {
       if (editando) await editarCliente(editando.id, cliente)
       else await criarCliente(cliente)
-      formulario.reset()
-      setEditando(null)
+      setPainel(null)
       recarregar()
     } catch (causa) { setErro(causa instanceof Error ? causa.message : 'Não foi possível salvar o cliente') }
   }
@@ -56,51 +60,46 @@ export function Clientes() {
   }
 
   return <main className="pagina">
-    <div className="cabecalho-pagina">
-      <h1>Clientes</h1>
-      <p>As pessoas para quem você faz orçamentos. Só o nome é obrigatório.</p>
+    <div className="cabecalho-pagina com-acao">
+      <div>
+        <h1>Clientes</h1>
+        <p>As pessoas para quem você faz orçamentos. Só o nome é obrigatório.</p>
+      </div>
+      <button onClick={() => abrir(null)}>+ Novo cliente</button>
     </div>
 
-    <section className="folha">
-      <h2>{editando ? `Editar "${editando.nome}"` : 'Novo cliente'}</h2>
-      <form key={editando?.id ?? 'novo'} onSubmit={salvar}>
-        <div className="campos">
-          <label>Nome<input name="nome" defaultValue={editando?.nome} required /></label>
-          <label>Telefone (opcional)<input name="telefone" type="tel" maxLength={30} defaultValue={editando?.telefone ?? ''} /></label>
-          <label>E-mail (opcional)<input name="email" type="email" maxLength={200} defaultValue={editando?.email ?? ''} /></label>
-          <label className="largo">Endereço (opcional)<input name="endereco" maxLength={300} defaultValue={editando?.endereco ?? ''} /></label>
-        </div>
-        {erro && <p role="alert" className="alerta" style={{ marginTop: 16 }}>{erro}</p>}
-        <div className="acoes">
-          <button>{editando ? 'Salvar alterações' : 'Cadastrar cliente'}</button>
-          {editando && <button type="button" className="secundario" onClick={() => setEditando(null)}>Cancelar edição</button>}
-        </div>
-      </form>
-    </section>
+    <FiltroLista busca={busca} situacao={situacao} exemplo="Nome do cliente…" aoBuscar={setBusca} aoFiltrar={setSituacao} />
+    {erro && !painel && <p role="alert" className="alerta">{erro}</p>}
 
-    <section className="folha">
-      <h2>Meus clientes</h2>
-      <div className="filtros">
-        <label>Buscar por nome<input value={busca} onChange={(e) => setBusca(e.target.value)} placeholder="Ex.: Maria" /></label>
-        <label>Situação
-          <select value={situacao} onChange={(e) => setSituacao(e.target.value as Situacao)}>
-            <option value="ativos">Ativos</option><option value="inativos">Inativos</option><option value="todos">Todos</option>
-          </select>
-        </label>
-      </div>
+    <section className="folha lista">
       {clientes.length === 0 ? <p className="vazio">Nenhum cliente encontrado.</p> : <div className="tabela-rolagem"><table>
         <thead><tr><th>Cliente</th><th>Telefone</th><th>E-mail</th><th>Situação</th><th><span className="sr-only">Ações</span></th></tr></thead>
         <tbody>{clientes.map((cliente) => <tr key={cliente.id} className={cliente.ativo ? '' : 'linha-inativa'}>
-          <td>{cliente.nome}{cliente.endereco && <small>{cliente.endereco}</small>}</td>
-          <td data-label="Telefone">{cliente.telefone ?? '—'}</td>
-          <td data-label="E-mail">{cliente.email ?? '—'}</td>
+          <td><b>{cliente.nome}</b>{cliente.endereco && <small>{cliente.endereco}</small>}</td>
+          <td data-label="Telefone" className="secundaria">{cliente.telefone ?? '—'}</td>
+          <td data-label="E-mail" className="secundaria">{cliente.email ?? '—'}</td>
           <td data-label="Situação"><span className={cliente.ativo ? 'selo' : 'selo inativo'}>{cliente.ativo ? 'Ativo' : 'Inativo'}</span></td>
-          <td className="acoes-linha">{cliente.ativo && <>
-            <button className="discreto" onClick={() => setEditando(cliente)}>Editar</button>
-            <button className="discreto" onClick={() => inativar(cliente)}>Inativar</button>
-          </>}{!cliente.ativo && <button className="discreto" onClick={() => reativar(cliente)}>Reativar</button>}</td>
+          <td className="acoes-linha">{cliente.ativo ? <>
+            <button className="discreto" onClick={() => abrir(cliente)}>Editar</button>
+            <button className="discreto inativar" onClick={() => inativar(cliente)}>Inativar</button>
+          </> : <button className="discreto" onClick={() => reativar(cliente)}>Reativar</button>}</td>
         </tr>)}</tbody>
       </table></div>}
+      <RodapeLista total={clientes.length} singular="cliente" plural="clientes" situacao={situacao} />
     </section>
+
+    <PainelLateral titulo={editando ? `Editar "${editando.nome}"` : 'Novo cliente'} aberto={painel !== null} aoFechar={() => setPainel(null)}>
+      <form key={editando?.id ?? 'novo'} onSubmit={salvar} className="formulario-painel">
+        <label>Nome<input name="nome" defaultValue={editando?.nome} required autoFocus /></label>
+        <label>Telefone (opcional)<input name="telefone" type="tel" maxLength={30} defaultValue={editando?.telefone ?? ''} /></label>
+        <label>E-mail (opcional)<input name="email" type="email" maxLength={200} defaultValue={editando?.email ?? ''} /></label>
+        <label>Endereço (opcional)<input name="endereco" maxLength={300} defaultValue={editando?.endereco ?? ''} /></label>
+        {erro && <p role="alert" className="alerta">{erro}</p>}
+        <div className="acoes">
+          <button>{editando ? 'Salvar alterações' : 'Cadastrar cliente'}</button>
+          <button type="button" className="secundario" onClick={() => setPainel(null)}>Cancelar</button>
+        </div>
+      </form>
+    </PainelLateral>
   </main>
 }
