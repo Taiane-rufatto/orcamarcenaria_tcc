@@ -22,21 +22,16 @@ describe('exibição de valores (só texto, AGENTS §8)', () => {
 
 describe('Memorial (RF31)', () => {
   it('exibe o CT03 na ordem de regras-de-calculo.md §5, com os valores da API', () => {
-    render(<Memorial memorial={ct03} modoLucro="margem" percentualLucro="30.00" />)
+    render(<Memorial memorial={ct03} />)
     const linhas = screen.getAllByRole('term').map((termo) => `${termo.textContent} ${termo.nextElementSibling?.textContent}`)
     expect(linhas).toEqual([
       'Materiais R$ 1.075,60',
       'Serviços e mão de obra R$ 690,00',
       'Custos adicionais R$ 165,50',
       'Custo direto total R$ 1.931,10',
-      'Lucro (margem 30,00% sobre o preço) R$ 827,61',
+      'Lucro R$ 827,61',
       'Ajuste de arredondamento R$ 1,29',
       'Preço final R$ 2.760,00',
     ])
-  })
-
-  it('no markup, mostra o multiplicador recebido da API (D018)', () => {
-    render(<Memorial memorial={{ ...ct03, multiplicadorEquivalente: '2.50' }} modoLucro="markup" percentualLucro="150.00" />)
-    expect(screen.getByText('Lucro (markup 150,00% · 2,50× o custo)')).toBeTruthy()
   })
 })

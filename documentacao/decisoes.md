@@ -6,6 +6,32 @@ Formato: contexto → decisão → consequência → situação (`provisória` e
 
 ---
 
+## D027 — Linha do lucro no memorial só com o rótulo "Lucro"
+**Data:** 2026-10-01 · **Situação:** firme (decidido pela autora)
+
+**Contexto.** No refinamento visual (011), a autora achou a linha "Lucro (markup 150,00% · 2,50× o custo)" poluída na coluna estreita do resumo, onde ela quebrava no meio. O rótulo completo vinha de `regras-de-calculo.md` §5 e de D018.
+
+**Decisão.** A linha do lucro no memorial passa a mostrar só "Lucro" e o valor. A forma de lucro, o percentual e o multiplicador equivalente do markup continuam na mesma tela, na seção "Dados e lucro" (editável no rascunho, somente leitura depois), e no aviso do markup ("150% = 2,5× o custo").
+
+**Consequência.** Nenhuma fórmula muda e os valores do memorial são os mesmos; quem confere a conta à mão lê o modo e o percentual em "Dados e lucro". `regras-de-calculo.md` §5 foi atualizado. As evidências já registradas (003, 008) mantêm o rótulo antigo, que valia na data delas. Como o memorial é evidência para a banca, vale comentar a mudança com o orientador.
+
+---
+
+## D026 — Incremento 011 (refinamento visual) antes do 009, no modelo "Bancada"
+**Data:** 2026-10-01 · **Situação:** firme (decidido pela autora, ajustado tela a tela em 2026-10-01)
+
+**Contexto.** O 009 (avaliação de uso) aguarda o termo de consentimento (B06). Nesse intervalo, a autora pediu um visual mais limpo, tomando como modelo a proposta "Bancada" do estudo de propostas de design (artifact "OrçaMarcenaria: Propostas de Design", 2026-09-30): menu lateral, cartões e tabelas mais leves e, no orçamento, o resumo à direita acompanhando a rolagem. Pediu também para manter as cores atuais (D014), um pouco mais claras.
+
+**Decisão.**
+1. Abrir o incremento **011 — Refinamento visual** e executá-lo antes do 009. Só aparência, disposição das telas e textos; nenhuma regra de cálculo, rota da API ou dado muda.
+2. Alcance escolhido pela autora: **visual + layout**. Menu lateral, botões planos, tabelas e cartões mais limpos, e no orçamento o memorial e as ações de situação numa coluna fixa à direita. Os formulários continuam onde estão; criar e editar em painel lateral fica de fora.
+3. Tipografia só sem serifa (Figtree). A régua deixa o cabeçalho e fica só no painel de acesso e na marca.
+4. Paleta de D014 mantida em matiz, com tons mais claros, mantendo contraste de 4,5:1 no texto (WCAG 2.2 AA).
+
+**Consequência.** D014 continua valendo quanto ao princípio de cores e estilos só em variáveis de `index.css`; mudam a tipografia dos títulos, a posição da régua e os valores das cores. Ao final, o ensaio dos dez casos pela tela é reexecutado, porque os percursos de tela dependem da posição dos elementos. O 009 volta quando B06 for resolvido.
+
+---
+
 ## D025 — Execução formal dos dez casos pela autora, com ensaio automatizado antes
 **Data:** 2026-09-30 · **Situação:** firme (decidido pela autora)
 
