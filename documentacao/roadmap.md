@@ -32,12 +32,14 @@ Prioridade e dependência definem a ordem. Um incremento só é aberto quando o 
 | 009 | Avaliação exploratória de uso com o proprietário | M3 | 008 | US16 | RNF01, OE7 |
 | 010 | Fechamento: matriz de verificação, documentação final comparada à linha de base, evidências organizadas | M4 | 009 | — | OE8, RNF22 |
 | 011 | Refinamento visual: menu lateral, telas mais limpas e resumo fixo no orçamento, sem mudar regras (D026) | M3 | 008 | — | RNF02, RNF05, RNF26 |
+| 012 | Publicação para demonstração em VPS e recuperação de senha por e-mail (D028, D029) | M3 | 011 | — | RF07, RNF14, RNF15, RNF25 |
 
 ### Observações de sequenciamento
 
 - **003 antes de 005** é proposital: o cálculo é o risco central do TCC e precisa ser atacado cedo, com cliente provisório fixo se necessário. Cadastro de cliente é trabalho conhecido e de baixo risco.
 - **007 depois de 003**: o cálculo já nasce lendo configuração, mas o incremento 003 pode usar valores padrão fixos (margem, arredondamento) até que a tela de configuração exista.
 - **008 depois de 006 e 007**: os casos de teste formais exigem o sistema completo, inclusive arredondamentos configuráveis.
+- **012 logo depois do 011** (D028, D029): publicar permite ao orientador acompanhar o sistema; a recuperação de senha vem junto porque, publicado, ninguém pode redefinir senha à mão.
 - **011 antes do 009** (D026): o 009 aguarda o termo de consentimento (B06); o refinamento visual ocupa esse intervalo e deixa a avaliação de uso ser feita já com a interface final.
 
 ## 3. Calendário pretendido

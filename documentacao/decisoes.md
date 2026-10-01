@@ -6,6 +6,37 @@ Formato: contexto → decisão → consequência → situação (`provisória` e
 
 ---
 
+## D029 — Publicação para demonstração em VPS, com endereço gratuito e HTTPS
+**Data:** 2026-10-01 · **Situação:** firme (decidido pela autora)
+
+**Contexto.** A autora quer que o orientador acompanhe o sistema sem instalar nada. O RNF25 prevê implantação em VPS só por configuração, e o RNF14 exige HTTPS quando publicado. Alternativas consideradas: Render (grátis, mas dorme após 15 min e o banco grátis expira em 30 dias), Railway (pago, cerca de US$ 5/mês) e VPS própria.
+
+**Decisão.**
+1. VPS própria com Ubuntu 24.04, contratada pela autora: PostgreSQL, a API em Node.js como serviço do sistema (systemd) e o nginx servindo o front-end compilado e repassando a API.
+2. Sem domínio próprio: endereço gratuito `<ip>.sslip.io`, que aponta para o IP da VPS, com certificado do Let's Encrypt (certbot).
+3. Front e API no mesmo endereço: a API fica sob `/api` no nginx, o que dispensa CORS entre domínios.
+4. Banco publicado só com dados fictícios (RNF15). O passo a passo fica em `documentacao/publicacao.md`.
+
+**Consequência.** Há custo mensal da VPS por conta da autora. Atualizar a versão publicada é um procedimento manual descrito no roteiro (baixar a branch, compilar, migrar, reiniciar).
+
+---
+
+## D028 — Recuperação de senha por e-mail (RF07) trazida para antes da entrega
+**Data:** 2026-10-01 · **Situação:** firme (decidido pela autora; a comentar com o orientador por mudar o escopo declarado)
+
+**Contexto.** O RF07 estava como Desejável e pós-TCC. Com o sistema publicado para o orientador e, depois, para a avaliação de uso, quem esquecer a senha fica sem acesso, porque não há suporte manual.
+
+**Decisão.**
+1. O RF07 entra no incremento 012. Fluxo: a pessoa informa o e-mail; se ele for de uma conta ativa, recebe um link de troca de senha válido por 1 hora e de uso único.
+2. A resposta da API é a mesma com e-mail cadastrado ou não, para não revelar quem tem conta.
+3. O token tem 32 bytes aleatórios; no banco fica só o hash SHA-256 dele. Pedir de novo invalida o anterior, e pedidos repetidos em menos de 1 minuto não reenviam o e-mail.
+4. Trocar a senha encerra todas as sessões abertas, como no RF06.
+5. Envio por SMTP com uma conta Gmail e senha de app (nodemailer). Sem SMTP configurado, o link vai para o console do servidor, o que serve ao desenvolvimento e aos testes.
+
+**Consequência.** Nova dependência (nodemailer) e nova tabela `redefinicao_senha`. Na tabela de requisitos, o RF07 passa a apontar para o incremento 012; a prioridade continua Desejável, porque a proposta não muda.
+
+---
+
 ## D027 — Linha do lucro no memorial só com o rótulo "Lucro"
 **Data:** 2026-10-01 · **Situação:** firme (decidido pela autora)
 

@@ -2,7 +2,7 @@
 
 **Atualizado em:** 2026-10-01 · Última sessão: 011 (refinamento visual) implementado com a autora (D026, D027); falta o ensaio dos dez casos.
 
-> **Próxima sessão:** o **011 — Refinamento visual** está implementado na branch `spec/011-refinamento-visual`; falta rodar o ensaio dos dez casos pela tela (o roteiro de 008 usa itens avulsos; os cadastros agora abrem em painel lateral e material, serviço e cliente são escolhidos por campo com busca). A autora pediu em seguida: publicar o sistema para o orientador ver e adicionar "Esqueceu sua senha?". O 009 volta quando o termo estiver assinado (material em `evidencias/avaliacao-de-uso/`).
+> **Próxima sessão:** o **011 — Refinamento visual** está implementado na branch `spec/011-refinamento-visual`; falta rodar o ensaio dos dez casos pela tela (o roteiro de 008 usa itens avulsos; os cadastros agora abrem em painel lateral e material, serviço e cliente são escolhidos por campo com busca). Em seguida foi aberto o **012** (branch `spec/012-publicacao-e-senha`, criada da 011): recuperação de senha por e-mail (RF07, D028) pronta e testada; publicação em VPS (D029) com roteiro em `documentacao/publicacao.md`, aguardando a autora contratar a VPS e criar a conta Gmail do sistema. O 009 volta quando o termo estiver assinado (material em `evidencias/avaliacao-de-uso/`).
 
 Para qualquer nova sessão, agente ou ferramenta assumir o trabalho sem reconstruir contexto pelo histórico de conversa.
 

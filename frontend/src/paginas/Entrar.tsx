@@ -20,6 +20,7 @@ export function Entrar() {
     <form onSubmit={enviar}>
       <label>E-mail<input name="email" type="email" autoComplete="email" required /></label>
       <label>Senha<input name="senha" type="password" autoComplete="current-password" required /></label>
+      <Link to="/esqueci-senha" className="link-discreto">Esqueceu sua senha?</Link>
       {erro && <p role="alert" className="alerta">{erro}</p>}
       <button>Entrar</button>
     </form>
