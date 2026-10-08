@@ -1,8 +1,8 @@
 # Handoff
 
-**Atualizado em:** 2026-10-08 · Última sessão: 013 (cadastro em sequência) implementado e fechado.
+**Atualizado em:** 2026-10-08 · Última sessão: 013 integrado e publicado; 014 (cadastro pelo teclado) fechado.
 
-> **Próxima sessão:** o 013 está fechado na branch `spec/013-cadastro-em-sequencia`, aguardando a revisão humana do diff (B20) e o PR; depois publicar na VPS. O 009 volta quando o termo estiver assinado (material em `evidencias/avaliacao-de-uso/`).
+> **Próxima sessão:** o 014 (cadastro pelo teclado) está fechado na branch `spec/014-cadastro-pelo-teclado`, aguardando a revisão humana do diff (B21) e o PR; depois publicar na VPS. O 009 volta quando o termo estiver assinado (material em `evidencias/avaliacao-de-uso/`).
 
 Para qualquer nova sessão, agente ou ferramenta assumir o trabalho sem reconstruir contexto pelo histórico de conversa.
 
@@ -17,10 +17,10 @@ Para qualquer nova sessão, agente ou ferramenta assumir o trabalho sem reconstr
 
 ## O que foi feito na última sessão
 
-1. **012 integrado** (PR #13) e **VPS trocada para `main`**.
-2. **013 aberto e fechado:** "Salvar e cadastrar outro" nos painéis de novo material, serviço e cliente (D030). Mantém o painel aberto, limpa o formulário, devolve o foco ao Nome, preserva unidade e tipo de cobrança e confirma com "✓ nome cadastrado". Enter continua salvando e fechando. Só frontend; evidência em `evidencias/testes/013-cadastro-em-sequencia-2026-10-08.md`.
+1. **013 integrado** (PR #14) e **publicado na VPS** (`main`); migrações aplicadas no banco local.
+2. **014 aberto e fechado:** a autora pediu agilidade pelo teclado. Nos painéis de **novo** material, serviço e cliente, o Enter (e o botão "Cadastrar ...") grava e abre o formulário em branco com o foco no Nome; só Esc ou ✕ fecham. O botão "Salvar e cadastrar outro" saiu e "Cancelar" virou "Fechar"; na edição nada mudou. Trava contra Enter repetido. D031 revisa a D030. Só frontend.
 
-Decisões firmes: D001–D030. Nenhuma provisória no momento.
+Decisões firmes: D001–D031. Nenhuma provisória no momento.
 
 ## O que **não** foi feito
 
@@ -68,7 +68,8 @@ Decisões firmes: D001–D030. Nenhuma provisória no momento.
 - **VPS (AWS):** acesso por `ssh -i ~/.ssh/orcamarcenaria-key.pem ubuntu@54.232.52.91`; aplicação em `/opt/orcamarcenaria` (dono `orcamarcenaria`, por isso o `git` como `ubuntu` reclama de "dubious ownership": usar `sudo -u orcamarcenaria git …`); `.env` em `/opt/orcamarcenaria/backend/.env`; log com `journalctl -u orcamarcenaria-api`. O site roda `main` (`atualizar.sh main`); para publicar uma mudança nova, integrar em `main` e rodar o script na VPS.
 - **A tela de recuperação responde igual para e-mail sem conta** (de propósito, RF07). Quando "não chega e-mail", primeiro ver o log: `SMTP não configurado`, `535` ou `ETIMEDOUT` dizem o motivo; nenhuma linha quer dizer que o e-mail digitado não tem conta. Um segundo pedido em menos de 1 minuto é ignorado.
 - **Nunca pedir senhas e chaves pelo chat:** a senha de app do Gmail foi colocada no `.env` pela própria autora, e só os nomes das variáveis foram conferidos.
-- **Como saber qual botão enviou o formulário:** o painel usa `evento.nativeEvent.submitter` (`value="outro"` no botão novo). O Enter dispara o *primeiro* botão de envio do formulário, por isso "Cadastrar ..." tem de continuar antes de "Salvar e cadastrar outro" na ordem do código; trocar a ordem muda o que o Enter faz.
+- **Painel de novo cadastro (014):** `cadastrarOutro = !editando`; depois de gravar, `formulario.reset()` e o foco volta ao Nome, e a unidade (material) ou o tipo de cobrança (serviço) é reposta à mão porque o `reset()` a devolveria ao padrão. Uma `useRef` (`salvando`) barra o segundo Enter enquanto o envio anterior não terminou; sem ela, Enter repetido grava duas vezes.
+- **Ensaio de tela e o painel:** depois do 014, "Cadastrar ..." deixa o painel aberto; scripts que esperavam o painel fechar precisam apertar Esc.
 
 ## Perguntas a fazer à autora antes de avançar
 

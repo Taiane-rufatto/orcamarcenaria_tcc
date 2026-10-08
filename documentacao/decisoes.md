@@ -6,6 +6,17 @@ Formato: contexto → decisão → consequência → situação (`provisória` e
 
 ---
 
+## D031 — Enter cadastra e continua; o painel só fecha com Esc ou ✕ (revisa a D030)
+**Data:** 2026-10-08 · **Situação:** firme (decidido pela autora)
+
+**Contexto.** A D030 manteve o Enter salvando e fechando e acrescentou o botão "Salvar e cadastrar outro". Ao ver o resultado, a autora quis que a sequência fosse ágil também para quem usa o teclado, sem precisar do mouse nem de um botão extra.
+
+**Decisão.** No painel de **novo** material, serviço e cliente, o Enter (e o botão "Cadastrar ...") grava e abre o formulário em branco, com o foco no Nome; o painel só fecha com Esc ou ✕. O botão "Salvar e cadastrar outro" sai e "Cancelar" vira "Fechar". Na **edição**, tudo como antes (Enter salva e fecha). Uma trava evita gravar duas vezes com Enter repetido.
+
+**Consequência.** Substitui da D030 o ponto "Enter continua salvando e fechando" e o botão extra; o restante da D030 (foco no Nome, unidade e tipo de cobrança mantidos, confirmação) segue valendo. Só muda a tela. A confirmação do 013 (`evidencias/testes/013-...`) descreve o comportamento anterior, que valeu na data dela.
+
+---
+
 ## D030 — Incremento 013: cadastro em sequência nos painéis laterais
 **Data:** 2026-10-08 · **Situação:** firme (decidido pela autora)
 
