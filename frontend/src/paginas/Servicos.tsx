@@ -16,6 +16,7 @@ export function Servicos() {
   const [painel, setPainel] = useState<{ editando: Servico | null } | null>(null)
   const editando = painel?.editando ?? null
   const [erro, setErro] = useState('')
+  const [confirmacao, setConfirmacao] = useState('')
 
   // Mudar a versão dispara nova consulta (após salvar ou inativar).
   const [versao, setVersao] = useState(0)
@@ -29,11 +30,14 @@ export function Servicos() {
     return () => { atual = false }
   }, [busca, situacao, versao])
 
-  function abrir(servico: Servico | null) { setErro(''); setPainel({ editando: servico }) }
+  function abrir(servico: Servico | null) { setErro(''); setConfirmacao(''); setPainel({ editando: servico }) }
 
   async function salvar(evento: FormEvent<HTMLFormElement>) {
     evento.preventDefault()
-    const dados = new FormData(evento.currentTarget)
+    const formulario = evento.currentTarget
+    // "Salvar e cadastrar outro" mantém o painel aberto; o botão principal e o Enter salvam e fecham.
+    const cadastrarOutro = (evento.nativeEvent as SubmitEvent).submitter?.getAttribute('value') === 'outro'
+    const dados = new FormData(formulario)
     const servico = {
       nome: String(dados.get('nome')),
       descricao: String(dados.get('descricao') ?? ''),
@@ -43,9 +47,15 @@ export function Servicos() {
     try {
       if (editando) await editarServico(editando.id, servico)
       else await criarServico(servico)
-      setPainel(null)
       recarregar()
-    } catch (causa) { setErro(causa instanceof Error ? causa.message : 'Não foi possível salvar o serviço') }
+      if (cadastrarOutro) {
+        setConfirmacao(`✓ ${servico.nome.trim()} cadastrado`); setErro('')
+        formulario.reset()
+        // o tipo de cobrança escolhido vale para o próximo
+        ;(formulario.elements.namedItem('tipo') as HTMLSelectElement).value = servico.tipoCobranca
+        ;(formulario.elements.namedItem('nome') as HTMLInputElement).focus()
+      } else setPainel(null)
+    } catch (causa) { setConfirmacao(''); setErro(causa instanceof Error ? causa.message : 'Não foi possível salvar o serviço') }
   }
 
   async function inativar(item: Servico) {
@@ -99,9 +109,11 @@ export function Servicos() {
         <label>Valor (R$)<input name="valor" inputMode="decimal" placeholder="0,0000" defaultValue={editando?.valor_unitario.replace('.', ',')} required /></label>
         {editando && <p className="ajuda">Orçamentos que já usam este serviço mantêm o valor antigo; o novo vale para os próximos.</p>}
         <label>Descrição (opcional)<input name="descricao" maxLength={300} defaultValue={editando?.descricao ?? ''} /></label>
+        {confirmacao && <p role="status" className="salvo">{confirmacao}</p>}
         {erro && <p role="alert" className="alerta">{erro}</p>}
         <div className="acoes">
           <button>{editando ? 'Salvar alterações' : 'Cadastrar serviço'}</button>
+          {!editando && <button name="acao" value="outro" className="secundario">Salvar e cadastrar outro</button>}
           <button type="button" className="secundario" onClick={() => setPainel(null)}>Cancelar</button>
         </div>
       </form>

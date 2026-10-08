@@ -16,6 +16,7 @@ export function Materiais() {
   const [painel, setPainel] = useState<{ editando: Material | null } | null>(null)
   const editando = painel?.editando ?? null
   const [erro, setErro] = useState('')
+  const [confirmacao, setConfirmacao] = useState('')
 
   // Mudar a versão dispara nova consulta (após salvar ou inativar).
   const [versao, setVersao] = useState(0)
@@ -29,11 +30,14 @@ export function Materiais() {
     return () => { atual = false }
   }, [busca, situacao, versao])
 
-  function abrir(material: Material | null) { setErro(''); setPainel({ editando: material }) }
+  function abrir(material: Material | null) { setErro(''); setConfirmacao(''); setPainel({ editando: material }) }
 
   async function salvar(evento: FormEvent<HTMLFormElement>) {
     evento.preventDefault()
-    const dados = new FormData(evento.currentTarget)
+    const formulario = evento.currentTarget
+    // "Salvar e cadastrar outro" mantém o painel aberto; o botão principal e o Enter salvam e fecham.
+    const cadastrarOutro = (evento.nativeEvent as SubmitEvent).submitter?.getAttribute('value') === 'outro'
+    const dados = new FormData(formulario)
     const material = {
       nome: String(dados.get('nome')),
       descricao: String(dados.get('descricao') ?? ''),
@@ -43,9 +47,15 @@ export function Materiais() {
     try {
       if (editando) await editarMaterial(editando.id, material)
       else await criarMaterial(material)
-      setPainel(null)
       recarregar()
-    } catch (causa) { setErro(causa instanceof Error ? causa.message : 'Não foi possível salvar o material') }
+      if (cadastrarOutro) {
+        setConfirmacao(`✓ ${material.nome.trim()} cadastrado`); setErro('')
+        formulario.reset()
+        // a unidade escolhida vale para o próximo, que costuma ser parecido
+        ;(formulario.elements.namedItem('unidade') as HTMLSelectElement).value = material.unidade
+        ;(formulario.elements.namedItem('nome') as HTMLInputElement).focus()
+      } else setPainel(null)
+    } catch (causa) { setConfirmacao(''); setErro(causa instanceof Error ? causa.message : 'Não foi possível salvar o material') }
   }
 
   async function inativar(item: Material) {
@@ -97,9 +107,11 @@ export function Materiais() {
         <label>Custo unitário (R$)<input name="custo" inputMode="decimal" placeholder="0,0000" defaultValue={editando?.custo_unitario.replace('.', ',')} required /></label>
         {editando && <p className="ajuda">Orçamentos que já usam este material mantêm o custo antigo; o novo vale para os próximos.</p>}
         <label>Descrição (opcional)<input name="descricao" maxLength={300} defaultValue={editando?.descricao ?? ''} /></label>
+        {confirmacao && <p role="status" className="salvo">{confirmacao}</p>}
         {erro && <p role="alert" className="alerta">{erro}</p>}
         <div className="acoes">
           <button>{editando ? 'Salvar alterações' : 'Cadastrar material'}</button>
+          {!editando && <button name="acao" value="outro" className="secundario">Salvar e cadastrar outro</button>}
           <button type="button" className="secundario" onClick={() => setPainel(null)}>Cancelar</button>
         </div>
       </form>

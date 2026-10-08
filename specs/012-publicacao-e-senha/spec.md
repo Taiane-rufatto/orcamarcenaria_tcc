@@ -2,7 +2,7 @@
 
 **Branch:** `spec/012-publicacao-e-senha` (criada de `spec/011-refinamento-visual`, para publicar já com o visual novo)
 **Data:** 2026-10-01
-**Status:** fechada em 2026-10-08 (D028, D029). Publicada em `https://54-232-52-91.sslip.io`; recuperação de senha verificada com o Gmail real (`evidencias/testes/012-publicacao-2026-10-08.md`). Pendentes: revisão humana do diff (B19), conferência do CT03 no site publicado e revisão dos dados da base (RNF15)
+**Status:** fechada em 2026-10-08 (D028, D029). Publicada em `https://54-232-52-91.sslip.io`; recuperação de senha verificada com o Gmail real (`evidencias/testes/012-publicacao-2026-10-08.md`). Diff revisado e integrado em `main` (PR #13, B19). Pendentes: conferência do CT03 no site publicado e revisão dos dados da base (RNF15)
 
 ## Clarificações
 

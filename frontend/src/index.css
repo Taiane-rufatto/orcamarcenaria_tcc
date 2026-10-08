@@ -152,6 +152,7 @@ dialog.painel-lateral::backdrop { background: rgba(23, 38, 29, .28); }
 .formulario-painel { display: grid; gap: 14px; }
 .formulario-painel .ajuda { margin: -6px 0 0; font-size: .85rem; }
 .formulario-painel .acoes { margin-top: 6px; }
+.formulario-painel .salvo { margin: 0; }
 
 /* ---------- Orçamento ---------- */
 /* duas colunas: composição no centro, situação e memorial fixos à direita (D026) */

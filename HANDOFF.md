@@ -1,8 +1,8 @@
 # Handoff
 
-**Atualizado em:** 2026-10-08 · Última sessão: 011 integrado e 012 fechado (site publicado, e-mail de recuperação verificado).
+**Atualizado em:** 2026-10-08 · Última sessão: 013 (cadastro em sequência) implementado e fechado.
 
-> **Próxima sessão:** o 012 está fechado na branch `spec/012-publicacao-e-senha`, aguardando a revisão humana do diff (B19) e o PR. O site está publicado e a recuperação de senha funciona. O 009 volta quando o termo estiver assinado (material em `evidencias/avaliacao-de-uso/`).
+> **Próxima sessão:** o 013 está fechado na branch `spec/013-cadastro-em-sequencia`, aguardando a revisão humana do diff (B20) e o PR; depois publicar na VPS. O 009 volta quando o termo estiver assinado (material em `evidencias/avaliacao-de-uso/`).
 
 Para qualquer nova sessão, agente ou ferramenta assumir o trabalho sem reconstruir contexto pelo histórico de conversa.
 
@@ -17,11 +17,10 @@ Para qualquer nova sessão, agente ou ferramenta assumir o trabalho sem reconstr
 
 ## O que foi feito na última sessão
 
-1. **011 integrado em `main`** (PRs #11 e #12) e branch do 012 atualizada com ele.
-2. **Diagnóstico do e-mail na VPS por SSH:** o `.env` da VPS não tinha as variáveis `SMTP_*`; sem elas o sistema só escreve o link no log. A autora criou a conta Gmail do sistema, gerou a senha de app e a colocou no `.env`; o envio passou a funcionar.
-3. **Spec 012 fechada:** evidência em `evidencias/testes/012-publicacao-2026-10-08.md`; roteiro `publicacao.md` ganhou a conferência do SMTP e a tabela de erros de envio; matriz de verificação atualizada.
+1. **012 integrado** (PR #13) e **VPS trocada para `main`**.
+2. **013 aberto e fechado:** "Salvar e cadastrar outro" nos painéis de novo material, serviço e cliente (D030). Mantém o painel aberto, limpa o formulário, devolve o foco ao Nome, preserva unidade e tipo de cobrança e confirma com "✓ nome cadastrado". Enter continua salvando e fechando. Só frontend; evidência em `evidencias/testes/013-cadastro-em-sequencia-2026-10-08.md`.
 
-Decisões firmes: D001–D029. Nenhuma provisória no momento.
+Decisões firmes: D001–D030. Nenhuma provisória no momento.
 
 ## O que **não** foi feito
 
@@ -66,9 +65,10 @@ Decisões firmes: D001–D029. Nenhuma provisória no momento.
 - **Mensagens de erro chegam num `[role=alert]`** da página do orçamento; CN06 (sem cliente) é barrado pela validação nativa do navegador (`select required`), não pela API.
 
 - **Ensaio do 011:** Playwright (`playwright-core` + Edge) não está no repositório; o script ficou fora dele, como no 008. Para repetir: instalar `playwright-core` numa pasta temporária, subir `npm run dev` (API, porta 3333) e `npx vite --port 5173`, e ler os casos de `008-roteiro-casos-pela-tela.md`. O `CampoBusca` é um `role=combobox` (rótulo "Cliente", "Material", "Serviço") e as opções são `role=option`; o painel lateral é um `dialog[open]`. A conta "Marcenaria Ensaio 011 …" (dados fictícios) ficou no banco principal, isolada das demais.
-- **VPS (AWS):** acesso por `ssh -i ~/.ssh/orcamarcenaria-key.pem ubuntu@54.232.52.91`; aplicação em `/opt/orcamarcenaria` (dono `orcamarcenaria`, por isso o `git` como `ubuntu` reclama de "dubious ownership": usar `sudo -u orcamarcenaria git …`); `.env` em `/opt/orcamarcenaria/backend/.env`; log com `journalctl -u orcamarcenaria-api`. O site roda a branch `spec/012-publicacao-e-senha`; depois do merge, trocar para `main` com o `atualizar.sh main`.
+- **VPS (AWS):** acesso por `ssh -i ~/.ssh/orcamarcenaria-key.pem ubuntu@54.232.52.91`; aplicação em `/opt/orcamarcenaria` (dono `orcamarcenaria`, por isso o `git` como `ubuntu` reclama de "dubious ownership": usar `sudo -u orcamarcenaria git …`); `.env` em `/opt/orcamarcenaria/backend/.env`; log com `journalctl -u orcamarcenaria-api`. O site roda `main` (`atualizar.sh main`); para publicar uma mudança nova, integrar em `main` e rodar o script na VPS.
 - **A tela de recuperação responde igual para e-mail sem conta** (de propósito, RF07). Quando "não chega e-mail", primeiro ver o log: `SMTP não configurado`, `535` ou `ETIMEDOUT` dizem o motivo; nenhuma linha quer dizer que o e-mail digitado não tem conta. Um segundo pedido em menos de 1 minuto é ignorado.
 - **Nunca pedir senhas e chaves pelo chat:** a senha de app do Gmail foi colocada no `.env` pela própria autora, e só os nomes das variáveis foram conferidos.
+- **Como saber qual botão enviou o formulário:** o painel usa `evento.nativeEvent.submitter` (`value="outro"` no botão novo). O Enter dispara o *primeiro* botão de envio do formulário, por isso "Cadastrar ..." tem de continuar antes de "Salvar e cadastrar outro" na ordem do código; trocar a ordem muda o que o Enter faz.
 
 ## Perguntas a fazer à autora antes de avançar
 
