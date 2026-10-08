@@ -15,6 +15,7 @@ export function Clientes() {
   const [painel, setPainel] = useState<{ editando: Cliente | null } | null>(null)
   const editando = painel?.editando ?? null
   const [erro, setErro] = useState('')
+  const [confirmacao, setConfirmacao] = useState('')
 
   // Mudar a versão dispara nova consulta (após salvar, inativar ou reativar).
   const [versao, setVersao] = useState(0)
@@ -28,11 +29,14 @@ export function Clientes() {
     return () => { atual = false }
   }, [busca, situacao, versao])
 
-  function abrir(cliente: Cliente | null) { setErro(''); setPainel({ editando: cliente }) }
+  function abrir(cliente: Cliente | null) { setErro(''); setConfirmacao(''); setPainel({ editando: cliente }) }
 
   async function salvar(evento: FormEvent<HTMLFormElement>) {
     evento.preventDefault()
-    const dados = new FormData(evento.currentTarget)
+    const formulario = evento.currentTarget
+    // "Salvar e cadastrar outro" mantém o painel aberto; o botão principal e o Enter salvam e fecham.
+    const cadastrarOutro = (evento.nativeEvent as SubmitEvent).submitter?.getAttribute('value') === 'outro'
+    const dados = new FormData(formulario)
     const cliente = {
       nome: String(dados.get('nome')),
       telefone: String(dados.get('telefone') ?? ''),
@@ -42,9 +46,13 @@ export function Clientes() {
     try {
       if (editando) await editarCliente(editando.id, cliente)
       else await criarCliente(cliente)
-      setPainel(null)
       recarregar()
-    } catch (causa) { setErro(causa instanceof Error ? causa.message : 'Não foi possível salvar o cliente') }
+      if (cadastrarOutro) {
+        setConfirmacao(`✓ ${cliente.nome.trim()} cadastrado`); setErro('')
+        formulario.reset()
+        ;(formulario.elements.namedItem('nome') as HTMLInputElement).focus()
+      } else setPainel(null)
+    } catch (causa) { setConfirmacao(''); setErro(causa instanceof Error ? causa.message : 'Não foi possível salvar o cliente') }
   }
 
   // RF10: não há exclusão. O cliente inativo continua ligado aos orçamentos que já tem.
@@ -94,9 +102,11 @@ export function Clientes() {
         <label>Telefone (opcional)<input name="telefone" type="tel" maxLength={30} defaultValue={editando?.telefone ?? ''} /></label>
         <label>E-mail (opcional)<input name="email" type="email" maxLength={200} defaultValue={editando?.email ?? ''} /></label>
         <label>Endereço (opcional)<input name="endereco" maxLength={300} defaultValue={editando?.endereco ?? ''} /></label>
+        {confirmacao && <p role="status" className="salvo">{confirmacao}</p>}
         {erro && <p role="alert" className="alerta">{erro}</p>}
         <div className="acoes">
           <button>{editando ? 'Salvar alterações' : 'Cadastrar cliente'}</button>
+          {!editando && <button name="acao" value="outro" className="secundario">Salvar e cadastrar outro</button>}
           <button type="button" className="secundario" onClick={() => setPainel(null)}>Cancelar</button>
         </div>
       </form>

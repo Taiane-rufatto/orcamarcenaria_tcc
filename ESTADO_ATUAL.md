@@ -6,7 +6,7 @@
 >
 > **Incremento 012 — Publicação e recuperação de senha: fechado e integrado em `main` (PR #13), em 2026-10-08.** Sistema publicado em `https://54-232-52-91.sslip.io` (AWS, nginx + HTTPS, D029), rodando `main`; recuperação de senha por e-mail (RF07, D028) verificada com o Gmail real da conta do sistema (`evidencias/testes/012-publicacao-2026-10-08.md`).
 >
-> **Em andamento: incremento 013 — Cadastro em sequência** (branch `spec/013-cadastro-em-sequencia`, D030): botão "Salvar e cadastrar outro" no painel de novo material, serviço e cliente. Spec aberta e esclarecida (`specs/013-cadastro-em-sequencia/spec.md`); falta plano, tarefas e implementação. Vem **antes do 009** porque o marceneiro fará a carga do catálogo.
+> **Incremento 013 — Cadastro em sequência: fechado em 2026-10-08** (branch `spec/013-cadastro-em-sequencia`, D030; falta a revisão humana do diff, B20, e o PR). Botão "Salvar e cadastrar outro" nos painéis de novo material, serviço e cliente; ensaio pela tela 65 de 65 e dez casos 10 de 10 com diferença R$ 0,00 (`evidencias/testes/013-cadastro-em-sequencia-2026-10-08.md`). Depois do merge, publicar na VPS com `atualizar.sh main`.
 >
 > **Incremento 008 — Validação formal do cálculo: entregue e integrado em `main` (PR #9).** Execução formal pela autora: 10 de 10 casos com diferença R$ 0,00 (RNF06). **O 009 (avaliação de uso) aguarda o termo de consentimento (B06)**, que a autora vai validar com o orientador; o material da sessão já está preparado em `evidencias/avaliacao-de-uso/`.
 
@@ -50,11 +50,12 @@ Incrementos 000 a 008 entregues e integrados em `main` (008 no PR #9); o 011 tam
 - [x] **Incremento 008 — Validação formal do cálculo** (RNF06, RNF21, US15): valores de referência conferidos em planilha pela autora (B08); dez casos lançados pela tela pela autora com diferença R$ 0,00 (execução nº 6); ensaio automatizado com CN01–CN06; D025 (`evidencias/testes/008-validacao-calculo-2026-09-30.md`); integrado em `main` (PR #9)
 - [x] **Incremento 011 — Refinamento visual** (RNF02, RNF05, RNF26; D026, D027): menu lateral, painel lateral para criar e editar, campo com busca para material, serviço e cliente, resumo fixo no orçamento; dez casos pela tela 10 de 10 (`evidencias/testes/011-refinamento-visual-2026-10-08.md`); integrado em `main` (PRs #11 e #12)
 - [x] **Incremento 012 — Publicação e recuperação de senha** (RF07, RNF14, RNF15, RNF25; D028, D029): site no ar em HTTPS, e-mail de recuperação funcionando pelo Gmail do sistema; integrado em `main` (PR #13)
+- [x] **Incremento 013 — Cadastro em sequência** (US03, US05, US06; D030): "Salvar e cadastrar outro" em materiais, serviços e clientes; aguarda revisão do diff e PR
 - [x] **Preparação do 009:** rascunho do termo de consentimento e roteiro com ficha da sessão de avaliação (`evidencias/avaliacao-de-uso/`)
 
 ## Próximo passo (nesta ordem)
 
-1. **Incremento 013:** planejar, implementar e fechar (spec em `specs/013-cadastro-em-sequencia/`).
+1. **Revisar o diff do 013** (`git diff main...spec/013-cadastro-em-sequencia`), abrir o PR e integrar em `main` (B20). Depois, na VPS: `sudo -u orcamarcenaria bash /opt/orcamarcenaria/implantacao/atualizar.sh main`.
 1a. **Antes de enviar o link ao orientador (site no ar):** conferir no site publicado o orçamento CT03 (R$ 2.760,00) e revisar a base publicada, que deve ter só dados fictícios (RNF15); comentar com o orientador a entrada do RF07 (D028).
 2. **Autora validar o termo de consentimento com o orientador** (pontos listados no topo do rascunho) e colher a assinatura do proprietário (B06). Com o termo assinado, abrir o 009 e aplicar `roteiro-e-ficha-da-sessao.md`.
 3. Opcional: relançar o CT01 com **margem** 0% (foi lançado com markup 0%, mesmo resultado) e informar o navegador usado na execução formal.
