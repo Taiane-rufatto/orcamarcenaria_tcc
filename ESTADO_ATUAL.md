@@ -2,13 +2,15 @@
 
 **Atualizado em:** 2026-10-08
 
-> **Incremento 011 — Refinamento visual: fechado em 2026-10-08** (branch `spec/011-refinamento-visual`; falta a revisão humana do diff, B18, e o PR). Menu lateral, paleta neutra, listas com painel lateral, orçamento em duas colunas e campo com busca (D026, D027). Ensaio dos dez casos pela tela (Edge + Playwright): 10 de 10 com diferença R$ 0,00; RNF05 a 1366×768 e 390 px verificado (`evidencias/testes/011-refinamento-visual-2026-10-08.md`). O 011 foi feito **antes do 009** porque o 009 aguarda o termo de consentimento (B06). Em seguida foi aberto o **012 — Publicação e recuperação de senha** (D028, D029), em branch própria criada a partir do 011.
+> **Incremento 011 — Refinamento visual: fechado e integrado em `main` (PRs #11 e #12), em 2026-10-08.** Menu lateral, paleta neutra, listas com painel lateral, orçamento em duas colunas e campo com busca (D026, D027). Ensaio dos dez casos pela tela (Edge + Playwright): 10 de 10 com diferença R$ 0,00; RNF05 a 1366×768 e 390 px verificado (`evidencias/testes/011-refinamento-visual-2026-10-08.md`).
+>
+> **Incremento 012 — Publicação e recuperação de senha: fechado em 2026-10-08** (branch `spec/012-publicacao-e-senha`; falta a revisão humana do diff, B19, e o PR). Sistema publicado em `https://54-232-52-91.sslip.io` (AWS, nginx + HTTPS, D029); recuperação de senha por e-mail (RF07, D028) verificada com o Gmail real da conta do sistema (`evidencias/testes/012-publicacao-2026-10-08.md`).
 >
 > **Incremento 008 — Validação formal do cálculo: entregue e integrado em `main` (PR #9).** Execução formal pela autora: 10 de 10 casos com diferença R$ 0,00 (RNF06). **O 009 (avaliação de uso) aguarda o termo de consentimento (B06)**, que a autora vai validar com o orientador; o material da sessão já está preparado em `evidencias/avaliacao-de-uso/`.
 
 ## Onde o projeto está
 
-Incrementos 000 a 008 entregues e integrados em `main` (008 no PR #9); o 011 está fechado na branch `spec/011-refinamento-visual`, aguardando revisão e PR. O critério de aprovação do TCC (diferença nula nos dez casos) está verificado. O cálculo do orçamento existe em `backend/src/dominio/orcamento/calculo.ts` e é o único ponto do sistema que calcula preço.
+Incrementos 000 a 008 entregues e integrados em `main` (008 no PR #9); o 011 também está integrado (PRs #11 e #12). O critério de aprovação do TCC (diferença nula nos dez casos) está verificado. O cálculo do orçamento existe em `backend/src/dominio/orcamento/calculo.ts` e é o único ponto do sistema que calcula preço.
 
 ## Pronto
 
@@ -44,13 +46,14 @@ Incrementos 000 a 008 entregues e integrados em `main` (008 no PR #9); o 011 est
 - [x] **Incremento 006 — Orçamento em PDF** (RF41–RF43, RNF19): PDF de orçamento registrado no formato do modelo do proprietário (especificações, preço em número e por extenso, observações), sem custo nem lucro, lista de materiais opcional (D022); PDFKit (D023); integrado em `main` (PR #7)
 - [x] **Incremento 007 — Configurações** (RF05, RF19–RF22): página "Minha marcenaria" com dados da empresa (saem no PDF), padrões de lucro, arredondamento e validade de 10 dias para orçamentos novos (D024); integrado em `main` (PR #8)
 - [x] **Incremento 008 — Validação formal do cálculo** (RNF06, RNF21, US15): valores de referência conferidos em planilha pela autora (B08); dez casos lançados pela tela pela autora com diferença R$ 0,00 (execução nº 6); ensaio automatizado com CN01–CN06; D025 (`evidencias/testes/008-validacao-calculo-2026-09-30.md`); integrado em `main` (PR #9)
-- [x] **Incremento 011 — Refinamento visual** (RNF02, RNF05, RNF26; D026, D027): menu lateral, painel lateral para criar e editar, campo com busca para material, serviço e cliente, resumo fixo no orçamento; dez casos pela tela 10 de 10 (`evidencias/testes/011-refinamento-visual-2026-10-08.md`); aguarda revisão do diff e PR
+- [x] **Incremento 011 — Refinamento visual** (RNF02, RNF05, RNF26; D026, D027): menu lateral, painel lateral para criar e editar, campo com busca para material, serviço e cliente, resumo fixo no orçamento; dez casos pela tela 10 de 10 (`evidencias/testes/011-refinamento-visual-2026-10-08.md`); integrado em `main` (PRs #11 e #12)
+- [x] **Incremento 012 — Publicação e recuperação de senha** (RF07, RNF14, RNF15, RNF25; D028, D029): site no ar em HTTPS, e-mail de recuperação funcionando pelo Gmail do sistema; aguarda revisão do diff e PR
 - [x] **Preparação do 009:** rascunho do termo de consentimento e roteiro com ficha da sessão de avaliação (`evidencias/avaliacao-de-uso/`)
 
 ## Próximo passo (nesta ordem)
 
-1. **Revisar o diff do 011** (`git diff main...spec/011-refinamento-visual`), abrir o PR e integrar em `main` (B18). Depois, atualizar a branch do 012 com o `main`.
-1a. **Publicação para o orientador e "Esqueceu sua senha?"** (incremento 012, branch `spec/012-publicacao-e-senha`): RF07 implementado e testado nessa branch; falta contratar a VPS, seguir `documentacao/publicacao.md` e testar o e-mail real.
+1. **Revisar o diff do 012** (`git diff main...spec/012-publicacao-e-senha`), abrir o PR e integrar em `main` (B19). Depois, na VPS, trocar para `main`: `sudo -u orcamarcenaria bash /opt/orcamarcenaria/implantacao/atualizar.sh main`.
+1a. **Antes de enviar o link ao orientador:** conferir no site publicado o orçamento CT03 (R$ 2.760,00) e revisar a base publicada, que deve ter só dados fictícios (RNF15); comentar com o orientador a entrada do RF07 (D028).
 2. **Autora validar o termo de consentimento com o orientador** (pontos listados no topo do rascunho) e colher a assinatura do proprietário (B06). Com o termo assinado, abrir o 009 e aplicar `roteiro-e-ficha-da-sessao.md`.
 3. Opcional: relançar o CT01 com **margem** 0% (foi lançado com markup 0%, mesmo resultado) e informar o navegador usado na execução formal.
 4. Transcrever as notas da conversa com o proprietário em `evidencias/entrevista/` e responder Q6–Q10 (B01); confirmar o termo de consentimento (B06).

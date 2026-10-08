@@ -58,7 +58,7 @@ Não reexecutados: a spec não criou nem alterou consulta a dados (`backend/` in
 ## O que esta execução prova e o que não prova
 
 - **Prova:** a interface nova, com painel lateral, campo com busca e resumo à direita, exibe exatamente o que a API calcula nos dez casos; o layout atende RNF05 e o comportamento do resumo fixo e do celular combinado na spec.
-- **Não prova:** a execução formal pela autora (008, D025) não foi repetida; ela continua valendo porque o cálculo não mudou (backend inalterado, suíte verde). Este ensaio foi automatizado. Não há capturas "antes" para comparação lado a lado (o estado anterior está em `main`). Só o Edge foi usado; Chrome, Firefox e celular real não foram testados. A revisão humana do diff (DoD §7.3) está pendente (B18).
+- **Não prova:** a execução formal pela autora (008, D025) não foi repetida; ela continua valendo porque o cálculo não mudou (backend inalterado, suíte verde). Este ensaio foi automatizado. Não há capturas "antes" para comparação lado a lado (o estado anterior está em `main`). Só o Edge foi usado; Chrome, Firefox e celular real não foram testados. A revisão humana do diff (DoD §7.3) foi feita pela autora e o 011 foi integrado em `main` (B18).
 
 ## Capturas
 

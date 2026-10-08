@@ -134,7 +134,10 @@ Preenchida ao fim de cada incremento e consolidada antes da defesa.
 | RF41–RF43, RNF19 | 006 | Testes do conteúdo (RF42 sem valores internos) e do extenso + integração com tempo de dez itens + PDFs conferidos visualmente | verificado em 2026-09-28 (`evidencias/testes/006-pdf-2026-09-28.md`) |
 | RF05, RF19–RF22 | 007 | Integração + CT03/CT04/CT06 partindo da configuração + validação manual | verificado em 2026-09-28 (`evidencias/testes/007-configuracoes-2026-09-28.md`) |
 | RNF06, RNF21 | 008 | Dez casos lançados pela tela pela autora após conferência em planilha + suíte automatizada + ensaio automatizado com CN01–CN06 | verificado em 2026-09-30 (`evidencias/testes/008-validacao-calculo-2026-09-30.md`) |
-| RNF02, RNF05, RNF26 | 011 | Inspeção a 1366×768 e 390 px + percurso de tela dos dez casos (painel lateral e campo com busca) + suíte automatizada | verificado em 2026-10-08 (`evidencias/testes/011-refinamento-visual-2026-10-08.md`); revisão humana do diff pendente (B18) |
+| RNF02, RNF05, RNF26 | 011 | Inspeção a 1366×768 e 390 px + percurso de tela dos dez casos (painel lateral e campo com busca) + suíte automatizada | verificado em 2026-10-08 (`evidencias/testes/011-refinamento-visual-2026-10-08.md`); diff revisado pela autora e integrado em `main` (B18) |
+| RF07 | 012 | Integração (e-mail capturado) + manual com Gmail real na VPS | verificado em 2026-10-08 (`evidencias/testes/012-publicacao-2026-10-08.md`); revisão humana do diff pendente (B19) |
+| RNF14, RNF25 | 012 | Redirecionamento HTTP→HTTPS e `.env` só com variáveis na VPS | verificado em 2026-10-08 (mesma evidência) |
+| RNF15 | 012 | Revisão da base publicada antes de enviar o link ao orientador | pendente: a autora confere que só há dados fictícios |
 | RNF01 | 009 | Avaliação exploratória de uso | pendente |
 | RNF12, RNF13 | 001–005 e 010 | TI04 na Spec 001; TI01–TI03 quando suas entidades existirem; reexecução completa no 010 | TI01–TI04 verificados cada um em sua entidade (001–005); falta a reexecução completa no 010 |
 

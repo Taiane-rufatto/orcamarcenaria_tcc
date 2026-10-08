@@ -17,4 +17,6 @@ export const guardarSessao = (sessao: Autenticacao) => sessionStorage.setItem(CH
 export const cadastrar = (dados: DadosCadastro) => chamar<Autenticacao>('/auth/cadastro', { method: 'POST', body: JSON.stringify(dados) })
 export const entrar = (email: string, senha: string) => chamar<Autenticacao>('/auth/entrar', { method: 'POST', body: JSON.stringify({ email, senha }) })
 export async function sair() { const token = tokenAtual(); if (token) await chamar<void>('/auth/sair', { method: 'POST', headers: { Authorization: `Bearer ${token}` } }); sessionStorage.removeItem(CHAVE_TOKEN) }
+export async function pedirNovaSenha(email: string) { return (await chamar<{ mensagem: string }>('/auth/esqueci-senha', { method: 'POST', body: JSON.stringify({ email }) })).mensagem }
+export const redefinirSenha = (token: string, novaSenha: string) => chamar<void>('/auth/redefinir-senha', { method: 'POST', body: JSON.stringify({ token, novaSenha }) })
 export async function alterarSenha(senhaAtual: string, novaSenha: string) { const resultado = await chamar<Autenticacao>('/auth/senha', { method: 'PUT', headers: { Authorization: `Bearer ${tokenAtual()}` }, body: JSON.stringify({ senhaAtual, novaSenha }) }); guardarSessao(resultado); return resultado }

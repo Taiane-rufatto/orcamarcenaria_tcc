@@ -33,7 +33,7 @@ Versão 1.0 · Fonte canônica dos requisitos do projeto. Qualquer mudança aqui
 | RF04 | O sistema deve isolar todos os dados por marcenaria, de modo que nenhum registro de uma conta seja legível ou alterável por outra. | Essencial | OE4 | 001 |
 | RF05 | O sistema deve permitir ao usuário editar os dados da marcenaria (nome, responsável, telefone, e-mail de contato, CNPJ opcional, endereço) exibidos no orçamento. | Importante | OE5 | 007 |
 | RF06 | O sistema deve permitir a alteração da senha mediante informação da senha atual. | Importante | OE4 | 001 |
-| RF07 | O sistema deve permitir a recuperação de senha por e-mail. | Desejável | — | pós-TCC |
+| RF07 | O sistema deve permitir a recuperação de senha por e-mail. | Desejável | — | 012 (D028) |
 
 ### 1.2 Clientes
 

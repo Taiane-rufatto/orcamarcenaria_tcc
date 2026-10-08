@@ -229,6 +229,7 @@ td form { display: inline; }
 .acesso-form > div { width: min(400px, 100%); display: grid; gap: 22px; }
 .acesso-form form { display: grid; gap: 16px; }
 .acesso-form form button { margin-top: 6px; }
+.link-discreto { justify-self: end; margin-top: -8px; font-size: .88rem; color: var(--tinta-suave); }
 
 @media (max-width: 1100px) {
   /* abaixo disso a coluna de resumo espremeria os itens: ela desce para depois deles */

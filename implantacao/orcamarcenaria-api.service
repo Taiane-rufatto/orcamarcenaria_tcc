@@ -1,0 +1,17 @@
+# Serviço systemd da API (D029): sobe junto com a VPS e reinicia sozinho se cair.
+# Copiar para /etc/systemd/system/orcamarcenaria-api.service.
+[Unit]
+Description=OrçaMarcenaria - API
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+User=orcamarcenaria
+WorkingDirectory=/opt/orcamarcenaria/backend
+EnvironmentFile=/opt/orcamarcenaria/backend/.env
+ExecStart=/usr/bin/node dist/servidor.js
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
