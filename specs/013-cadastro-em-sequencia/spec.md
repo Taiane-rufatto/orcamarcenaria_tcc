@@ -2,7 +2,7 @@
 
 **Branch:** `spec/013-cadastro-em-sequencia` (criada do `main`, com 011 e 012 integrados)
 **Data:** 2026-10-08
-**Status:** fechada em 2026-10-08 (D030). Implementada e verificada em `evidencias/testes/013-cadastro-em-sequencia-2026-10-08.md` (65 de 65 verificações; dez casos 10 de 10); falta a revisão humana do diff (B20)
+**Status:** fechada e integrada em `main` (PR #14) em 2026-10-08 (D030). O comportamento do Enter e o botão "Salvar e cadastrar outro" foram revistos no 014 (D031). Implementada e verificada em `evidencias/testes/013-cadastro-em-sequencia-2026-10-08.md` (65 de 65 verificações; dez casos 10 de 10); falta a revisão humana do diff (B20)
 
 ## Contexto
 

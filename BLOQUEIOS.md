@@ -10,7 +10,7 @@ Itens que dependem de decisão humana, acesso ou ação externa. Um agente **nã
 | B05 | Três orçamentos reais da marcenaria ainda não coletados e anonimizados | Validação das regras de cálculo contra a prática e refinamento dos casos de teste | Taiane | Aberto — pedir na entrevista |
 | B06 | Termo de consentimento do participante (RNF16) não assinado | Entrevista (OE1) e avaliação exploratória de uso (OE7) — **impede abrir o 009** | Taiane | Aberto — o proprietário (pai da autora) concordou verbalmente em 2026-09-30; falta o termo assinado. Rascunho em `evidencias/avaliacao-de-uso/termo-de-consentimento-rascunho.md`; a autora vai validá-lo com o orientador (modelo institucional, CEP, conversa de 2026-09-28 já feita, nome da marcenaria) |
 | B07 | Data da apresentação de andamento não confirmada com a coordenação | Ajuste fino do calendário do `roadmap.md` §3 | Taiane | Aberto |
-| B20 | Revisão humana do diff da Spec 013 (DoD §7.3) | Integração do 013 em `main` e publicação na VPS | Taiane | Aberto — `git diff main...spec/013-cadastro-em-sequencia`; depois abrir o PR |
+| B21 | Revisão humana do diff da Spec 014 (DoD §7.3) | Integração do 014 em `main` e publicação na VPS | Taiane | Aberto — `git diff main...spec/014-cadastro-pelo-teclado`; depois abrir o PR |
 
 ## Como usar este arquivo
 
@@ -37,3 +37,4 @@ Itens que dependem de decisão humana, acesso ou ação externa. Um agente **nã
 | B17 | Revisão humana do diff da Spec 007 (DoD §7.3) | 2026-09-30 | A autora abriu o PR e fez o merge em `main` (PR #8); confirmou em 2026-09-30 que a pendência pode ser encerrada. |
 | B18 | Revisão humana do diff da Spec 011 (DoD §7.3) | 2026-10-08 | A autora aprovou e o 011 foi integrado em `main` (PRs #11 e #12). |
 | B19 | Revisão humana do diff da Spec 012 (DoD §7.3) | 2026-10-08 | A autora revisou, abriu o PR e fez o merge em `main` (PR #13). |
+| B20 | Revisão humana do diff da Spec 013 (DoD §7.3) | 2026-10-08 | A autora revisou e fez o merge em `main` (PR #14); o comportamento foi revisto no 014. |

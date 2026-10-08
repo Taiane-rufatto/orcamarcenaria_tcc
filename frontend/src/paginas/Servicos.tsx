@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from 'react'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { FiltroLista, RodapeLista } from '../componentes/FiltroLista'
 import { PainelLateral } from '../componentes/PainelLateral'
 import {
@@ -17,6 +17,8 @@ export function Servicos() {
   const editando = painel?.editando ?? null
   const [erro, setErro] = useState('')
   const [confirmacao, setConfirmacao] = useState('')
+  // Enter repetido não pode gravar o mesmo cadastro duas vezes enquanto o envio anterior não terminou.
+  const salvando = useRef(false)
 
   // Mudar a versão dispara nova consulta (após salvar ou inativar).
   const [versao, setVersao] = useState(0)
@@ -34,9 +36,11 @@ export function Servicos() {
 
   async function salvar(evento: FormEvent<HTMLFormElement>) {
     evento.preventDefault()
+    if (salvando.current) return
+    salvando.current = true
     const formulario = evento.currentTarget
-    // "Salvar e cadastrar outro" mantém o painel aberto; o botão principal e o Enter salvam e fecham.
-    const cadastrarOutro = (evento.nativeEvent as SubmitEvent).submitter?.getAttribute('value') === 'outro'
+    // Cadastro novo (Enter ou botão) mantém o painel aberto para o próximo; Esc ou ✕ fecham. Na edição, salva e fecha.
+    const cadastrarOutro = !editando
     const dados = new FormData(formulario)
     const servico = {
       nome: String(dados.get('nome')),
@@ -55,7 +59,7 @@ export function Servicos() {
         ;(formulario.elements.namedItem('tipo') as HTMLSelectElement).value = servico.tipoCobranca
         ;(formulario.elements.namedItem('nome') as HTMLInputElement).focus()
       } else setPainel(null)
-    } catch (causa) { setConfirmacao(''); setErro(causa instanceof Error ? causa.message : 'Não foi possível salvar o serviço') }
+    } catch (causa) { setConfirmacao(''); setErro(causa instanceof Error ? causa.message : 'Não foi possível salvar o serviço') } finally { salvando.current = false }
   }
 
   async function inativar(item: Servico) {
@@ -109,12 +113,12 @@ export function Servicos() {
         <label>Valor (R$)<input name="valor" inputMode="decimal" placeholder="0,0000" defaultValue={editando?.valor_unitario.replace('.', ',')} required /></label>
         {editando && <p className="ajuda">Orçamentos que já usam este serviço mantêm o valor antigo; o novo vale para os próximos.</p>}
         <label>Descrição (opcional)<input name="descricao" maxLength={300} defaultValue={editando?.descricao ?? ''} /></label>
+        {!editando && <p className="ajuda">Enter cadastra e abre um formulário em branco. Esc ou ✕ fecham o painel.</p>}
         {confirmacao && <p role="status" className="salvo">{confirmacao}</p>}
         {erro && <p role="alert" className="alerta">{erro}</p>}
         <div className="acoes">
           <button>{editando ? 'Salvar alterações' : 'Cadastrar serviço'}</button>
-          {!editando && <button name="acao" value="outro" className="secundario">Salvar e cadastrar outro</button>}
-          <button type="button" className="secundario" onClick={() => setPainel(null)}>Cancelar</button>
+          <button type="button" className="secundario" onClick={() => setPainel(null)}>{editando ? 'Cancelar' : 'Fechar'}</button>
         </div>
       </form>
     </PainelLateral>

@@ -138,7 +138,8 @@ Preenchida ao fim de cada incremento e consolidada antes da defesa.
 | RF07 | 012 | Integração (e-mail capturado) + manual com Gmail real na VPS | verificado em 2026-10-08 (`evidencias/testes/012-publicacao-2026-10-08.md`); diff revisado e integrado em `main` (B19) |
 | RNF14, RNF25 | 012 | Redirecionamento HTTP→HTTPS e `.env` só com variáveis na VPS | verificado em 2026-10-08 (mesma evidência) |
 | RNF15 | 012 | Revisão da base publicada antes de enviar o link ao orientador | pendente: a autora confere que só há dados fictícios |
-| RF08, RF11, RF17 (cadastro), RNF05 | 013 | Percurso de tela do cadastro em sequência nas três telas + dez casos pela tela + suíte automatizada | verificado em 2026-10-08 (`evidencias/testes/013-cadastro-em-sequencia-2026-10-08.md`); revisão humana do diff pendente (B20) |
+| RF08, RF11, RF17 (cadastro), RNF05 | 013 | Percurso de tela do cadastro em sequência nas três telas + dez casos pela tela + suíte automatizada | verificado em 2026-10-08 (`evidencias/testes/013-cadastro-em-sequencia-2026-10-08.md`); diff integrado em `main` (PR #14); comportamento revisto no 014 |
+| RF08, RF11, RF17 (cadastro), RNF05 | 014 | Percurso de tela pelo teclado nas três telas + dez casos pela tela + suíte automatizada | verificado em 2026-10-08 (`evidencias/testes/014-cadastro-pelo-teclado-2026-10-08.md`); revisão humana do diff pendente (B21) |
 | RNF01 | 009 | Avaliação exploratória de uso | pendente |
 | RNF12, RNF13 | 001–005 e 010 | TI04 na Spec 001; TI01–TI03 quando suas entidades existirem; reexecução completa no 010 | TI01–TI04 verificados cada um em sua entidade (001–005); falta a reexecução completa no 010 |
 
