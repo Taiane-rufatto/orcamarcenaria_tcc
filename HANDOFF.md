@@ -1,8 +1,8 @@
 # Handoff
 
-**Atualizado em:** 2026-10-08 · Última sessão: 014 (cadastro pelo teclado) e 015 (nomes em maiúsculas) fechados.
+**Atualizado em:** 2026-10-08 · Última sessão: 014 e 015 integrados e publicados na VPS.
 
-> **Próxima sessão:** 014 e 015 estão fechados e enviados, aguardando a revisão do diff e os PRs (B21, B22), na ordem 014 → 015. Antes de publicar o 015 na VPS, **backup do banco**: a migração `009` converte os nomes e é irreversível. O 009 (avaliação de uso) volta quando o termo estiver assinado (material em `evidencias/avaliacao-de-uso/`).
+> **Próxima sessão:** 014 e 015 estão integrados em `main` e publicados na VPS (`186396d`). Antes de mandar o link ao orientador: conferir o CT03 no site e revisar a base publicada (dados fictícios, RNF15). O 009 (avaliação de uso) volta quando o termo estiver assinado (material em `evidencias/avaliacao-de-uso/`).
 
 Para qualquer nova sessão, agente ou ferramenta assumir o trabalho sem reconstruir contexto pelo histórico de conversa.
 
@@ -18,7 +18,7 @@ Para qualquer nova sessão, agente ou ferramenta assumir o trabalho sem reconstr
 ## O que foi feito na última sessão
 
 1. **014 — Cadastro pelo teclado (D031):** nos painéis de novo cadastro, o Enter grava e abre o formulário em branco; só Esc ou ✕ fecham; na edição, Enter salva e fecha. Trava contra Enter repetido.
-2. **015 — Nomes em maiúsculas (D032):** a API grava em maiúsculas (`nomeEmMaiusculas`, `pt-BR`) o nome de material, serviço e cliente; o campo Nome mostra maiúsculas ao digitar (`text-transform`). Migração `009` converte os existentes; aplicada no banco local (60 materiais, 23 serviços, 27 clientes), com backup em `~/backups-orca/`; na VPS são 6, 3 e 4, sem colisões, **ainda não aplicada**. Nove testes antigos tiveram a expectativa trocada para maiúsculas.
+2. **015 — Nomes em maiúsculas (D032):** a API grava em maiúsculas (`nomeEmMaiusculas`, `pt-BR`) o nome de material, serviço e cliente; o campo Nome mostra maiúsculas ao digitar (`text-transform`). Migração `009` converte os existentes; aplicada no banco local (60 materiais, 23 serviços, 27 clientes), com backup em `~/backups-orca/`; na VPS foram 6, 4 e 4, sem colisões, aplicada em 2026-10-08 depois de backup em `/home/ubuntu/backup-orcamarcenaria-antes-do-015-2026-10-08-1901.sql`. Nove testes antigos tiveram a expectativa trocada para maiúsculas.
 
 Decisões firmes: D001–D032. Nenhuma provisória no momento.
 

@@ -24,7 +24,7 @@ O novo teste cobre: `'  fita de borda 22mm  '` → `FITA DE BORDA 22MM`; `Fita d
 | Idempotente | segunda execução sem alterar nada |
 | Conversão de acentos pelo banco | `instalação é ü ñ` → `INSTALAÇÃO É Ü Ñ` (local); conferido também no PostgreSQL da VPS (C.UTF-8), só leitura |
 | Trava de colisão | num banco de teste, em transação desfeita, `zzdup` e `ZZDUP` na mesma marcenaria: a migração parou com "material: ZZDUP (2 cadastros)" e nada foi alterado |
-| Impacto na VPS (leitura) | 6 materiais, 3 serviços e 4 clientes mudariam; 0 colisões. **Ainda não aplicada na VPS** |
+| Impacto na VPS (leitura) | 6 materiais, 3 serviços e 4 clientes mudariam; 0 colisões. **Aplicada na VPS depois**: backup do banco, `atualizar.sh main` e conferência (0 nomes fora de maiúsculas; os serviços ficaram `AJUDANTE`, `CORTE E USINAGEM`, `FRETE`, `MONTAGEM`; havia 4 serviços e não 3 na hora da publicação) |
 
 ## Ensaio pela tela
 

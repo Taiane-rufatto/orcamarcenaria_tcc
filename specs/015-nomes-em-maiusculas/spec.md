@@ -1,8 +1,8 @@
 # Spec 015 — Nomes em maiúsculas
 
-**Branch:** `spec/015-nomes-em-maiusculas` (criada sobre `spec/014-cadastro-pelo-teclado`; integrar o 014 primeiro)
+**Branch:** `spec/015-nomes-em-maiusculas` (criada sobre `spec/014-cadastro-pelo-teclado`; ambas integradas em `main`)
 **Data:** 2026-10-08
-**Status:** fechada em 2026-10-08 (D032). Implementada e verificada em `evidencias/testes/015-nomes-em-maiusculas-2026-10-08.md`; migração aplicada no banco local; **falta publicar na VPS (com backup) e a revisão humana do diff (B22)**
+**Status:** fechada em 2026-10-08 (D032). Implementada e verificada em `evidencias/testes/015-nomes-em-maiusculas-2026-10-08.md`; migração aplicada no banco local e na VPS (com backup); integrada em `main` (PR #16, B22)
 
 ## Contexto
 
