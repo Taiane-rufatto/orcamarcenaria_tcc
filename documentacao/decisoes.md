@@ -6,6 +6,17 @@ Formato: contexto → decisão → consequência → situação (`provisória` e
 
 ---
 
+## D030 — Incremento 013: cadastro em sequência nos painéis laterais
+**Data:** 2026-10-08 · **Situação:** firme (decidido pela autora)
+
+**Contexto.** Depois do 011, cada cadastro novo abre o painel lateral e fecha ao salvar. Ao montar o catálogo, a autora precisa clicar em "+ Novo material" a cada item, o que desgasta. O marceneiro fará a carga do catálogo antes e durante a avaliação de uso (009).
+
+**Decisão.** Abrir o incremento **013**, depois do 012 e antes do 009. No painel de criação de materiais, serviços e clientes entra o botão "Salvar e cadastrar outro": salva, mantém o painel aberto, limpa o formulário, leva o foco ao Nome, mantém a unidade (material) e o tipo de cobrança (serviço) e mostra "✓ <nome> cadastrado". A tecla Enter continua salvando e fechando. Cadastro em tabela com várias linhas e importação de planilha ficam fora (roadmap §5).
+
+**Consequência.** Só muda a tela; nenhuma regra, rota ou dado. O ensaio dos dez casos pela tela é reexecutado ao fechar, como no 011.
+
+---
+
 ## D029 — Publicação para demonstração em VPS, com endereço gratuito e HTTPS
 **Data:** 2026-10-01 · **Situação:** firme (decidido pela autora)
 

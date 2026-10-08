@@ -1,8 +1,8 @@
 # Handoff
 
-**Atualizado em:** 2026-10-08 · Última sessão: 011 integrado e 012 fechado (site publicado, e-mail de recuperação verificado).
+**Atualizado em:** 2026-10-08 · Última sessão: 012 integrado, VPS em `main` e 013 aberto.
 
-> **Próxima sessão:** o 012 está fechado na branch `spec/012-publicacao-e-senha`, aguardando a revisão humana do diff (B19) e o PR. O site está publicado e a recuperação de senha funciona. O 009 volta quando o termo estiver assinado (material em `evidencias/avaliacao-de-uso/`).
+> **Próxima sessão:** o 013 (cadastro em sequência) está aberto na branch `spec/013-cadastro-em-sequencia`, com a spec esclarecida; falta plano, tarefas e implementação. O 012 está integrado e a VPS roda `main`. O 009 volta quando o termo estiver assinado (material em `evidencias/avaliacao-de-uso/`).
 
 Para qualquer nova sessão, agente ou ferramenta assumir o trabalho sem reconstruir contexto pelo histórico de conversa.
 
@@ -66,7 +66,7 @@ Decisões firmes: D001–D029. Nenhuma provisória no momento.
 - **Mensagens de erro chegam num `[role=alert]`** da página do orçamento; CN06 (sem cliente) é barrado pela validação nativa do navegador (`select required`), não pela API.
 
 - **Ensaio do 011:** Playwright (`playwright-core` + Edge) não está no repositório; o script ficou fora dele, como no 008. Para repetir: instalar `playwright-core` numa pasta temporária, subir `npm run dev` (API, porta 3333) e `npx vite --port 5173`, e ler os casos de `008-roteiro-casos-pela-tela.md`. O `CampoBusca` é um `role=combobox` (rótulo "Cliente", "Material", "Serviço") e as opções são `role=option`; o painel lateral é um `dialog[open]`. A conta "Marcenaria Ensaio 011 …" (dados fictícios) ficou no banco principal, isolada das demais.
-- **VPS (AWS):** acesso por `ssh -i ~/.ssh/orcamarcenaria-key.pem ubuntu@54.232.52.91`; aplicação em `/opt/orcamarcenaria` (dono `orcamarcenaria`, por isso o `git` como `ubuntu` reclama de "dubious ownership": usar `sudo -u orcamarcenaria git …`); `.env` em `/opt/orcamarcenaria/backend/.env`; log com `journalctl -u orcamarcenaria-api`. O site roda a branch `spec/012-publicacao-e-senha`; depois do merge, trocar para `main` com o `atualizar.sh main`.
+- **VPS (AWS):** acesso por `ssh -i ~/.ssh/orcamarcenaria-key.pem ubuntu@54.232.52.91`; aplicação em `/opt/orcamarcenaria` (dono `orcamarcenaria`, por isso o `git` como `ubuntu` reclama de "dubious ownership": usar `sudo -u orcamarcenaria git …`); `.env` em `/opt/orcamarcenaria/backend/.env`; log com `journalctl -u orcamarcenaria-api`. O site roda `main` (`atualizar.sh main`); para publicar uma mudança nova, integrar em `main` e rodar o script na VPS.
 - **A tela de recuperação responde igual para e-mail sem conta** (de propósito, RF07). Quando "não chega e-mail", primeiro ver o log: `SMTP não configurado`, `535` ou `ETIMEDOUT` dizem o motivo; nenhuma linha quer dizer que o e-mail digitado não tem conta. Um segundo pedido em menos de 1 minuto é ignorado.
 - **Nunca pedir senhas e chaves pelo chat:** a senha de app do Gmail foi colocada no `.env` pela própria autora, e só os nomes das variáveis foram conferidos.
 
