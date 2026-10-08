@@ -2,7 +2,7 @@
 
 **Branch:** `spec/011-refinamento-visual`
 **Data:** 2026-10-01
-**Status:** implementada em 2026-10-01 com a autora, ajuste a ajuste (D026, D027); falta o ensaio dos dez casos pela tela antes de fechar
+**Status:** fechada em 2026-10-08. Implementada em 2026-10-01 com a autora, ajuste a ajuste (D026, D027); ensaio dos dez casos pela tela e critérios verificados em `evidencias/testes/011-refinamento-visual-2026-10-08.md`; diff revisado e integrado em `main` (B18)
 
 ## Clarificações
 

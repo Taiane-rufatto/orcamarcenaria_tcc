@@ -2,7 +2,7 @@
 
 Itens que dependem de decisão humana, acesso ou ação externa. Um agente **não** deve resolver nada desta lista por conta própria.
 
-**Atualizado em:** 2026-09-30
+**Atualizado em:** 2026-10-08
 
 | # | Bloqueio | Bloqueia | Responsável | Situação |
 |---|---|---|---|---|
@@ -34,3 +34,4 @@ Itens que dependem de decisão humana, acesso ou ação externa. Um agente **nã
 | B16 | Revisão humana do diff da Spec 006 (DoD §7.3) | 2026-09-28 | A autora abriu o PR e fez o merge em `main` (PR #7). Não declarou novo teste manual da versão corrigida dos textos; a correção foi verificada no navegador pelo agente. |
 | B08 | Valores de referência dos 10 casos de teste não conferidos em planilha pela autora | 2026-09-30 | A autora conferiu os dez casos em `evidencias/testes/conferencia-casos-de-teste.xlsx`: 10 de 10 "Confere", diferença nula em todas as etapas. O 008 pode ser aberto. |
 | B17 | Revisão humana do diff da Spec 007 (DoD §7.3) | 2026-09-30 | A autora abriu o PR e fez o merge em `main` (PR #8); confirmou em 2026-09-30 que a pendência pode ser encerrada. |
+| B18 | Revisão humana do diff da Spec 011 (DoD §7.3) | 2026-10-08 | A autora aprovou e o 011 foi integrado em `main` (PRs #11 e #12). |
