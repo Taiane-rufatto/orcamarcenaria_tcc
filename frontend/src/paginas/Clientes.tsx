@@ -52,7 +52,7 @@ export function Clientes() {
       else await criarCliente(cliente)
       recarregar()
       if (cadastrarOutro) {
-        setConfirmacao(`✓ ${cliente.nome.trim()} cadastrado`); setErro('')
+        setConfirmacao(`✓ ${cliente.nome.trim().toLocaleUpperCase('pt-BR')} cadastrado`); setErro('')
         formulario.reset()
         ;(formulario.elements.namedItem('nome') as HTMLInputElement).focus()
       } else setPainel(null)

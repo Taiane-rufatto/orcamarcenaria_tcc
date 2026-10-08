@@ -9,8 +9,12 @@ export const decimal = z
   .pipe(z.string().regex(/^\d{1,8}(\.\d{1,4})?$/, 'Informe valor positivo com até quatro casas decimais'))
   .refine((valor) => /[1-9]/.test(valor), 'Informe valor maior que zero')
 
+// D032: o nome do cadastro é gravado em maiúsculas, para a lista, a busca e o PDF ficarem uniformes.
+export const nomeEmMaiusculas = (mensagem: string) =>
+  z.string(mensagem).trim().min(1, mensagem).transform((nome) => nome.toLocaleUpperCase('pt-BR'))
+
 const base = {
-  nome: z.string().trim().min(1, 'Nome é obrigatório'),
+  nome: nomeEmMaiusculas('Nome é obrigatório'),
   descricao: z.string().trim().max(300, 'A descrição deve ter até 300 caracteres').optional(),
 }
 

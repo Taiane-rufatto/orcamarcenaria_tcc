@@ -97,7 +97,7 @@ describe('orçamento', () => {
     o = await esperar(chamar(token, `/orcamentos/${id}/custos-adicionais`, 'POST', { descricao: 'Ferragens diversas', valor: '45,50' }), 201)
 
     expect(o.itens.map((i) => i.valorLinha)).toEqual(['724.75', '37.05', '207.00', '106.80', '360.00', '330.00'])
-    expect(o.itens[4]).toMatchObject({ descricao: 'Corte e usinagem', unidade: 'h', valorUnitario: '45.0000' })
+    expect(o.itens[4]).toMatchObject({ descricao: 'CORTE E USINAGEM', unidade: 'h', valorUnitario: '45.0000' })
     expect(o.memorial).toEqual({
       subtotalMateriais: '1075.60', subtotalServicos: '690.00', totalAdicionais: '165.50', custoDiretoTotal: '1931.10',
       valorLucro: '827.61', multiplicadorEquivalente: null, ajusteArredondamento: '1.29', precoFinal: '2760.00',

@@ -39,7 +39,7 @@ Versão 1.0 · Fonte canônica dos requisitos do projeto. Qualquer mudança aqui
 
 | ID | Requisito | Prioridade | OE | Incremento |
 |---|---|---|---|---|
-| RF08 | O sistema deve permitir cadastrar clientes com nome, telefone, e-mail e endereço, sendo obrigatório apenas o nome. | Essencial | OE4 | 005 |
+| RF08 | O sistema deve permitir cadastrar clientes com nome, telefone, e-mail e endereço, sendo obrigatório apenas o nome. O nome é gravado em maiúsculas (D032). | Essencial | OE4 | 005 |
 | RF09 | O sistema deve permitir listar, buscar por nome, editar e inativar clientes. | Essencial | OE4 | 005 |
 | RF10 | O sistema deve impedir a exclusão definitiva de cliente vinculado a orçamento, permitindo apenas a inativação. | Essencial | OE4 | 005 |
 
@@ -47,7 +47,7 @@ Versão 1.0 · Fonte canônica dos requisitos do projeto. Qualquer mudança aqui
 
 | ID | Requisito | Prioridade | OE | Incremento |
 |---|---|---|---|---|
-| RF11 | O sistema deve permitir cadastrar material com nome, descrição opcional, unidade de medida, custo unitário e situação (ativo/inativo). | Essencial | OE4 | 002 |
+| RF11 | O sistema deve permitir cadastrar material com nome, descrição opcional, unidade de medida, custo unitário e situação (ativo/inativo). O nome é gravado em maiúsculas (D032). | Essencial | OE4 | 002 |
 | RF12 | O sistema deve oferecer as unidades de medida: unidade (un), metro (m), metro quadrado (m²), metro linear (ml), chapa (ch), quilograma (kg), litro (L) e peça (pç). | Essencial | OE4 | 002 |
 | RF13 | O sistema deve permitir listar materiais com busca por nome e filtro por situação. | Essencial | OE4 | 002 |
 | RF14 | O sistema deve permitir editar o custo unitário de um material sem alterar os valores de orçamentos já registrados (RN08 — congelamento de valores). | Essencial | OE3, OE5 | 003 |
@@ -58,7 +58,7 @@ Versão 1.0 · Fonte canônica dos requisitos do projeto. Qualquer mudança aqui
 
 | ID | Requisito | Prioridade | OE | Incremento |
 |---|---|---|---|---|
-| RF17 | O sistema deve permitir cadastrar serviço com nome, descrição opcional, tipo de cobrança (por hora ou por unidade), valor unitário e situação. | Essencial | OE4 | 002 |
+| RF17 | O sistema deve permitir cadastrar serviço com nome, descrição opcional, tipo de cobrança (por hora ou por unidade), valor unitário e situação. O nome é gravado em maiúsculas (D032). | Essencial | OE4 | 002 |
 | RF18 | O sistema deve permitir listar, buscar, editar e inativar serviços, com as mesmas regras aplicadas a materiais (RF13 a RF15). | Essencial | OE4 | 002 |
 
 ### 1.5 Configuração de cálculo

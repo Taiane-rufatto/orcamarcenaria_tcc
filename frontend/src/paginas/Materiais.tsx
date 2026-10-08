@@ -53,7 +53,7 @@ export function Materiais() {
       else await criarMaterial(material)
       recarregar()
       if (cadastrarOutro) {
-        setConfirmacao(`✓ ${material.nome.trim()} cadastrado`); setErro('')
+        setConfirmacao(`✓ ${material.nome.trim().toLocaleUpperCase('pt-BR')} cadastrado`); setErro('')
         formulario.reset()
         // a unidade escolhida vale para o próximo, que costuma ser parecido
         ;(formulario.elements.namedItem('unidade') as HTMLSelectElement).value = material.unidade

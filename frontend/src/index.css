@@ -153,6 +153,8 @@ dialog.painel-lateral::backdrop { background: rgba(23, 38, 29, .28); }
 .formulario-painel .ajuda { margin: -6px 0 0; font-size: .85rem; }
 .formulario-painel .acoes { margin-top: 6px; }
 .formulario-painel .salvo { margin: 0; }
+/* D032: o nome aparece em maiúsculas já ao digitar; quem grava em maiúsculas é a API */
+.formulario-painel input[name=nome] { text-transform: uppercase; }
 
 /* ---------- Orçamento ---------- */
 /* duas colunas: composição no centro, situação e memorial fixos à direita (D026) */

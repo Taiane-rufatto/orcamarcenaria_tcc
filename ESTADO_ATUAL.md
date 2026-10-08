@@ -8,7 +8,9 @@
 >
 > **Incremento 013 — Cadastro em sequência: fechado e integrado em `main` (PR #14), publicado na VPS, em 2026-10-08.** Foi revisto pelo 014.
 >
-> **Incremento 014 — Cadastro pelo teclado: fechado em 2026-10-08** (branch `spec/014-cadastro-pelo-teclado`, D031; falta a revisão humana do diff, B21, e o PR). Nos painéis de novo material, serviço e cliente, o Enter cadastra e abre o formulário em branco; o painel só fecha com Esc ou ✕; na edição, Enter salva e fecha. Ensaio 65 de 65 e dez casos 10 de 10 com diferença R$ 0,00 (`evidencias/testes/014-cadastro-pelo-teclado-2026-10-08.md`). Depois do merge, publicar na VPS com `atualizar.sh main`.
+> **Incremento 014 — Cadastro pelo teclado: fechado em 2026-10-08** (branch `spec/014-cadastro-pelo-teclado`, D031; falta a revisão humana do diff, B21, e o PR). Nos painéis de novo material, serviço e cliente, o Enter cadastra e abre o formulário em branco; o painel só fecha com Esc ou ✕; na edição, Enter salva e fecha (`evidencias/testes/014-cadastro-pelo-teclado-2026-10-08.md`).
+>
+> **Incremento 015 — Nomes em maiúsculas: fechado em 2026-10-08** (branch `spec/015-nomes-em-maiusculas`, empilhada sobre o 014; D032; falta a revisão do diff e a publicação, B22). O nome de material, serviço e cliente é gravado em maiúsculas pela API e o campo já mostra maiúsculas ao digitar; a migração `009` converte os existentes (aplicada no banco local, com backup; **ainda não na VPS**). Textos livres não mudam. Evidência: `evidencias/testes/015-nomes-em-maiusculas-2026-10-08.md`.
 >
 > **Incremento 008 — Validação formal do cálculo: entregue e integrado em `main` (PR #9).** Execução formal pela autora: 10 de 10 casos com diferença R$ 0,00 (RNF06). **O 009 (avaliação de uso) aguarda o termo de consentimento (B06)**, que a autora vai validar com o orientador; o material da sessão já está preparado em `evidencias/avaliacao-de-uso/`.
 
@@ -54,11 +56,12 @@ Incrementos 000 a 008 entregues e integrados em `main` (008 no PR #9); o 011 tam
 - [x] **Incremento 012 — Publicação e recuperação de senha** (RF07, RNF14, RNF15, RNF25; D028, D029): site no ar em HTTPS, e-mail de recuperação funcionando pelo Gmail do sistema; integrado em `main` (PR #13)
 - [x] **Incremento 013 — Cadastro em sequência** (US03, US05, US06; D030): "Salvar e cadastrar outro" em materiais, serviços e clientes; integrado em `main` (PR #14), revisto pelo 014
 - [x] **Incremento 014 — Cadastro pelo teclado** (US03, US05, US06; D031): Enter cadastra e continua, Esc ou ✕ fecham; aguarda revisão do diff e PR
+- [x] **Incremento 015 — Nomes em maiúsculas** (US03, US05, US06; D032): nome gravado em maiúsculas pela API, migração dos existentes; aguarda PR e publicação
 - [x] **Preparação do 009:** rascunho do termo de consentimento e roteiro com ficha da sessão de avaliação (`evidencias/avaliacao-de-uso/`)
 
 ## Próximo passo (nesta ordem)
 
-1. **Revisar o diff do 014** (`git diff main...spec/014-cadastro-pelo-teclado`), abrir o PR e integrar em `main` (B21). Depois, na VPS: `sudo -u orcamarcenaria bash /opt/orcamarcenaria/implantacao/atualizar.sh main`.
+1. **Integrar o 014 e depois o 015** (revisar o diff, abrir o PR e fazer o merge de cada um, na ordem: B21 e B22). **Antes de publicar o 015 na VPS, fazer o backup do banco** (`sudo -u postgres pg_dump orcamarcenaria > ~/orcamarcenaria-$(date +%F).sql`); depois `sudo -u orcamarcenaria bash /opt/orcamarcenaria/implantacao/atualizar.sh main`, que aplica a migração `009`.
 1a. **Antes de enviar o link ao orientador (site no ar):** conferir no site publicado o orçamento CT03 (R$ 2.760,00) e revisar a base publicada, que deve ter só dados fictícios (RNF15); comentar com o orientador a entrada do RF07 (D028).
 2. **Autora validar o termo de consentimento com o orientador** (pontos listados no topo do rascunho) e colher a assinatura do proprietário (B06). Com o termo assinado, abrir o 009 e aplicar `roteiro-e-ficha-da-sessao.md`.
 3. Opcional: relançar o CT01 com **margem** 0% (foi lançado com markup 0%, mesmo resultado) e informar o navegador usado na execução formal.

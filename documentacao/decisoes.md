@@ -6,6 +6,17 @@ Formato: contexto → decisão → consequência → situação (`provisória` e
 
 ---
 
+## D032 — Nomes de material, serviço e cliente gravados em maiúsculas
+**Data:** 2026-10-08 · **Situação:** firme (decidido pela autora)
+
+**Contexto.** Os nomes ficavam misturados (`mdf 18mm`, `Mdf 18MM`, `MDF 18mm`), o que atrapalhava a leitura da lista, o campo com busca e o PDF. A autora pediu maiúsculas visuais e também no cadastro.
+
+**Decisão.** O nome de material, serviço e cliente é convertido para maiúsculas **na API** (cadastro e edição), em um único ponto (`nomeEmMaiusculas`, com `pt-BR` para preservar acentos), e o campo Nome já mostra maiúsculas ao digitar. Textos livres (descrição do projeto, itens avulsos, observações, especificações) e os nomes da marcenaria e do usuário ficam como são. Os cadastros existentes são convertidos por migração (`009`), com backup antes e com trava: se dois nomes de uma mesma marcenaria virarem iguais, a migração para e lista os casos.
+
+**Consequência.** O "nome único" de material e serviço passa a valer sem diferenciar caixa ("Mdf" e "MDF" são o mesmo nome e dão 409). Itens já incluídos em orçamentos mantêm a descrição da época (RN08); o nome do cliente, que vem sempre do cadastro, muda também em orçamentos existentes e no PDF. A conversão é irreversível: a caixa original se perde (por isso o backup). Não toca em cálculo.
+
+---
+
 ## D031 — Enter cadastra e continua; o painel só fecha com Esc ou ✕ (revisa a D030)
 **Data:** 2026-10-08 · **Situação:** firme (decidido pela autora)
 

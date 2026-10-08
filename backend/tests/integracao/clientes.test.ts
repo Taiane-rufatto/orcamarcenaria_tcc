@@ -62,7 +62,7 @@ describe('clientes (US06)', () => {
   it('cadastra só com o nome, busca, filtra, edita, inativa sem excluir e reativa (RF08–RF10, D021)', async () => {
     const token = await criarConta('clientes.crud')
     const joao = await esperar<Cliente>(chamar(token, '/clientes', 'POST', { nome: 'João Fictício' }), 201)
-    expect(joao).toMatchObject({ nome: 'João Fictício', telefone: null, email: null, endereco: null, ativo: true })
+    expect(joao).toMatchObject({ nome: 'JOÃO FICTÍCIO', telefone: null, email: null, endereco: null, ativo: true })
     const maria = await esperar<Cliente>(chamar(token, '/clientes', 'POST', {
       nome: 'Maria Fictícia', telefone: '(45) 90000-0000', email: 'maria@example.test', endereco: 'Rua Fictícia, 100',
     }), 201)
@@ -74,20 +74,20 @@ describe('clientes (US06)', () => {
     }
 
     const nomes = async (consulta: string) => (await esperar<Cliente[]>(chamar(token, `/clientes?${consulta}`), 200)).map((c) => c.nome)
-    expect(await nomes('')).toEqual(['João Fictício', 'João Fictício', 'Maria Fictícia'])
-    expect(await nomes('busca=mar')).toEqual(['Maria Fictícia'])
+    expect(await nomes('')).toEqual(['JOÃO FICTÍCIO', 'JOÃO FICTÍCIO', 'MARIA FICTÍCIA'])
+    expect(await nomes('busca=mar')).toEqual(['MARIA FICTÍCIA'])
     expect(await nomes('busca=%25')).toEqual([]) // "%" é texto, não curinga
 
     const editado = await esperar<Cliente>(chamar(token, `/clientes/${joao.id}`, 'PUT', { nome: 'João Fictício Silva', telefone: '(45) 92222-2222', email: '' }), 200)
-    expect(editado).toMatchObject({ nome: 'João Fictício Silva', telefone: '(45) 92222-2222', email: null })
+    expect(editado).toMatchObject({ nome: 'JOÃO FICTÍCIO SILVA', telefone: '(45) 92222-2222', email: null })
 
     await esperar(chamar(token, `/clientes/${maria.id}`, 'DELETE'), 204)
-    expect(await nomes('')).not.toContain('Maria Fictícia')
-    expect(await nomes('situacao=inativos')).toEqual(['Maria Fictícia'])
-    expect(await nomes('situacao=todos')).toContain('Maria Fictícia') // não foi excluída
+    expect(await nomes('')).not.toContain('MARIA FICTÍCIA')
+    expect(await nomes('situacao=inativos')).toEqual(['MARIA FICTÍCIA'])
+    expect(await nomes('situacao=todos')).toContain('MARIA FICTÍCIA') // não foi excluída
 
     await esperar(chamar(token, `/clientes/${maria.id}/reativar`, 'POST'), 204)
-    expect(await nomes('')).toContain('Maria Fictícia')
+    expect(await nomes('')).toContain('MARIA FICTÍCIA')
     expect((await chamar(token, '/clientes/nao-e-uuid', 'PUT', { nome: 'X' })).status).toBe(404)
   })
 
@@ -103,7 +103,7 @@ describe('clientes (US06)', () => {
     // B também não usa o cliente de A num orçamento.
     expect((await chamar(tokenB, '/orcamentos', 'POST', cabecalho(deA.id))).status).toBe(400)
 
-    expect(await esperar<Cliente[]>(chamar(tokenA, '/clientes'), 200)).toEqual([expect.objectContaining({ nome: 'Cliente da A', ativo: true })])
+    expect(await esperar<Cliente[]>(chamar(tokenA, '/clientes'), 200)).toEqual([expect.objectContaining({ nome: 'CLIENTE DA A', ativo: true })])
   })
 
   it('liga o orçamento ao cadastro: só cliente ativo, nome sempre atualizado (RF23, D021)', async () => {
@@ -112,25 +112,25 @@ describe('clientes (US06)', () => {
     const beto = await esperar<Cliente>(chamar(token, '/clientes', 'POST', { nome: 'Beto Fictício' }), 201)
 
     const o = await esperar<Orcamento>(chamar(token, '/orcamentos', 'POST', cabecalho(ana.id)), 201)
-    expect(o).toMatchObject({ clienteId: ana.id, clienteNome: 'Ana Fictícia' })
+    expect(o).toMatchObject({ clienteId: ana.id, clienteNome: 'ANA FICTÍCIA' })
 
     // Corrigir o cadastro reflete no orçamento e na lista.
     await esperar(chamar(token, `/clientes/${ana.id}`, 'PUT', { nome: 'Ana Fictícia Souza' }), 200)
-    expect(await esperar<Orcamento>(chamar(token, `/orcamentos/${o.id}`), 200)).toMatchObject({ clienteNome: 'Ana Fictícia Souza' })
+    expect(await esperar<Orcamento>(chamar(token, `/orcamentos/${o.id}`), 200)).toMatchObject({ clienteNome: 'ANA FICTÍCIA SOUZA' })
     const lista = await esperar<{ clienteNome: string }[]>(chamar(token, '/orcamentos?busca=souza'), 200)
-    expect(lista.map((l) => l.clienteNome)).toEqual(['Ana Fictícia Souza'])
+    expect(lista.map((l) => l.clienteNome)).toEqual(['ANA FICTÍCIA SOUZA'])
 
     // Inativo: não entra em orçamento novo nem como troca, mas o orçamento que já tem continua.
     await esperar(chamar(token, `/clientes/${ana.id}`, 'DELETE'), 204)
     const recusado = await chamar(token, '/orcamentos', 'POST', cabecalho(ana.id))
     expect(recusado.status).toBe(400)
     expect((await recusado.json() as { mensagem: string }).mensagem).toBe('Selecione um cliente ativo')
-    expect(await esperar<Orcamento>(chamar(token, `/orcamentos/${o.id}`), 200)).toMatchObject({ clienteNome: 'Ana Fictícia Souza' })
+    expect(await esperar<Orcamento>(chamar(token, `/orcamentos/${o.id}`), 200)).toMatchObject({ clienteNome: 'ANA FICTÍCIA SOUZA' })
     // Manter o mesmo cliente (já inativo) ao editar o rascunho é permitido.
     expect(await esperar<Orcamento>(chamar(token, `/orcamentos/${o.id}`, 'PUT', { ...cabecalho(ana.id), descricaoProjeto: 'Balcão grande' }), 200))
       .toMatchObject({ clienteId: ana.id, descricaoProjeto: 'Balcão grande' })
     // Trocar para outro ativo funciona; voltar para o inativo, não.
-    expect(await esperar<Orcamento>(chamar(token, `/orcamentos/${o.id}`, 'PUT', cabecalho(beto.id)), 200)).toMatchObject({ clienteNome: 'Beto Fictício' })
+    expect(await esperar<Orcamento>(chamar(token, `/orcamentos/${o.id}`, 'PUT', cabecalho(beto.id)), 200)).toMatchObject({ clienteNome: 'BETO FICTÍCIO' })
     expect((await chamar(token, `/orcamentos/${o.id}`, 'PUT', cabecalho(ana.id))).status).toBe(400)
     expect((await chamar(token, '/orcamentos', 'POST', { ...cabecalho(beto.id), clienteId: undefined })).status).toBe(400)
   })
