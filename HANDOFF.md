@@ -1,8 +1,8 @@
 # Handoff
 
-**Atualizado em:** 2026-10-08 · Última sessão: 011 (refinamento visual) fechado, com o ensaio dos dez casos pela tela (10 de 10, R$ 0,00).
+**Atualizado em:** 2026-10-08 · Última sessão: 011 integrado e 012 fechado (site publicado, e-mail de recuperação verificado).
 
-> **Próxima sessão:** o 011 está integrado em `main` (PRs #11 e #12). Esta branch, `spec/012-publicacao-e-senha`, já foi atualizada com o `main`. O **012** tem a recuperação de senha por e-mail (RF07, D028) pronta e testada; a publicação em VPS (D029) tem roteiro em `documentacao/publicacao.md` e aguarda a autora contratar a VPS e criar a conta Gmail do sistema. O 009 volta quando o termo estiver assinado (material em `evidencias/avaliacao-de-uso/`).
+> **Próxima sessão:** o 012 está fechado na branch `spec/012-publicacao-e-senha`, aguardando a revisão humana do diff (B19) e o PR. O site está publicado e a recuperação de senha funciona. O 009 volta quando o termo estiver assinado (material em `evidencias/avaliacao-de-uso/`).
 
 Para qualquer nova sessão, agente ou ferramenta assumir o trabalho sem reconstruir contexto pelo histórico de conversa.
 
@@ -17,9 +17,9 @@ Para qualquer nova sessão, agente ou ferramenta assumir o trabalho sem reconstr
 
 ## O que foi feito na última sessão
 
-1. **Spec 011 fechada:** suítes verdes (backend 139, frontend 14, lint e build). Ensaio pela tela com Edge + Playwright a 1366×768 e 390 px: dez casos 10 de 10 com diferença R$ 0,00, CT03 repetido com itens do catálogo pelo campo com busca, painel lateral (criar, editar, inativar, reativar), resumo fixo à direita, RNF02 e RNF05. 45 de 45 verificações (`evidencias/testes/011-refinamento-visual-2026-10-08.md`, capturas em `011-capturas/`).
-2. **D026 atualizada:** o painel lateral e o campo com busca entraram no alcance do 011 (a decisão original os deixava de fora).
-3. **Matriz de verificação:** linha do 011 acrescentada (`qualidade-e-testes.md` §6).
+1. **011 integrado em `main`** (PRs #11 e #12) e branch do 012 atualizada com ele.
+2. **Diagnóstico do e-mail na VPS por SSH:** o `.env` da VPS não tinha as variáveis `SMTP_*`; sem elas o sistema só escreve o link no log. A autora criou a conta Gmail do sistema, gerou a senha de app e a colocou no `.env`; o envio passou a funcionar.
+3. **Spec 012 fechada:** evidência em `evidencias/testes/012-publicacao-2026-10-08.md`; roteiro `publicacao.md` ganhou a conferência do SMTP e a tabela de erros de envio; matriz de verificação atualizada.
 
 Decisões firmes: D001–D029. Nenhuma provisória no momento.
 
@@ -66,6 +66,9 @@ Decisões firmes: D001–D029. Nenhuma provisória no momento.
 - **Mensagens de erro chegam num `[role=alert]`** da página do orçamento; CN06 (sem cliente) é barrado pela validação nativa do navegador (`select required`), não pela API.
 
 - **Ensaio do 011:** Playwright (`playwright-core` + Edge) não está no repositório; o script ficou fora dele, como no 008. Para repetir: instalar `playwright-core` numa pasta temporária, subir `npm run dev` (API, porta 3333) e `npx vite --port 5173`, e ler os casos de `008-roteiro-casos-pela-tela.md`. O `CampoBusca` é um `role=combobox` (rótulo "Cliente", "Material", "Serviço") e as opções são `role=option`; o painel lateral é um `dialog[open]`. A conta "Marcenaria Ensaio 011 …" (dados fictícios) ficou no banco principal, isolada das demais.
+- **VPS (AWS):** acesso por `ssh -i ~/.ssh/orcamarcenaria-key.pem ubuntu@54.232.52.91`; aplicação em `/opt/orcamarcenaria` (dono `orcamarcenaria`, por isso o `git` como `ubuntu` reclama de "dubious ownership": usar `sudo -u orcamarcenaria git …`); `.env` em `/opt/orcamarcenaria/backend/.env`; log com `journalctl -u orcamarcenaria-api`. O site roda a branch `spec/012-publicacao-e-senha`; depois do merge, trocar para `main` com o `atualizar.sh main`.
+- **A tela de recuperação responde igual para e-mail sem conta** (de propósito, RF07). Quando "não chega e-mail", primeiro ver o log: `SMTP não configurado`, `535` ou `ETIMEDOUT` dizem o motivo; nenhuma linha quer dizer que o e-mail digitado não tem conta. Um segundo pedido em menos de 1 minuto é ignorado.
+- **Nunca pedir senhas e chaves pelo chat:** a senha de app do Gmail foi colocada no `.env` pela própria autora, e só os nomes das variáveis foram conferidos.
 
 ## Perguntas a fazer à autora antes de avançar
 

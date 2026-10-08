@@ -99,7 +99,9 @@ O `atualizar.sh` instala as dependências, compila API e front, aplica as migra�
 
 - `https://ENDERECO` abre a tela de entrada, com cadeado.
 - Criar uma conta de demonstração, com dados fictícios (RNF15), e montar o orçamento do CT03: preço final R$ 2.760,00.
-- "Esqueceu sua senha?" com o e-mail da conta: o e-mail chega (confira o spam) e o link troca a senha.
+- Antes de testar o e-mail, confira que o `.env` tem as cinco linhas `SMTP_*`/`EMAIL_REMETENTE` e reinicie a API: `sudo grep -E "^(SMTP|EMAIL)" /opt/orcamarcenaria/backend/.env | sed -E "s/(SENHA)=.*/=<oculto>/"`. Sem elas o sistema não envia e-mail, só escreve o link no log (foi o que aconteceu no primeiro teste da publicação).
+- "Esqueceu sua senha?" com o e-mail da conta: o e-mail chega (confira o spam) e o link troca a senha. A tela responde igual para e-mail sem conta, então use o e-mail exato do cadastro; um novo pedido em menos de 1 minuto é ignorado.
+- E-mail não chegou: `journalctl -u orcamarcenaria-api -n 30`. `SMTP não configurado` = faltam as variáveis; `Invalid login` ou `535` = senha de app errada ou verificação em duas etapas desligada; `ETIMEDOUT` = porta 465 bloqueada (trocar para 587); nenhuma linha = o e-mail digitado não tem conta.
 - Problemas: `journalctl -u orcamarcenaria-api -n 50` mostra o log da API; `tail /var/log/nginx/error.log`, o do nginx.
 
 ## Atualizar depois de novos commits
