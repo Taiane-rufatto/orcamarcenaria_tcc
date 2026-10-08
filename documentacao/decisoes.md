@@ -28,7 +28,9 @@ Formato: contexto → decisão → consequência → situação (`provisória` e
 3. Tipografia só sem serifa (Figtree). A régua deixa o cabeçalho e fica só no painel de acesso e na marca.
 4. Paleta de D014 mantida em matiz, com tons mais claros, mantendo contraste de 4,5:1 no texto (WCAG 2.2 AA).
 
-**Consequência.** D014 continua valendo quanto ao princípio de cores e estilos só em variáveis de `index.css`; mudam a tipografia dos títulos, a posição da régua e os valores das cores. Ao final, o ensaio dos dez casos pela tela é reexecutado, porque os percursos de tela dependem da posição dos elementos. O 009 volta quando B06 for resolvido.
+**Atualização (2026-10-01, ainda na mesma sessão com a autora).** O item 2 mudou durante a implementação: criar e editar em **painel lateral** passou a fazer parte do 011 (materiais, serviços, clientes e "+ Novo orçamento"), com busca e filtros de situação nas listas, e a escolha de material, serviço e cliente virou **campo com busca** no lugar da lista suspensa. Continuam de fora: duplicar registro, desfazer inativação e máscara de moeda. A `spec.md` do 011 é a descrição vigente do alcance.
+
+**Consequência.** D014 continua valendo quanto ao princípio de cores e estilos só em variáveis de `index.css`; mudam a tipografia dos títulos, a posição da régua e os valores das cores. Ao final, o ensaio dos dez casos pela tela é reexecutado, porque os percursos de tela dependem da posição dos elementos — feito em 2026-10-08, 10 de 10 com diferença R$ 0,00 (`evidencias/testes/011-refinamento-visual-2026-10-08.md`). O 009 volta quando B06 for resolvido.
 
 ---
 

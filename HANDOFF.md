@@ -1,8 +1,8 @@
 # Handoff
 
-**Atualizado em:** 2026-10-01 · Última sessão: 011 (refinamento visual) implementado com a autora (D026, D027); falta o ensaio dos dez casos.
+**Atualizado em:** 2026-10-08 · Última sessão: 011 (refinamento visual) fechado, com o ensaio dos dez casos pela tela (10 de 10, R$ 0,00).
 
-> **Próxima sessão:** o **011 — Refinamento visual** está implementado na branch `spec/011-refinamento-visual`; falta rodar o ensaio dos dez casos pela tela (o roteiro de 008 usa itens avulsos; os cadastros agora abrem em painel lateral e material, serviço e cliente são escolhidos por campo com busca). A autora pediu em seguida: publicar o sistema para o orientador ver e adicionar "Esqueceu sua senha?". O 009 volta quando o termo estiver assinado (material em `evidencias/avaliacao-de-uso/`).
+> **Próxima sessão:** o 011 está na branch `spec/011-refinamento-visual`, fechado e verificado, aguardando a revisão humana do diff (B18) e o PR. A branch do 012 (`spec/012-publicacao-e-senha`) foi criada a partir do 011 e tem o RF07 pronto; depois que o 011 entrar em `main`, atualizar o 012 com o `main` (os arquivos de estado vão conflitar, resolver mantendo o texto mais novo). O 009 volta quando o termo estiver assinado (material em `evidencias/avaliacao-de-uso/`).
 
 Para qualquer nova sessão, agente ou ferramenta assumir o trabalho sem reconstruir contexto pelo histórico de conversa.
 
@@ -17,13 +17,11 @@ Para qualquer nova sessão, agente ou ferramenta assumir o trabalho sem reconstr
 
 ## O que foi feito na última sessão
 
-1. **B08 resolvido:** a autora conferiu os dez casos em `evidencias/testes/conferencia-casos-de-teste.xlsx` (10 de 10 conferem, nome e data preenchidos).
-2. **B17 resolvido:** Spec 007 já estava integrada em `main` (PR #8).
-3. **Spec 008 aberta e fechada** sem mudança de código: roteiro dos dez casos em termos de tela (`008-roteiro-casos-pela-tela.md`, gerado do CSV), ensaio automatizado com Edge + Playwright (10 de 10 e CN01–CN06 bloqueados) e execução formal pela autora (10 de 10, execução nº 6). D025.
-4. **Anotado para o futuro** (`ESTADO_ATUAL.md`): separar "salvar" de "enviar" (D020) e corrigir a mensagem de quantidade negativa.
-5. **Spec 008 integrada** (PR #9). **Preparação do 009** na branch `docs/preparacao-avaliacao-uso`: rascunho do termo de consentimento (a validar com o orientador) e roteiro com ficha da sessão, com dados fictícios e valor esperado da tarefa 3 (R$ 2.175,00 com markup 150%).
+1. **Spec 011 fechada:** suítes verdes (backend 139, frontend 14, lint e build). Ensaio pela tela com Edge + Playwright a 1366×768 e 390 px: dez casos 10 de 10 com diferença R$ 0,00, CT03 repetido com itens do catálogo pelo campo com busca, painel lateral (criar, editar, inativar, reativar), resumo fixo à direita, RNF02 e RNF05. 45 de 45 verificações (`evidencias/testes/011-refinamento-visual-2026-10-08.md`, capturas em `011-capturas/`).
+2. **D026 atualizada:** o painel lateral e o campo com busca entraram no alcance do 011 (a decisão original os deixava de fora).
+3. **Matriz de verificação:** linha do 011 acrescentada (`qualidade-e-testes.md` §6).
 
-Decisões firmes: D001–D025. Nenhuma provisória no momento.
+Decisões firmes: D001–D027 (D028 e D029 estão na branch do 012). Nenhuma provisória no momento.
 
 ## O que **não** foi feito
 
@@ -67,6 +65,7 @@ Decisões firmes: D001–D025. Nenhuma provisória no momento.
 - **Ensaio do 008:** script Playwright fora do repositório; a conta "Marcenaria Ensaio 008" (dados fictícios) ficou no banco principal, isolada das demais.
 - **Mensagens de erro chegam num `[role=alert]`** da página do orçamento; CN06 (sem cliente) é barrado pela validação nativa do navegador (`select required`), não pela API.
 
+- **Ensaio do 011:** Playwright (`playwright-core` + Edge) não está no repositório; o script ficou fora dele, como no 008. Para repetir: instalar `playwright-core` numa pasta temporária, subir `npm run dev` (API, porta 3333) e `npx vite --port 5173`, e ler os casos de `008-roteiro-casos-pela-tela.md`. O `CampoBusca` é um `role=combobox` (rótulo "Cliente", "Material", "Serviço") e as opções são `role=option`; o painel lateral é um `dialog[open]`. A conta "Marcenaria Ensaio 011 …" (dados fictícios) ficou no banco principal, isolada das demais.
 
 ## Perguntas a fazer à autora antes de avançar
 
