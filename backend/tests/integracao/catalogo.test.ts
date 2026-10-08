@@ -44,6 +44,20 @@ const chamar = (token: string, rota: string, metodo = 'GET', corpo?: unknown) =>
 })
 
 describe('catálogo', () => {
+  it('D032: grava o nome em maiúsculas (material, serviço e cliente) e trata "mdf" e "MDF" como o mesmo nome', async () => {
+    const token = await criarConta('maiusculas')
+    const material = await (await chamar(token, '/materiais', 'POST', { nome: '  fita de borda 22mm  ', unidade: 'm', custoUnitario: '1,2350' })).json() as Item
+    expect(material.nome).toBe('FITA DE BORDA 22MM')
+    expect((await chamar(token, '/materiais', 'POST', { nome: 'Fita de Borda 22MM', unidade: 'm', custoUnitario: '2' })).status).toBe(409)
+    const servico = await (await chamar(token, '/servicos', 'POST', { nome: 'instalação e ajuste', tipoCobranca: 'hora', valorUnitario: '50' })).json() as Item
+    expect(servico.nome).toBe('INSTALAÇÃO E AJUSTE')
+    const cliente = await (await chamar(token, '/clientes', 'POST', { nome: 'joão da silva' })).json() as Item
+    expect(cliente.nome).toBe('JOÃO DA SILVA')
+    const editado = await (await chamar(token, `/clientes/${cliente.id}`, 'PUT', { nome: 'maria çã' })).json() as Item
+    expect(editado.nome).toBe('MARIA ÇÃ')
+    expect(((await (await chamar(token, '/materiais?busca=fita')).json()) as Item[]).map((i) => i.nome)).toEqual(['FITA DE BORDA 22MM'])
+  })
+
   it('exige autenticação', async () => {
     expect((await fetch(`${baseUrl}/materiais`)).status).toBe(401)
     expect((await fetch(`${baseUrl}/servicos`)).status).toBe(401)
@@ -64,12 +78,12 @@ describe('catálogo', () => {
     expect(duplicado.status).toBe(409)
 
     const busca = await (await chamar(token, '/materiais?busca=mdf')).json() as Item[]
-    expect(busca.map((i) => i.nome)).toEqual(['MDF 18 mm'])
+    expect(busca.map((i) => i.nome)).toEqual(['MDF 18 MM'])
     expect(await (await chamar(token, '/materiais?busca=parafuso')).json()).toEqual([])
 
     const editado = await chamar(token, `/materiais/${material.id}`, 'PUT', { nome: 'MDF 18 mm cru', unidade: 'm²', custoUnitario: '99,9999' })
     expect(editado.status).toBe(200)
-    expect(await editado.json()).toMatchObject({ nome: 'MDF 18 mm cru', unidade: 'm²', custo_unitario: '99.9999' })
+    expect(await editado.json()).toMatchObject({ nome: 'MDF 18 MM CRU', unidade: 'm²', custo_unitario: '99.9999' })
 
     expect((await chamar(token, `/materiais/${material.id}`, 'DELETE')).status).toBe(204)
     expect(await (await chamar(token, '/materiais')).json()).toEqual([])
@@ -88,7 +102,7 @@ describe('catálogo', () => {
     expect((await chamar(token, '/servicos', 'POST', { nome: 'Frete', tipoCobranca: 'dia', valorUnitario: '10' })).status).toBe(400)
 
     const editado = await chamar(token, `/servicos/${servico.id}`, 'PUT', { nome: 'Montagem no local', tipoCobranca: 'unidade', valorUnitario: '300' })
-    expect(await editado.json()).toMatchObject({ nome: 'Montagem no local', tipo_cobranca: 'unidade', valor_unitario: '300.0000' })
+    expect(await editado.json()).toMatchObject({ nome: 'MONTAGEM NO LOCAL', tipo_cobranca: 'unidade', valor_unitario: '300.0000' })
 
     expect((await chamar(token, `/servicos/${servico.id}`, 'DELETE')).status).toBe(204)
     expect(await (await chamar(token, '/servicos')).json()).toEqual([])
@@ -101,7 +115,7 @@ describe('catálogo', () => {
     await chamar(token, '/servicos', 'POST', { nome: 'Corte de chapa', tipoCobranca: 'unidade', valorUnitario: '15' })
 
     const achados = await (await chamar(token, '/servicos?busca=MONT')).json() as Item[]
-    expect(achados.map((i) => i.nome)).toEqual(['Montagem no local'])
+    expect(achados.map((i) => i.nome)).toEqual(['MONTAGEM NO LOCAL'])
     expect(await (await chamar(token, '/servicos?busca=inexistente')).json()).toEqual([])
     expect(await (await chamar(token, '/servicos?situacao=todos')).json()).toHaveLength(2)
     expect(await (await chamar(token, '/servicos?situacao=invalida')).json()).toEqual({ mensagem: expect.any(String) })
@@ -131,8 +145,8 @@ describe('catálogo', () => {
     // O registro da marcenaria A permanece intacto e ativo.
     const restante = await (await chamar(tokenA, '/materiais')).json() as Item[]
     expect(restante).toHaveLength(1)
-    expect(restante[0]).toMatchObject({ nome: 'Cola PVA', ativo: true })
-    expect(await (await chamar(tokenA, '/servicos')).json()).toMatchObject([{ nome: 'Corte', ativo: true, valor_unitario: '50.0000' }])
+    expect(restante[0]).toMatchObject({ nome: 'COLA PVA', ativo: true })
+    expect(await (await chamar(tokenA, '/servicos')).json()).toMatchObject([{ nome: 'CORTE', ativo: true, valor_unitario: '50.0000' }])
 
     // Mesmo nome é permitido em marcenarias diferentes.
     expect((await chamar(tokenB, '/materiais', 'POST', { nome: 'Cola PVA', unidade: 'kg', custoUnitario: '12' })).status).toBe(201)

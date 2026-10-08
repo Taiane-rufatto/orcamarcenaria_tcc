@@ -1,8 +1,8 @@
 # Handoff
 
-**Atualizado em:** 2026-10-08 · Última sessão: 013 integrado e publicado; 014 (cadastro pelo teclado) fechado.
+**Atualizado em:** 2026-10-08 · Última sessão: 014 (cadastro pelo teclado) e 015 (nomes em maiúsculas) fechados.
 
-> **Próxima sessão:** o 014 (cadastro pelo teclado) está fechado na branch `spec/014-cadastro-pelo-teclado`, aguardando a revisão humana do diff (B21) e o PR; depois publicar na VPS. O 009 volta quando o termo estiver assinado (material em `evidencias/avaliacao-de-uso/`).
+> **Próxima sessão:** 014 e 015 estão fechados e enviados, aguardando a revisão do diff e os PRs (B21, B22), na ordem 014 → 015. Antes de publicar o 015 na VPS, **backup do banco**: a migração `009` converte os nomes e é irreversível. O 009 (avaliação de uso) volta quando o termo estiver assinado (material em `evidencias/avaliacao-de-uso/`).
 
 Para qualquer nova sessão, agente ou ferramenta assumir o trabalho sem reconstruir contexto pelo histórico de conversa.
 
@@ -17,10 +17,10 @@ Para qualquer nova sessão, agente ou ferramenta assumir o trabalho sem reconstr
 
 ## O que foi feito na última sessão
 
-1. **013 integrado** (PR #14) e **publicado na VPS** (`main`); migrações aplicadas no banco local.
-2. **014 aberto e fechado:** a autora pediu agilidade pelo teclado. Nos painéis de **novo** material, serviço e cliente, o Enter (e o botão "Cadastrar ...") grava e abre o formulário em branco com o foco no Nome; só Esc ou ✕ fecham. O botão "Salvar e cadastrar outro" saiu e "Cancelar" virou "Fechar"; na edição nada mudou. Trava contra Enter repetido. D031 revisa a D030. Só frontend.
+1. **014 — Cadastro pelo teclado (D031):** nos painéis de novo cadastro, o Enter grava e abre o formulário em branco; só Esc ou ✕ fecham; na edição, Enter salva e fecha. Trava contra Enter repetido.
+2. **015 — Nomes em maiúsculas (D032):** a API grava em maiúsculas (`nomeEmMaiusculas`, `pt-BR`) o nome de material, serviço e cliente; o campo Nome mostra maiúsculas ao digitar (`text-transform`). Migração `009` converte os existentes; aplicada no banco local (60 materiais, 23 serviços, 27 clientes), com backup em `~/backups-orca/`; na VPS são 6, 3 e 4, sem colisões, **ainda não aplicada**. Nove testes antigos tiveram a expectativa trocada para maiúsculas.
 
-Decisões firmes: D001–D031. Nenhuma provisória no momento.
+Decisões firmes: D001–D032. Nenhuma provisória no momento.
 
 ## O que **não** foi feito
 
@@ -70,6 +70,8 @@ Decisões firmes: D001–D031. Nenhuma provisória no momento.
 - **Nunca pedir senhas e chaves pelo chat:** a senha de app do Gmail foi colocada no `.env` pela própria autora, e só os nomes das variáveis foram conferidos.
 - **Painel de novo cadastro (014):** `cadastrarOutro = !editando`; depois de gravar, `formulario.reset()` e o foco volta ao Nome, e a unidade (material) ou o tipo de cobrança (serviço) é reposta à mão porque o `reset()` a devolveria ao padrão. Uma `useRef` (`salvando`) barra o segundo Enter enquanto o envio anterior não terminou; sem ela, Enter repetido grava duas vezes.
 - **Ensaio de tela e o painel:** depois do 014, "Cadastrar ..." deixa o painel aberto; scripts que esperavam o painel fechar precisam apertar Esc.
+- **Nomes em maiúsculas (015):** a regra mora só em `nomeEmMaiusculas` (`backend/src/api/validacoes/catalogo.ts`); material, serviço e cliente a usam. O banco não força: quem inserir direto no SQL pode gravar caixa mista. A migração `009` é reaplicada a cada `npm run migrar` (idempotente) e **para** se dois nomes de uma marcenaria colidirem em maiúsculas. O `UNIQUE (marcenaria_id, nome)` de material e serviço passou a valer sem diferenciar caixa. `upper()` do PostgreSQL trata acentos tanto no banco local quanto no da VPS (`C.UTF-8`); `psql` no Windows precisa de `PGCLIENTENCODING=UTF8` para aceitar acentos digitados.
+- **Testes que dependem do nome do cadastro:** o nome volta em maiúsculas (`JOÃO FICTÍCIO`, `CORTE E USINAGEM`); as descrições de itens avulsos e do projeto continuam como digitadas.
 
 ## Perguntas a fazer à autora antes de avançar
 

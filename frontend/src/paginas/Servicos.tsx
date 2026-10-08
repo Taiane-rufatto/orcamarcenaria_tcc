@@ -53,7 +53,7 @@ export function Servicos() {
       else await criarServico(servico)
       recarregar()
       if (cadastrarOutro) {
-        setConfirmacao(`✓ ${servico.nome.trim()} cadastrado`); setErro('')
+        setConfirmacao(`✓ ${servico.nome.trim().toLocaleUpperCase('pt-BR')} cadastrado`); setErro('')
         formulario.reset()
         // o tipo de cobrança escolhido vale para o próximo
         ;(formulario.elements.namedItem('tipo') as HTMLSelectElement).value = servico.tipoCobranca

@@ -11,6 +11,7 @@ Itens que dependem de decisão humana, acesso ou ação externa. Um agente **nã
 | B06 | Termo de consentimento do participante (RNF16) não assinado | Entrevista (OE1) e avaliação exploratória de uso (OE7) — **impede abrir o 009** | Taiane | Aberto — o proprietário (pai da autora) concordou verbalmente em 2026-09-30; falta o termo assinado. Rascunho em `evidencias/avaliacao-de-uso/termo-de-consentimento-rascunho.md`; a autora vai validá-lo com o orientador (modelo institucional, CEP, conversa de 2026-09-28 já feita, nome da marcenaria) |
 | B07 | Data da apresentação de andamento não confirmada com a coordenação | Ajuste fino do calendário do `roadmap.md` §3 | Taiane | Aberto |
 | B21 | Revisão humana do diff da Spec 014 (DoD §7.3) | Integração do 014 em `main` e publicação na VPS | Taiane | Aberto — `git diff main...spec/014-cadastro-pelo-teclado`; depois abrir o PR |
+| B22 | Revisão humana do diff da Spec 015 e publicação na VPS com backup (DoD §7.3, D032) | Integração do 015 em `main` e migração dos nomes na VPS | Taiane | Aberto — integrar o 014 antes; `git diff main...spec/015-nomes-em-maiusculas`; depois PR, backup e `atualizar.sh main` |
 
 ## Como usar este arquivo
 

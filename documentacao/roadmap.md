@@ -35,6 +35,7 @@ Prioridade e dependência definem a ordem. Um incremento só é aberto quando o 
 | 012 | Publicação para demonstração em VPS e recuperação de senha por e-mail (D028, D029) | M3 | 011 | — | RF07, RNF14, RNF15, RNF25 |
 | 013 | Cadastro em sequência: "Salvar e cadastrar outro" no painel de materiais, serviços e clientes (D030) | M3 | 011 | US03, US05, US06 | RF08, RF11, RF17 |
 | 014 | Cadastro pelo teclado: Enter cadastra e continua; Esc ou ✕ fecham o painel (D031, revisa D030) | M3 | 013 | US03, US05, US06 | RF08, RF11, RF17 |
+| 015 | Nomes de material, serviço e cliente em maiúsculas, com migração dos existentes (D032) | M3 | 014 | US03, US05, US06 | RF08, RF11, RF17, RNF26 |
 
 ### Observações de sequenciamento
 

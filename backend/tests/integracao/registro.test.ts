@@ -175,7 +175,7 @@ describe('registro e acompanhamento', () => {
     await esperar(chamar(token, `/orcamentos/${bruno.id}/registrar`, 'POST'), 200)
 
     const todos = await esperar<Resumo[]>(chamar(token, '/orcamentos'), 200)
-    expect(todos.map((o) => o.clienteNome)).toEqual(['Carla Fictícia', 'Bruno Fictício', 'Ana Fictícia']) // mais recentes primeiro
+    expect(todos.map((o) => o.clienteNome)).toEqual(['CARLA FICTÍCIA', 'BRUNO FICTÍCIO', 'ANA FICTÍCIA']) // mais recentes primeiro
     expect(todos[1]).toMatchObject({ numero: 1, situacao: 'enviado', precoFinal: '250.00', dataEmissao: '2026-11-10' })
     expect(todos[0]).toMatchObject({ numero: null, situacao: 'rascunho' })
 
