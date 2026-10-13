@@ -60,9 +60,9 @@ Incrementos 000 a 008 entregues e integrados em `main` (008 no PR #9); o 011 tam
 ## Próximo passo (nesta ordem)
 
 1. **Antes de enviar o link ao orientador:** conferir no site publicado o orçamento CT03 (R$ 2.760,00) e revisar a base publicada, que deve ter só dados fictícios (RNF15); comentar com o orientador a entrada do RF07 (D028) e que os nomes do catálogo ficam em maiúsculas (D032).
-2. **Autora validar o termo de consentimento com o orientador** (pontos listados no topo do rascunho) e colher a assinatura do proprietário (B06). Com o termo assinado, abrir o 009 e aplicar `roteiro-e-ficha-da-sessao.md`.
+2. **Avaliação de uso (009):** a autora decidiu não enviar o termo de consentimento (B06 resolvido em 2026-10-13). Decidir quando aplicar `roteiro-e-ficha-da-sessao.md` com o proprietário.
 3. Opcional: relançar o CT01 com **margem** 0% (foi lançado com markup 0%, mesmo resultado) e informar o navegador usado na execução formal.
-4. Transcrever as notas da conversa com o proprietário em `evidencias/entrevista/` e responder Q6–Q10 (B01); confirmar o termo de consentimento (B06).
+4. Transcrever as notas da conversa com o proprietário em `evidencias/entrevista/` e responder Q6–Q10 (B01).
 
 ## Para ver no futuro
 

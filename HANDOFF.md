@@ -25,7 +25,7 @@ Decisões firmes: D001–D032. Nenhuma provisória no momento.
 ## O que **não** foi feito
 
 - Duplicar orçamento (RF40), desconto (RF33) e demais itens do `roadmap.md` §5: pós-TCC.
-- Entrevista: notas não transcritas; Q8–Q10 sem resposta; consentimento (B06) não confirmado — necessário também para a avaliação de uso (009).
+- Entrevista: notas não transcritas; Q8–Q10 sem resposta; consentimento (B06) dispensado pela autora em 2026-10-13.
 - Edição de custo adicional pela tela (a API tem `PUT`; a tela só inclui e remove).
 
 ## Contexto que não está óbvio nos arquivos
@@ -75,5 +75,5 @@ Decisões firmes: D001–D032. Nenhuma provisória no momento.
 
 ## Perguntas a fazer à autora antes de avançar
 
-1. O orientador validou o termo de consentimento? O proprietário assinou (B06)? Sem isso o 009 não abre.
+1. Quando aplicar a avaliação de uso (009) com o proprietário? O termo (B06) não será enviado, por decisão da autora.
 2. Há data para a apresentação de andamento (B07)?

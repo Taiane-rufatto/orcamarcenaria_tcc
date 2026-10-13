@@ -8,7 +8,6 @@ Itens que dependem de decisão humana, acesso ou ação externa. Um agente **nã
 |---|---|---|---|---|
 | B01 | Entrevista de levantamento com o proprietário não realizada (OE1) | Confirmação de D002, D003, D006 e a revisão de `requisitos.md` §4 | Taiane | Parcial — Q1–Q5 confirmadas pelo proprietário em 2026-09-28 (D017). Falta transcrever as notas em `evidencias/entrevista/` e responder Q6–Q10 |
 | B05 | Três orçamentos reais da marcenaria ainda não coletados e anonimizados | Validação das regras de cálculo contra a prática e refinamento dos casos de teste | Taiane | Aberto — pedir na entrevista |
-| B06 | Termo de consentimento do participante (RNF16) não assinado | Entrevista (OE1) e avaliação exploratória de uso (OE7) — **impede abrir o 009** | Taiane | Aberto — o proprietário (pai da autora) concordou verbalmente em 2026-09-30; falta o termo assinado. Rascunho em `evidencias/avaliacao-de-uso/termo-de-consentimento-rascunho.md`; a autora vai validá-lo com o orientador (modelo institucional, CEP, conversa de 2026-09-28 já feita, nome da marcenaria) |
 | B07 | Data da apresentação de andamento não confirmada com a coordenação | Ajuste fino do calendário do `roadmap.md` §3 | Taiane | Aberto |
 
 ## Como usar este arquivo
@@ -39,3 +38,4 @@ Itens que dependem de decisão humana, acesso ou ação externa. Um agente **nã
 | B20 | Revisão humana do diff da Spec 013 (DoD §7.3) | 2026-10-08 | A autora revisou e fez o merge em `main` (PR #14); o comportamento foi revisto no 014. |
 | B21 | Revisão humana do diff da Spec 014 (DoD §7.3) | 2026-10-08 | A autora revisou e fez o merge em `main` (PR #15). |
 | B22 | Revisão do diff da Spec 015 e publicação na VPS com backup (D032) | 2026-10-08 | A autora fez o merge (PR #16); backup do banco da VPS em `/home/ubuntu/backup-orcamarcenaria-antes-do-015-2026-10-08-1901.sql`; migração `009` aplicada pelo `atualizar.sh main` (6 materiais, 4 serviços e 4 clientes convertidos, sem colisões). |
+| B06 | Termo de consentimento do participante (RNF16) não assinado | 2026-10-13 | A autora decidiu não enviar nem colher o termo de consentimento. O rascunho (`evidencias/avaliacao-de-uso/`) permanece no repositório sem uso. O 009 deixa de depender do termo. Registrar a justificativa em `decisoes.md` e rever o RNF16 quando a autora confirmar o motivo com o orientador. |
