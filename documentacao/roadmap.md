@@ -36,6 +36,7 @@ Prioridade e dependência definem a ordem. Um incremento só é aberto quando o 
 | 013 | Cadastro em sequência: "Salvar e cadastrar outro" no painel de materiais, serviços e clientes (D030) | M3 | 011 | US03, US05, US06 | RF08, RF11, RF17 |
 | 014 | Cadastro pelo teclado: Enter cadastra e continua; Esc ou ✕ fecham o painel (D031, revisa D030) | M3 | 013 | US03, US05, US06 | RF08, RF11, RF17 |
 | 015 | Nomes de material, serviço e cliente em maiúsculas, com migração dos existentes (D032) | M3 | 014 | US03, US05, US06 | RF08, RF11, RF17, RNF26 |
+| 018 | Meta mensal e aviso de equilíbrio no orçamento: o diferencial do trabalho, sem alterar o preço (D033; origem: orientação de 08/10/2026, spec 016) | M3 | 015 | US17 | RF44–RF46 |
 
 ### Observações de sequenciamento
 

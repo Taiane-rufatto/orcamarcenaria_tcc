@@ -106,6 +106,14 @@ Versão 1.0 · Fonte canônica dos requisitos do projeto. Qualquer mudança aqui
 | RF42 | O PDF deve apresentar os itens sem revelar a composição interna de custo e lucro, exibindo apenas o que o marceneiro optar por mostrar: especificações e preço final, com a opção de incluir a lista de itens só com quantidades (D022). | Importante | OE5, OE7 | 006 |
 | RF43 | O sistema deve permitir baixar o PDF gerado a partir da tela do orçamento. | Essencial | OE5 | 006 |
 
+### 1.9 Equilíbrio do mês (diferencial, D033)
+
+| ID | Requisito | Prioridade | OE | Incremento |
+|---|---|---|---|---|
+| RF44 | O sistema deve permitir informar, em "Minha marcenaria", a meta mensal (quanto precisa sobrar por mês depois de pagar os materiais) e as horas produtivas por mês, ambas opcionais, e exibir o valor necessário por hora (RN12). | Desejável | — | 018 |
+| RF45 | O sistema deve permitir informar as horas estimadas de produção em cada orçamento em rascunho, de forma opcional (maior que zero, até 2 casas). | Desejável | — | 018 |
+| RF46 | O sistema deve exibir, no orçamento, o valor por hora (RN13) e um aviso quando ficar abaixo do necessário, sem alterar o preço, sem bloquear o registro e sem constar no PDF do cliente. Sem meta ou sem horas, nenhum aviso. | Desejável | — | 018 |
+
 ---
 
 ## 2. Requisitos não funcionais

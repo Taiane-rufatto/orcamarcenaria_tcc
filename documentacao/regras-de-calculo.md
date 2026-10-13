@@ -178,7 +178,23 @@ A linha do lucro traz só o rótulo "Lucro" (D027). A forma de lucro, o percentu
 
 Esse bloco é a evidência visual de que o sistema não é uma caixa-preta — requisito para a defesa e para os testes de conferência manual.
 
-## 6. Fora destas regras (registrado, não implementado no MVP)
+## 6. Aviso de equilíbrio (spec 018, D033) — não faz parte do preço
+
+Estas regras **não alteram** os passos 1–9 da §2: só leem valores já calculados. Implementação em `backend/src/dominio/equilibrio/equilibrio.ts`, texto decimal, `ROUND_HALF_UP`.
+
+**RN12 — Valor necessário por hora.** `necessario_h = arred2(meta_mensal ÷ horas_produtivas_mes)`. Sem meta ou sem horas produtivas (nulas ou zero), não há valor.
+
+**RN13 — Valor do orçamento por hora.**
+```
+contribuicao   = preco_final − subtotal_materiais − total_adicionais
+valor_hora     = arred2(contribuicao ÷ horas_estimadas)
+aviso          = valor_hora < necessario_h
+```
+Os serviços não são descontados. A comparação usa os valores já arredondados a duas casas, os mesmos que a tela mostra. Sem horas estimadas (nulas ou zero), ou sem RN12, não há cálculo nem aviso. A contribuição pode ser negativa.
+
+**Exemplo (valores fictícios).** Meta R$ 8.000,00 ÷ 160 h = R$ 50,00 por hora. Preço final R$ 4.200,00, materiais R$ 1.200,00, adicionais R$ 100,00 → contribuição R$ 2.900,00. Com 40 h: R$ 72,50 por hora (sem aviso). Com 80 h: R$ 36,25 (aviso). O preço final é R$ 4.200,00 nos dois casos. Casos de unidade com mais valores em `backend/tests/unidade/equilibrio.test.ts`.
+
+## 7. Fora destas regras (registrado, não implementado no MVP)
 
 - Aproveitamento de chapa / plano de corte (comprar chapa inteira e usar fração): tratado hoje pela quantidade fracionada informada pelo usuário (2,5 ch), sem otimização automática.
 - Rateio de custos indiretos (energia, aluguel, depreciação) por hora produtiva.

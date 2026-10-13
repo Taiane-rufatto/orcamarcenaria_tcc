@@ -147,6 +147,14 @@ Histórias de suporte à pesquisa; não geram funcionalidade para o usuário fin
 
 - **Dado** os dez casos definidos em `qualidade-e-testes.md`, **quando** executo a suíte, **então** todos apresentam diferença nula após o arredondamento e o resultado é registrado na tabela de evidências.
 
+### US17 — Saber se o orçamento paga o mês
+**Como** marceneiro, **quero** informar quanto preciso que sobre por mês e as horas que trabalho, e ver ao montar um orçamento se o valor por hora fica abaixo do que preciso, **para** não fechar um trabalho que não sustenta a marcenaria.
+`RF44, RF45, RF46, D033`
+
+- **Dado** meta de R$ 8.000,00 e 160 h por mês, **quando** o orçamento rende R$ 36,25 por hora, **então** a tela mostra o valor por hora, o necessário (R$ 50,00) e o aviso, e o preço final não muda.
+- **Dado** que faltam a meta, as horas produtivas ou as horas estimadas, **quando** abro o orçamento, **então** nenhum aviso aparece e a tela diz o que informar.
+- **Dado** um orçamento registrado, **quando** o consulto, **então** as horas estimadas não podem ser alteradas e o aviso usa a meta atual.
+
 ### US16 — Conduzir a avaliação exploratória de uso
 **Como** pesquisadora, **quero** aplicar o roteiro de cinco tarefas com o proprietário, **para** registrar erros, dúvidas e adequação do fluxo ao processo real.
 `RNF01, OE7`

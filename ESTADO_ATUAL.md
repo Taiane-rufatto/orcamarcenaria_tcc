@@ -1,6 +1,8 @@
 # Estado Atual
 
-**Atualizado em:** 2026-10-08
+**Atualizado em:** 2026-10-13
+
+> **Orientação de 08/10/2026 (spec 016 e 017), branch `spec/018-equilibrio-no-orcamento`.** A ata e a transcrição ficam só no computador da autora (`evidencias/orientacao/`, ignorada pelo Git). **016:** análise das sugestões do professor e plano 017–022 (`specs/016-analise-orientacao/analise.md`), com o diferencial (ponto de equilíbrio) trazido para o TCC I (D033). **017:** diagnóstico de segurança, só leitura, nada corrigido (`specs/017-diagnostico-seguranca/diagnostico.md`): achado de gravidade alta = sem limite de tentativas de login. **018:** meta mensal, horas estimadas e aviso de equilíbrio no orçamento, **implementado e com testes automatizados verdes** (backend 183, frontend 18); **faltam a conferência dos valores em planilha pela autora e o percurso de tela** para fechar (`evidencias/testes/018-equilibrio-no-orcamento-2026-10-13.md`). Migração `010` aplicada no banco local e no de teste, **ainda não na VPS**. Termo de consentimento (B06): a autora decidiu não enviar.
 
 > **Incremento 011 — Refinamento visual: fechado e integrado em `main` (PRs #11 e #12), em 2026-10-08.** Menu lateral, paleta neutra, listas com painel lateral, orçamento em duas colunas e campo com busca (D026, D027). Ensaio dos dez casos pela tela (Edge + Playwright): 10 de 10 com diferença R$ 0,00; RNF05 a 1366×768 e 390 px verificado (`evidencias/testes/011-refinamento-visual-2026-10-08.md`).
 >
@@ -58,6 +60,8 @@ Incrementos 000 a 008 entregues e integrados em `main` (008 no PR #9); o 011 tam
 - [x] **Preparação do 009:** rascunho do termo de consentimento e roteiro com ficha da sessão de avaliação (`evidencias/avaliacao-de-uso/`)
 
 ## Próximo passo (nesta ordem)
+
+0. **Fechar o 018:** conferir os quatro casos da evidência em planilha, fazer o percurso de tela (passos na evidência), revisar o diff e abrir o PR. Depois, **019 (painel do mês)**, **020 (ajustes de uso e CPF/CNPJ)**; 021 (fornecedor e histórico de preço) e 022 (duplicar) só se houver prazo. Um incremento de **endurecimento de segurança** (limite de tentativas, `npm audit fix`, cabeçalhos no nginx, backup agendado) fica antes de divulgar mais o link. Validar com o professor a leitura simplificada do ponto de equilíbrio e confirmar com ele o formato do TCC I.
 
 1. **Antes de enviar o link ao orientador:** conferir no site publicado o orçamento CT03 (R$ 2.760,00) e revisar a base publicada, que deve ter só dados fictícios (RNF15); comentar com o orientador a entrada do RF07 (D028) e que os nomes do catálogo ficam em maiúsculas (D032).
 2. **Avaliação de uso (009):** a autora decidiu não enviar o termo de consentimento (B06 resolvido em 2026-10-13). Decidir quando aplicar `roteiro-e-ficha-da-sessao.md` com o proprietário.

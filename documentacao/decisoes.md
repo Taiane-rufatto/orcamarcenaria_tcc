@@ -6,6 +6,19 @@ Formato: contexto → decisão → consequência → situação (`provisória` e
 
 ---
 
+## D033 — Aviso de equilíbrio: o diferencial do trabalho, sem alterar o preço
+**Data:** 2026-10-13 · **Situação:** firme (decidido pela autora); a leitura simplificada do ponto de equilíbrio ainda deve ser validada com o orientador
+
+**Contexto.** Na orientação de 08/10/2026 o professor Muriel sugeriu, como contribuição do TCC, uma visão simplificada de ponto de equilíbrio: relacionar o que a marcenaria precisa ganhar por mês, o tempo disponível e o valor cobrado, para o marceneiro perceber ao orçar se o trabalho paga a operação. A análise da spec 016 trouxe o item (S7) como direção para o TCC II; a autora decidiu trazê-lo para o TCC I, em versão enxuta.
+
+**Decisão.** Três dados opcionais: **meta mensal** (quanto precisa sobrar por mês depois de pagar os materiais) e **horas produtivas por mês**, em "Minha marcenaria", e **horas estimadas** em cada orçamento. O valor necessário por hora é a meta dividida pelas horas produtivas (RN12); o valor do orçamento por hora é `preço final − materiais − custos adicionais`, dividido pelas horas estimadas (RN13). Os serviços não são descontados, porque o trabalho do marceneiro é o que a meta remunera. Se o valor por hora ficar abaixo do necessário, a tela avisa; **não bloqueia nada e não altera o preço**. A conta mora no domínio (`backend/src/dominio/equilibrio/`), em arquivo separado do cálculo do preço.
+
+**Alternativas.** Comparar só o lucro (`valor_lucro`): rejeitada, dá uma meta bem menor e mais difícil de explicar. Horas somadas dos serviços por hora já existentes: rejeitada, não serve a quem cobra por multiplicador, como o proprietário. Painel do mês e taxa de conversão: ficam no incremento 019.
+
+**Consequência.** Migração `010` (colunas opcionais). Sem meta, sem horas produtivas ou sem horas estimadas, nada é calculado e nenhum aviso aparece. O aviso e as horas nunca vão para o PDF do cliente (RF42). O aviso usa a meta **atual**, inclusive em orçamentos já registrados. `calcularOrcamento` e os casos CT01–CT10 não mudam. Promove RF44–RF46 e US17; os exemplos de valores (R$ 8.000,00, 160 h) são fictícios.
+
+---
+
 ## D032 — Nomes de material, serviço e cliente gravados em maiúsculas
 **Data:** 2026-10-08 · **Situação:** firme (decidido pela autora)
 

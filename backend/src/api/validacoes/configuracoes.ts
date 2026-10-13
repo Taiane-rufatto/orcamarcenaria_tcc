@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { percentualLucro } from './orcamento'
+import { horas, percentualLucro } from './orcamento'
 
 // Campos opcionais: vazio vira nulo.
 const opcional = (maximo: number, mensagem: string) =>
@@ -26,4 +26,20 @@ export const padroesSchema = z.object({
   regraArredondamento: z.enum(['duas_casas', 'real_inteiro', 'dezena'], 'Selecione a regra de arredondamento'),
   validadeDias: z.number('Informe a validade em dias').int('Informe um número inteiro de dias')
     .min(1, 'A validade deve ser de 1 a 365 dias').max(365, 'A validade deve ser de 1 a 365 dias'),
+})
+
+// Spec 018. Meta mensal em reais (até 2 casas) e horas produtivas por mês; vazio = não informado.
+// Um campo preenchido sem o outro é aceito: o aviso só aparece quando os dois existem.
+export const equilibrioSchema = z.object({
+  metaMensal: z.preprocess(
+    (v) => (typeof v === 'string' && v.trim() === '' ? null : v),
+    z.string('Informe a meta mensal com até 2 casas decimais').trim()
+      .transform((valor) => valor.replace(',', '.'))
+      .pipe(z.string().regex(/^\d{1,10}(\.\d{1,2})?$/, 'Informe a meta mensal com até 2 casas decimais').refine((v) => /[1-9]/.test(v), 'A meta mensal deve ser maior que zero'))
+      .nullable(),
+  ),
+  horasProdutivasMes: horas('Informe as horas produtivas por mês com até 2 casas decimais, maiores que zero'),
+}).refine((d) => d.horasProdutivasMes === null || Number(d.horasProdutivasMes) <= 744, {
+  message: 'Um mês tem no máximo 744 horas',
+  path: ['horasProdutivasMes'],
 })

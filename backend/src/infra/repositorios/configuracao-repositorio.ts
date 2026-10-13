@@ -12,6 +12,12 @@ export interface Padroes {
   validadeDias: number // dias, não é valor monetário
 }
 
+// Meta e horas do aviso de equilíbrio (spec 018). Opcionais: nulo = não informado.
+export interface Equilibrio {
+  metaMensal: string | null
+  horasProdutivasMes: string | null
+}
+
 export interface DadosMarcenaria {
   nome: string
   responsavel: string
@@ -35,6 +41,21 @@ export async function lerPadroes(executor: Executor, marcenariaId: string): Prom
     regraArredondamento: linha.regra_arredondamento,
     validadeDias: linha.validade_padrao_dias,
   }
+}
+
+// Só lê (não cria a linha): serve também às consultas de orçamento, que rodam em transação somente leitura.
+export async function lerEquilibrio(executor: Executor, marcenariaId: string): Promise<Equilibrio> {
+  const { rows } = await executor.query(
+    'SELECT meta_mensal, horas_produtivas_mes FROM configuracao WHERE marcenaria_id=$1', [marcenariaId])
+  return { metaMensal: rows[0]?.meta_mensal ?? null, horasProdutivasMes: rows[0]?.horas_produtivas_mes ?? null }
+}
+
+export async function gravarEquilibrio(marcenariaId: string, equilibrio: Equilibrio) {
+  await pool.query(
+    `INSERT INTO configuracao (marcenaria_id, meta_mensal, horas_produtivas_mes) VALUES ($1,$2,$3)
+     ON CONFLICT (marcenaria_id) DO UPDATE SET meta_mensal=$2, horas_produtivas_mes=$3, atualizado_em=now()`,
+    [marcenariaId, equilibrio.metaMensal, equilibrio.horasProdutivasMes],
+  )
 }
 
 export async function gravarPadroes(marcenariaId: string, padroes: Padroes) {

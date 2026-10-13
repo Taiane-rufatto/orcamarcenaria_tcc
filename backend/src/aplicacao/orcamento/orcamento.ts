@@ -2,9 +2,10 @@ import type { PoolClient } from 'pg'
 import { pool } from '../../infra/banco/pool'
 import { ErroHttp } from '../../api/erros/erro-http'
 import { calcularOrcamento, multiplicadorEquivalente } from '../../dominio/orcamento/calculo'
+import { avaliarEquilibrio } from '../../dominio/equilibrio/equilibrio'
 import * as repositorio from '../../infra/repositorios/orcamento-repositorio'
 import { buscarCliente } from '../../infra/repositorios/cliente-repositorio'
-import { lerPadroes } from '../../infra/repositorios/configuracao-repositorio'
+import { lerEquilibrio, lerPadroes } from '../../infra/repositorios/configuracao-repositorio'
 import type { Cabecalho, FiltrosListagem, Situacao, TipoItem } from '../../infra/repositorios/orcamento-repositorio'
 
 // Casos de uso do orçamento (arquitetura.md §3): orquestram transação, repositório e domínio.
@@ -60,6 +61,7 @@ async function montarResposta(c: PoolClient, marcenariaId: string, id: string) {
   const dados = await repositorio.lerOrcamento(c, id, marcenariaId)
   if (!dados) return null
   const { orcamento: o, itens, custos } = dados
+  const config = await lerEquilibrio(c, marcenariaId)
   return {
     id: o.id,
     numero: o.numero as number | null, // nulo enquanto rascunho (D020)
@@ -74,6 +76,15 @@ async function montarResposta(c: PoolClient, marcenariaId: string, id: string) {
     regraArredondamento: o.regra_arredondamento,
     especificacoes: (o.especificacoes ?? '') as string,
     observacoes: (o.observacoes ?? '') as string,
+    horasEstimadas: (o.horas_estimadas ?? null) as string | null,
+    // Aviso de equilíbrio (spec 018): só compara valores já calculados, nunca altera o preço. Nulo = sem aviso.
+    equilibrio: avaliarEquilibrio({
+      ...config,
+      horasEstimadas: o.horas_estimadas ?? null,
+      precoFinal: o.preco_final ?? '0',
+      subtotalMateriais: o.subtotal_materiais ?? '0',
+      totalAdicionais: o.total_adicionais ?? '0',
+    }),
     itens: itens.map((i) => ({
       id: i.id, tipo: i.tipo, materialId: i.material_id, servicoId: i.servico_id,
       descricao: i.descricao, unidade: i.unidade, quantidade: i.quantidade,
@@ -130,6 +141,7 @@ export function criarOrcamento(marcenariaId: string, entrada: EntradaCabecalho):
       dataValidade: entrada.dataValidade ?? await repositorio.somarDias(c, entrada.dataEmissao, padroes.validadeDias),
       especificacoes: entrada.especificacoes ?? '',
       observacoes: entrada.observacoes ?? '',
+      horasEstimadas: entrada.horasEstimadas ?? null,
     }
     exigirValidadeCoerente(cabecalho)
     const id = await repositorio.inserirOrcamento(c, marcenariaId, cabecalho)
@@ -164,6 +176,7 @@ export const alterarCabecalho = (marcenariaId: string, id: string, entrada: Entr
       regraArredondamento: entrada.regraArredondamento ?? o.regra_arredondamento,
       especificacoes: entrada.especificacoes ?? o.especificacoes ?? '',
       observacoes: entrada.observacoes ?? o.observacoes ?? '',
+      horasEstimadas: entrada.horasEstimadas === undefined ? o.horas_estimadas ?? null : entrada.horasEstimadas,
     }
     exigirValidadeCoerente(cabecalho)
     return repositorio.atualizarCabecalho(c, id, marcenariaId, cabecalho)
