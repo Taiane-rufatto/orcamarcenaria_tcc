@@ -46,5 +46,5 @@ US18; RF16 (histórico de custo, promovido), RF49 a RF52; regra RN15; decisão D
 
 ## Perguntas em aberto
 
-1. Conversar com o seu pai: ele compraria de mais de um fornecedor? O prazo de 30 dias serve para os materiais dele?
+1. ~~Ele compraria de mais de um fornecedor?~~ **Respondida pela autora em 2026-10-14: o proprietário costuma usar só um fornecedor.** Confirma um fornecedor por material e deixa a comparação entre fornecedores para o TCC II. Ideia que decorre disso: como quase tudo vem do mesmo lugar, um **fornecedor padrão** (já escolhido ao cadastrar material novo) evitaria repetir a escolha. Ainda falta confirmar se o prazo de 30 dias do alerta serve para os materiais dele.
 2. Antes de publicar na VPS: backup do banco e `atualizar.sh main` (migração `011`).
