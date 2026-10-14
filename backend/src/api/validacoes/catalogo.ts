@@ -24,6 +24,8 @@ export const materialSchema = z.object({
   ...base,
   unidade: z.enum(UNIDADES, 'Selecione uma unidade válida'),
   custoUnitario: decimal,
+  // Spec 020: fornecedor do preço, opcional. Vazio vale como "sem fornecedor".
+  fornecedorId: z.preprocess((v) => (v === '' ? null : v), z.uuid('Fornecedor não encontrado').nullable().optional()),
 })
 
 export const servicoSchema = z.object({

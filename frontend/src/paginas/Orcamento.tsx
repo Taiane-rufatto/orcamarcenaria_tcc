@@ -352,7 +352,7 @@ export function Orcamento() {
       </section>}
 
       <section className="folha">
-        <h2>Lucro de verdade</h2>
+        <h2>Quanto sobra de lucro</h2>
         <AvisoEquilibrio equilibrio={orcamento.equilibrio} />
       </section>
 

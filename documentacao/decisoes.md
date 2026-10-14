@@ -6,6 +6,32 @@ Formato: contexto → decisão → consequência → situação (`provisória` e
 
 ---
 
+## D035 — Painel do mês: como foram os orçamentos, em frases simples
+**Data:** 2026-10-14 · **Situação:** firme (decidido pela autora)
+
+**Contexto.** A orientação de 08/10/2026 sugeriu que o sistema mostrasse ao marceneiro uma visão simples do negócio (quantos orçamentos enviou, quantos foram aprovados). O estado já existe (rascunho, enviado, aprovado, recusado, vencido); falta resumir.
+
+**Decisão.** Uma tela **Painel do mês**, com seletor de mês, que mostra: quantos orçamentos foram enviados, quantos aprovados, recusados, vencidos e aguardando resposta; a **taxa de aprovação** (aprovados ÷ enviados); e o valor e o lucro dos aprovados. O mês é o da **data de emissão** (não existe data de aprovação). Rascunho não conta como enviado. A soma e as taxas moram no domínio (`backend/src/dominio/painel/`), sem recalcular preço: só somam valores que o cálculo do orçamento já gravou (RN14).
+
+**Alternativas.** Gráficos e comparação entre meses: ficam para o TCC II. Novos estados (em produção, entregue): TCC II.
+
+**Consequência.** Sem migração nova. O vencimento automático (RF36) é aplicado antes de contar. Promove RF47 e RF48 e US19. Nada aqui altera preço.
+
+---
+
+## D034 — Fornecedor, histórico de preço e alerta de preço antigo (RF16 promovido)
+**Data:** 2026-10-14 · **Situação:** firme (decidido pela autora)
+
+**Contexto.** O professor sugeriu cadastrar fornecedores ligados aos materiais e guardar o histórico de atualização do preço, com alerta quando o preço estiver velho. A necessidade mínima, nas palavras dele, é saber **de quem vem o preço**. O RF16 (histórico de custo) estava como pós-TCC.
+
+**Decisão.** (1) Cadastro simples de **fornecedor** (nome e telefone). (2) O **material** pode apontar para um fornecedor (opcional). (3) A cada vez que o custo ou o fornecedor do material muda, ou que a pessoa confirma "o preço continua o mesmo", grava-se uma linha de **histórico** (data, custo, fornecedor); nada é apagado. (4) **Alerta de preço antigo:** o preço sem atualizar ou confirmar há mais de **30 dias** aparece com um selo "Preço antigo" e o botão "Continua o mesmo" (RN15). O prazo é fixo; as duas semanas e o um mês da conversa eram exemplos.
+
+**Alternativas.** Vários fornecedores por material e comparação de preços: ficam para o TCC II. Lista de compras por fornecedor e WhatsApp: TCC II. Prazo configurável do alerta: não vale a complexidade agora.
+
+**Consequência.** Migração `011` (tabela de fornecedor, colunas no material e histórico; materiais existentes ganham a primeira linha do histórico). Mudar só nome, descrição ou unidade não grava histórico. Orçamentos já criados continuam com o custo da época (RN08). Fornecedor inativo não pode ser escolhido, mas continua no histórico. Promove o RF16 (agora RF52) e cria RF49–RF51 e US18.
+
+---
+
 ## D033 — Lucro mínimo e aviso de equilíbrio: o diferencial do trabalho, sem alterar o preço
 **Data:** 2026-10-13 · **Situação:** firme (decidido pela autora); a leitura ainda deve ser validada com o orientador
 

@@ -8,6 +8,8 @@ import { rotasCatalogo } from './api/rotas/catalogo'
 import { rotasOrcamentos } from './api/rotas/orcamentos'
 import { rotasClientes } from './api/rotas/clientes'
 import { rotasConfiguracoes } from './api/rotas/configuracoes'
+import { rotasPainel } from './api/rotas/painel'
+import { rotasFornecedores } from './api/rotas/fornecedores'
 
 export const app = express()
 
@@ -18,6 +20,8 @@ app.use(rotasCatalogo)
 app.use(rotasOrcamentos)
 app.use(rotasClientes)
 app.use(rotasConfiguracoes)
+app.use(rotasPainel)
+app.use(rotasFornecedores)
 
 app.get('/saude', async (_requisicao, resposta) => {
   try {

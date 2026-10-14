@@ -1,6 +1,8 @@
 # Estado Atual
 
-**Atualizado em:** 2026-10-13
+**Atualizado em:** 2026-10-14
+
+> **Painel do mês (019, D035) e Fornecedor com histórico de preço (020, D034, RF16 promovido), na mesma branch `spec/018-equilibrio-no-orcamento`.** Painel: orçamentos enviados, aprovados, recusados, vencidos, taxa de aprovação e valor e lucro dos aprovados. Fornecedor: cadastro simples, fornecedor no material, histórico a cada troca ou confirmação de preço e selo "Preço antigo" (mais de 30 dias) com o botão "Continua o mesmo". O quadro de lucro do orçamento foi reescrito em frases simples. **Testes automatizados verdes** (backend 209, frontend 21); **faltam o percurso de tela pela autora** e aplicar as migrações `010` e `011` na VPS (backup antes). Evidência: `evidencias/testes/019-020-painel-e-fornecedor-2026-10-14.md`. Menu com 7 itens: conferir a 390 px.
 
 > **Orientação de 08/10/2026 (spec 016 e 017), branch `spec/018-equilibrio-no-orcamento`.** A ata e a transcrição ficam só no computador da autora (`evidencias/orientacao/`, ignorada pelo Git). **016:** análise das sugestões do professor e plano 017–022 (`specs/016-analise-orientacao/analise.md`), com o diferencial (ponto de equilíbrio) trazido para o TCC I (D033). **017:** diagnóstico de segurança, só leitura, nada corrigido (`specs/017-diagnostico-seguranca/diagnostico.md`): achado de gravidade alta = sem limite de tentativas de login. **018:** lucro de verdade e aviso de lucro mínimo no orçamento (a primeira ideia, meta mensal e horas, foi trocada por ser complicada; pesquisa de mercado em D033), **implementado e com testes automatizados verdes** (backend 176, frontend 18); **faltam a conferência dos valores em planilha pela autora e o percurso de tela** para fechar (`evidencias/testes/018-equilibrio-no-orcamento-2026-10-13.md`). Migração `010` aplicada no banco local e no de teste, **ainda não na VPS**. Termo de consentimento (B06): a autora decidiu não enviar.
 
@@ -61,7 +63,7 @@ Incrementos 000 a 008 entregues e integrados em `main` (008 no PR #9); o 011 tam
 
 ## Próximo passo (nesta ordem)
 
-0. **Fechar o 018:** conferir os quatro casos da evidência em planilha, fazer o percurso de tela (passos na evidência), revisar o diff e abrir o PR. Depois, **019 (painel do mês)**, **020 (ajustes de uso e CPF/CNPJ)**; 021 (fornecedor e histórico de preço) e 022 (duplicar) só se houver prazo. Um incremento de **endurecimento de segurança** (limite de tentativas, `npm audit fix`, cabeçalhos no nginx, backup agendado) fica antes de divulgar mais o link. Validar com o professor a leitura simplificada do ponto de equilíbrio e confirmar com ele o formato do TCC I.
+0. **Fechar o 018, o 019 e o 020:** conferir os quatro casos da evidência em planilha, fazer o percurso de tela (passos na evidência), revisar o diff e abrir o PR. Depois, **019 (painel do mês)**, **020 (ajustes de uso e CPF/CNPJ)**; 021 (fornecedor e histórico de preço) e 022 (duplicar) só se houver prazo. Um incremento de **endurecimento de segurança** (limite de tentativas, `npm audit fix`, cabeçalhos no nginx, backup agendado) fica antes de divulgar mais o link. Validar com o professor a leitura simplificada do ponto de equilíbrio e confirmar com ele o formato do TCC I.
 
 1. **Antes de enviar o link ao orientador:** conferir no site publicado o orçamento CT03 (R$ 2.760,00) e revisar a base publicada, que deve ter só dados fictícios (RNF15); comentar com o orientador a entrada do RF07 (D028) e que os nomes do catálogo ficam em maiúsculas (D032).
 2. **Avaliação de uso (009):** a autora decidiu não enviar o termo de consentimento (B06 resolvido em 2026-10-13). Decidir quando aplicar `roteiro-e-ficha-da-sessao.md` com o proprietário.

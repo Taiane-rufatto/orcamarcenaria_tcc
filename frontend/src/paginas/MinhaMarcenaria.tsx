@@ -125,10 +125,10 @@ export function MinhaMarcenaria() {
 
     <section className="folha">
       <h2>Lucro mínimo</h2>
-      <p className="ajuda">Opcional. Defina o menor lucro que você aceita, em % do preço de venda (por exemplo, 30). Se um orçamento ficar abaixo, a tela avisa. É só um aviso: o preço não muda.</p>
+      <p className="ajuda">O menor lucro que você aceita em um orçamento, em % do preço. Exemplo: 30. Se um orçamento ficar abaixo, a tela avisa. O preço não muda.</p>
       <form key={JSON.stringify(e)} onSubmit={salvarEquilibrioDoMes}>
         <div className="campos">
-          <label>Lucro mínimo (% do preço de venda)
+          <label>Lucro mínimo (%)
             <input name="lucroMinimo" inputMode="decimal" placeholder="Ex.: 30" defaultValue={e.lucroMinimo ? paraCampo(e.lucroMinimo) : ''} />
           </label>
         </div>

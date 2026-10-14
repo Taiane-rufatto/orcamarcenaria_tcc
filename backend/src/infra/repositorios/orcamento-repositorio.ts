@@ -237,3 +237,23 @@ export async function mudarSituacao(c: PoolClient, id: string, marcenariaId: str
   await c.query(
     'UPDATE orcamento SET situacao=$3, atualizado_em=now() WHERE id=$1 AND marcenaria_id=$2', [id, marcenariaId, situacao])
 }
+
+// ---------- Painel do mês (spec 019) ----------
+
+// Mês corrente na data de São Paulo, no formato AAAA-MM (o servidor pode estar em outro fuso).
+export async function mesAtual(c: PoolClient): Promise<string> {
+  const { rows } = await c.query<{ mes: string }>(`SELECT to_char(now() AT TIME ZONE 'America/Sao_Paulo', 'YYYY-MM') AS mes`)
+  return rows[0].mes
+}
+
+// Orçamentos do mês pela data de emissão (não há data de aprovação gravada). Só lê valores já calculados.
+export async function listarDoMes(c: PoolClient, marcenariaId: string, mes: string) {
+  const { rows } = await c.query(
+    `SELECT situacao, preco_final, custo_direto_total FROM orcamento
+     WHERE marcenaria_id=$1
+       AND data_emissao >= ($2 || '-01')::date
+       AND data_emissao < (($2 || '-01')::date + interval '1 month')`,
+    [marcenariaId, mes],
+  )
+  return rows as { situacao: 'rascunho' | 'enviado' | 'aprovado' | 'recusado' | 'vencido'; preco_final: string; custo_direto_total: string }[]
+}

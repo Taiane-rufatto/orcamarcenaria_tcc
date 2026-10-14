@@ -278,3 +278,6 @@ td form { display: inline; }
 @media (prefers-reduced-motion: reduce) { button { transition: none; } }
 
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Spec 020: histórico de preço no painel do material. */
+.historico { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 4px; font-size: .85rem; color: var(--tinta-suave); }

@@ -52,7 +52,7 @@ Versão 1.0 · Fonte canônica dos requisitos do projeto. Qualquer mudança aqui
 | RF13 | O sistema deve permitir listar materiais com busca por nome e filtro por situação. | Essencial | OE4 | 002 |
 | RF14 | O sistema deve permitir editar o custo unitário de um material sem alterar os valores de orçamentos já registrados (RN08 — congelamento de valores). | Essencial | OE3, OE5 | 003 |
 | RF15 | O sistema deve permitir inativar material, mantendo-o fora da seleção de novos orçamentos e preservando o histórico. | Essencial | OE4 | 002 |
-| RF16 | O sistema deve registrar o histórico de alterações de custo unitário do material (data, valor anterior, valor novo). | Desejável | — | pós-TCC |
+| RF16 | O sistema deve registrar o histórico de alterações de custo unitário do material (data, valor anterior, valor novo). Promovido na D034: ver RF52. | Desejável | — | 020 |
 
 ### 1.4 Catálogo de serviços e mão de obra
 
@@ -113,6 +113,22 @@ Versão 1.0 · Fonte canônica dos requisitos do projeto. Qualquer mudança aqui
 | RF44 | O sistema deve permitir informar, em "Minha marcenaria", o lucro mínimo aceito, em porcentagem do preço de venda (maior que 0 e menor que 100, opcional). | Desejável | — | 018 |
 | RF45 | O sistema deve exibir, em cada orçamento com itens, o lucro real (preço final menos custo direto total) e quanto ele representa do preço de venda (RN12, RN13). | Desejável | — | 018 |
 | RF46 | O sistema deve avisar, no orçamento, quando o lucro ficar abaixo do mínimo definido, sem alterar o preço, sem bloquear o registro e sem constar no PDF do cliente. Sem mínimo definido, só informa o lucro. | Desejável | — | 018 |
+
+### 1.10 Painel do mês (D035)
+
+| ID | Requisito | Prioridade | OE | Incremento |
+|---|---|---|---|---|
+| RF47 | O sistema deve exibir, para um mês escolhido (padrão: o atual), quantos orçamentos foram enviados, aprovados, recusados, vencidos e aguardando resposta, e quantos estão em rascunho. | Desejável | — | 019 |
+| RF48 | O sistema deve exibir a taxa de aprovação do mês (aprovados ÷ enviados) e o valor e o lucro dos orçamentos aprovados (RN14). | Desejável | — | 019 |
+
+### 1.11 Fornecedores e histórico de preço (D034)
+
+| ID | Requisito | Prioridade | OE | Incremento |
+|---|---|---|---|---|
+| RF49 | O sistema deve permitir cadastrar fornecedores (nome obrigatório, telefone opcional), buscar, editar, inativar e reativar, sem exclusão. | Desejável | — | 020 |
+| RF50 | O sistema deve permitir indicar, em cada material, o fornecedor do preço (opcional) e exibi-lo na lista de materiais. | Desejável | — | 020 |
+| RF51 | O sistema deve mostrar há quantos dias o preço do material foi atualizado, destacar o preço sem atualização há mais de 30 dias (RN15) e permitir confirmar que ele continua o mesmo. | Desejável | — | 020 |
+| RF52 | O sistema deve registrar, a cada troca de custo ou de fornecedor e a cada confirmação, uma linha de histórico (data, custo, fornecedor) e exibir as últimas no cadastro do material. | Desejável | — | 020 |
 
 ---
 

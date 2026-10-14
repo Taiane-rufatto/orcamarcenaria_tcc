@@ -11,31 +11,26 @@ const semMinimo = { lucro: '2100.00', percentualDoPreco: '50.00', lucroMinimo: n
 const mostrar = (equilibrio: Parameters<typeof AvisoEquilibrio>[0]['equilibrio']) =>
   render(<MemoryRouter><AvisoEquilibrio equilibrio={equilibrio} /></MemoryRouter>)
 
-const linhas = () => screen.getAllByRole('term').map((t) => `${t.textContent} ${t.nextElementSibling?.textContent}`)
-
 describe('AvisoEquilibrio (RF46)', () => {
   afterEach(cleanup)
 
-  it('abaixo do mínimo: mostra lucro, percentual e mínimo da API e avisa, sem bloquear', () => {
+  it('abaixo do mínimo: diz quanto sobra em frase simples e avisa, sem bloquear', () => {
     mostrar(abaixo)
-    expect(linhas()).toEqual([
-      'Lucro depois de pagar tudo R$ 420,00',
-      'Isso é do preço de venda 16,67%',
-      'Seu lucro mínimo 30,00%',
-    ])
-    expect(screen.getByRole('status').textContent).toContain('abaixo do mínimo')
+    expect(screen.getByText(/Neste orçamento sobram/).textContent).toBe('Neste orçamento sobram R$ 420,00 de lucro, que é 16,67% do preço.')
+    expect(screen.getByRole('status').textContent).toBe('Atenção: você quer pelo menos 30,00% de lucro e aqui sobra só 16,67%. O preço continua o mesmo.')
     expect(screen.getByRole('status').className).toContain('alerta')
   })
 
   it('dentro do mínimo: confirma sem alarme', () => {
     mostrar(acima)
-    expect(screen.getByRole('status').textContent).toContain('dentro do mínimo')
+    expect(screen.getByText(/Neste orçamento sobram/).textContent).toBe('Neste orçamento sobram R$ 2.100,00 de lucro, que é 50,00% do preço.')
+    expect(screen.getByRole('status').textContent).toBe('Está bom: você quer pelo menos 40,00% de lucro.')
     expect(screen.getByRole('status').className).not.toContain('alerta')
   })
 
   it('sem mínimo definido: mostra o lucro, não avisa e convida a definir em Minha marcenaria', () => {
     mostrar(semMinimo)
-    expect(linhas()).toEqual(['Lucro depois de pagar tudo R$ 2.100,00', 'Isso é do preço de venda 50,00%'])
+    expect(screen.getByText(/Neste orçamento sobram/).textContent).toContain('R$ 2.100,00')
     expect(screen.queryByRole('status')).toBeNull()
     expect(screen.getByRole('link', { name: 'Minha marcenaria' }).getAttribute('href')).toBe('/minha-marcenaria')
   })

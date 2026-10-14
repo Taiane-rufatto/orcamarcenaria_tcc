@@ -147,6 +147,22 @@ Histórias de suporte à pesquisa; não geram funcionalidade para o usuário fin
 
 - **Dado** os dez casos definidos em `qualidade-e-testes.md`, **quando** executo a suíte, **então** todos apresentam diferença nula após o arredondamento e o resultado é registrado na tabela de evidências.
 
+### US19 — Ver como foi o mês
+**Como** marceneiro, **quero** ver quantos orçamentos enviei no mês, quantos foram aprovados e quanto isso rendeu, **para** saber se o meu trabalho de orçar está dando resultado.
+`RF47, RF48, D035`
+
+- **Dado** 5 orçamentos enviados em outubro, dos quais 2 aprovados (R$ 6.960,00 no total, R$ 2.928,90 de lucro), **quando** abro o Painel do mês de outubro, **então** vejo "2 de 5 foram aprovados (40,00%)" e o valor e o lucro dos aprovados.
+- **Dado** um mês sem orçamentos enviados, **quando** o abro, **então** a tela diz que não há orçamento enviado, sem números inventados.
+- **Dado** um orçamento enviado com validade vencida, **quando** abro o painel, **então** ele conta como vencido.
+
+### US18 — Saber de quem vem o preço e se ele está velho
+**Como** marceneiro, **quero** registrar de qual fornecedor vem o preço de cada material e ser lembrado quando o preço estiver velho, **para** não orçar com custo desatualizado.
+`RF16, RF49, RF50, RF51, RF52, D034`
+
+- **Dado** um material com fornecedor, **quando** troco o custo, **então** a data do preço renova e o histórico ganha uma linha com a data, o custo e o fornecedor.
+- **Dado** um material cujo preço não é atualizado há mais de 30 dias, **quando** abro a lista, **então** ele aparece com "Preço antigo" e o botão "Continua o mesmo", que renova a data sem mudar o custo.
+- **Dado** que mudei só o nome do material, **quando** abro o histórico, **então** não há linha nova.
+
 ### US17 — Saber quanto sobra de lucro e ser avisado quando for pouco
 **Como** marceneiro, **quero** ver quanto de lucro sobra em cada orçamento e ser avisado quando ficar abaixo do mínimo que aceito, **para** não fechar, sem perceber, um trabalho que não compensa.
 `RF44, RF45, RF46, D033`

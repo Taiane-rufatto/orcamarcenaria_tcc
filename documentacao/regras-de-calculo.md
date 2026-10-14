@@ -193,6 +193,12 @@ aviso      = percentual < lucro_minimo             (só se o mínimo foi informa
 
 **Exemplos (valores fictícios).** Preço R$ 4.200,00, custo R$ 2.100,00: lucro R$ 2.100,00 = 50,00%. Mínimo 40%: sem aviso; mínimo 60%: aviso. CT03 (preço R$ 2.760,00, custo R$ 1.931,10): lucro R$ 828,90 (827,61 + ajuste 1,29) = 30,03%. Baixando o markup para 20% no primeiro exemplo: preço R$ 2.520,00, lucro R$ 420,00 = 16,67%, com mínimo de 30% avisa. Casos de unidade em `backend/tests/unidade/equilibrio.test.ts`.
 
+### 6.1 Painel do mês e preço antigo (specs 019 e 020) — também fora do preço
+
+**RN14 — Resumo do mês.** Entram os orçamentos cuja data de emissão está no mês. Rascunho não é enviado. `enviados` = todos menos rascunhos. `valor aprovado` = soma dos preços finais dos aprovados; `lucro aprovado` = soma de (preço final − custo direto total) deles, orçamento a orçamento (RN12). `taxa de aprovação = arred2(aprovados ÷ enviados × 100)`; sem enviados, não há taxa. Só soma valores já gravados; não recalcula preço. Implementação em `backend/src/dominio/painel/painel.ts`. Exemplo: aprovados 4.200,00 (custo 2.100,00) e 2.760,00 (custo 1.931,10), mais recusado, vencido, enviado e rascunho → 5 enviados, valor 6.960,00, lucro 2.928,90 (42,08% do preço), taxa 40,00%.
+
+**RN15 — Preço antigo.** O custo de um material está antigo quando a última atualização ou confirmação foi há **mais de 30 dias** (30 dias ainda não é antigo). Só avisa; nunca muda custo nem orçamento. Implementação em `backend/src/dominio/catalogo/preco-antigo.ts`.
+
 ## 7. Fora destas regras (registrado, não implementado no MVP)
 
 - Aproveitamento de chapa / plano de corte (comprar chapa inteira e usar fração): tratado hoje pela quantidade fracionada informada pelo usuário (2,5 ch), sem otimização automática.
