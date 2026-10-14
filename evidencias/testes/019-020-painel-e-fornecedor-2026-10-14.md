@@ -8,7 +8,7 @@
 
 | Verificação | Resultado |
 |---|---|
-| Suíte do backend inteira | **20 arquivos, 209 testes passam**, incluindo os dez casos de cálculo (CT01–CT10) |
+| Suíte do backend inteira | **20 arquivos, 214 testes passam**, incluindo os dez casos de cálculo (CT01–CT10) |
 | `calculo.ts` (regra do preço) | sem alteração (`git diff` vazio) |
 | Suíte do frontend | **5 arquivos, 21 testes passam**; lint e build limpos |
 | Migrações `010` e `011` | aplicadas no banco local e no de teste, repetidas sem erro (idempotentes) |
@@ -32,16 +32,18 @@
 | Isolamento: fornecedor, confirmação e histórico de outra marcenaria (404 ou 400) | passa | mesmo arquivo |
 | Histórico: 1 linha ao criar; custo e fornecedor gravam; só o nome não grava; ordem decrescente | passa | mesmo arquivo |
 | Fornecedor inativo ou inexistente não pode ser escolhido (400) | passa | mesmo arquivo |
+| Fornecedor padrão: escolher marca só um; trocar muda; tirar deixa nenhum; inativar tira; inativo e de outra marcenaria dão 404 | passa | mesmo arquivo (5 testes) |
 | Preço antigo: 30 dias não é antigo, 31 é; "Continua o mesmo" renova a data, grava no histórico e mantém o custo | passa | `tests/unidade/preco-antigo.test.ts` + integração |
 
 ## Pendente: percurso de tela (a autora executa, local ou na VPS depois da publicação)
 
 1. **Menu:** conferir o menu com seis itens (Painel do mês, Orçamentos, Materiais, Serviços, Clientes, Fornecedores, Minha marcenaria) a 1366×768 e a 390 px (RNF05). O `HANDOFF.md` já alertava que um quinto item pede conferir a largura no celular.
 2. **Fornecedores:** cadastrar "Madeireira Central"; Enter cadastra e abre em branco; editar; inativar; reativar.
-3. **Materiais:** escolher o fornecedor no MDF; trocar o custo e abrir o painel de edição: o **Histórico de preço** mostra as linhas; mudar só o nome e ver que não aparece linha nova.
-4. **Preço antigo:** para ver o selo sem esperar 30 dias, usar um material antigo da base local ou pedir para o assistente envelhecer um material de teste; clicar "Continua o mesmo" e ver "hoje".
-5. **Painel do mês:** com orçamentos registrados e aprovados, abrir o painel; trocar o mês; abrir um mês vazio.
-6. Conferir que o preço final dos orçamentos não muda em nenhum passo.
+3. **Fornecedor padrão:** em Fornecedores, clicar "Usar como padrão" em um deles (aparece o selo "Padrão"); abrir "+ Novo material" e ver que ele já vem escolhido; inativar o padrão e ver o selo sumir.
+4. **Materiais:** escolher o fornecedor no MDF; trocar o custo e abrir o painel de edição: o **Histórico de preço** mostra as linhas; mudar só o nome e ver que não aparece linha nova.
+5. **Preço antigo:** para ver o selo sem esperar 30 dias, usar um material antigo da base local ou pedir para o assistente envelhecer um material de teste; clicar "Continua o mesmo" e ver "hoje".
+6. **Painel do mês:** com orçamentos registrados e aprovados, abrir o painel; trocar o mês; abrir um mês vazio.
+7. Conferir que o preço final dos orçamentos não muda em nenhum passo.
 
 ## Limites desta evidência
 

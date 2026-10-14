@@ -4,7 +4,8 @@ import { ErroHttp } from '../erros/erro-http'
 import { exigirAutenticacao } from '../middlewares/autenticacao'
 import { fornecedorSchema } from '../validacoes/fornecedores'
 import {
-  atualizarFornecedor, criarFornecedor, definirSituacaoFornecedor, listarFornecedores, type Situacao,
+  atualizarFornecedor, criarFornecedor, definirFornecedorPadrao, definirSituacaoFornecedor, listarFornecedores,
+  removerFornecedorPadrao, type Situacao,
 } from '../../infra/repositorios/fornecedor-repositorio'
 
 // Cadastro de fornecedores (RF49, spec 020), no mesmo formato de clientes e do catálogo.
@@ -49,6 +50,17 @@ rotasFornecedores.put('/fornecedores/:id', async (req, res) => {
   const fornecedor = await traduzirDuplicidade(atualizarFornecedor(lerId(req.params.id), marcenaria(res), fornecedorSchema.parse(req.body)))
   if (!fornecedor) throw new ErroHttp(404, 'Fornecedor não encontrado')
   res.json(fornecedor)
+})
+
+// Fornecedor padrão: já vem escolhido no material novo. Rota fixa antes das rotas com :id.
+rotasFornecedores.delete('/fornecedores/padrao', async (_req, res) => {
+  await removerFornecedorPadrao(marcenaria(res))
+  res.status(204).end()
+})
+
+rotasFornecedores.post('/fornecedores/:id/padrao', async (req, res) => {
+  if (!await definirFornecedorPadrao(lerId(req.params.id), marcenaria(res))) throw new ErroHttp(404, 'Fornecedor não encontrado ou inativo')
+  res.status(204).end()
 })
 
 // Não existe exclusão (AGENTS §5.2): DELETE apenas inativa; o fornecedor segue no histórico de preços.

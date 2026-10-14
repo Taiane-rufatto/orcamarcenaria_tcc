@@ -45,7 +45,7 @@ async function esperar<T>(resposta: Promise<Response>, status: number): Promise<
   return corpo as T
 }
 
-type Fornecedor = { id: string; nome: string; telefone: string | null; ativo: boolean }
+type Fornecedor = { id: string; nome: string; telefone: string | null; ativo: boolean; padrao: boolean }
 type Material = {
   id: string; nome: string; custo_unitario: string; fornecedor_id: string | null; fornecedor_nome: string | null
   dias_desde_atualizacao: number; preco_antigo: boolean
@@ -169,5 +169,59 @@ describe('fornecedor e histórico de preço do material (RF50–RF52)', () => {
     const { id } = await novoMaterial(a, {})
     await esperar(chamar(b, `/materiais/${id}/confirmar-preco`, 'POST'), 404)
     await esperar(chamar(b, `/materiais/${id}/historico`), 404)
+  })
+})
+
+describe('fornecedor padrão (RF53)', () => {
+  const padroes = async (token: string) =>
+    (await esperar<Fornecedor[]>(chamar(token, '/fornecedores?situacao=todos'), 200)).filter((f) => f.padrao).map((f) => f.nome)
+
+  it('ninguém é padrão no começo; escolher um marca só ele; escolher outro troca', async () => {
+    const token = await conta('padrao.troca')
+    const a = await novoFornecedor(token, 'Loja A')
+    const b = await novoFornecedor(token, 'Loja B')
+    expect(await padroes(token)).toEqual([])
+
+    await esperar(chamar(token, `/fornecedores/${a.id}/padrao`, 'POST'), 204)
+    expect(await padroes(token)).toEqual(['LOJA A'])
+    await esperar(chamar(token, `/fornecedores/${b.id}/padrao`, 'POST'), 204)
+    expect(await padroes(token)).toEqual(['LOJA B'])
+  })
+
+  it('tirar o padrão deixa sem nenhum', async () => {
+    const token = await conta('padrao.tirar')
+    const a = await novoFornecedor(token, 'Loja A')
+    await esperar(chamar(token, `/fornecedores/${a.id}/padrao`, 'POST'), 204)
+    await esperar(chamar(token, '/fornecedores/padrao', 'DELETE'), 204)
+    expect(await padroes(token)).toEqual([])
+  })
+
+  it('inativar o fornecedor padrão tira o padrão; fornecedor inativo não pode ser escolhido (404)', async () => {
+    const token = await conta('padrao.inativo')
+    const a = await novoFornecedor(token, 'Loja A')
+    await esperar(chamar(token, `/fornecedores/${a.id}/padrao`, 'POST'), 204)
+    await esperar(chamar(token, `/fornecedores/${a.id}`, 'DELETE'), 204)
+    expect(await padroes(token)).toEqual([])
+    await esperar(chamar(token, `/fornecedores/${a.id}/padrao`, 'POST'), 404)
+  })
+
+  it('o padrão de uma marcenaria não vale para outra, que também não pode escolher fornecedor alheio', async () => {
+    const a = await conta('padrao.iso.a')
+    const b = await conta('padrao.iso.b')
+    const fa = await novoFornecedor(a, 'Loja da A')
+    const fb = await novoFornecedor(b, 'Loja da B')
+    await esperar(chamar(a, `/fornecedores/${fa.id}/padrao`, 'POST'), 204)
+    expect(await padroes(b)).toEqual([])
+    await esperar(chamar(b, `/fornecedores/${fa.id}/padrao`, 'POST'), 404)
+    await esperar(chamar(a, `/fornecedores/${fb.id}/padrao`, 'POST'), 404)
+  })
+
+  it('escolher o padrão não mexe na configuração de lucro nem de equilíbrio', async () => {
+    const token = await conta('padrao.config')
+    await esperar(chamar(token, '/configuracoes/equilibrio', 'PUT', { lucroMinimo: '30' }), 200)
+    const a = await novoFornecedor(token, 'Loja A')
+    await esperar(chamar(token, `/fornecedores/${a.id}/padrao`, 'POST'), 204)
+    const config = await esperar<{ equilibrio: { lucroMinimo: string | null } }>(chamar(token, '/configuracoes'), 200)
+    expect(config.equilibrio.lucroMinimo).toBe('30.00')
   })
 })

@@ -8,10 +8,16 @@ export interface DadosFornecedor { nome: string; telefone?: string }
 const escaparCuringas = (texto: string) => texto.replace(/[\\%_]/g, '\\$&')
 
 export async function listarFornecedores(marcenariaId: string, busca = '', situacao: Situacao = 'ativos') {
-  const filtros = ['marcenaria_id = $1', `nome ILIKE $2 ESCAPE '\\'`]
+  const filtros = ['f.marcenaria_id = $1', `f.nome ILIKE $2 ESCAPE '\\'`]
   const valores: unknown[] = [marcenariaId, `%${escaparCuringas(busca.trim())}%`]
-  if (situacao !== 'todos') { filtros.push('ativo = $3'); valores.push(situacao === 'ativos') }
-  return (await pool.query(`SELECT * FROM fornecedor WHERE ${filtros.join(' AND ')} ORDER BY nome`, valores)).rows
+  if (situacao !== 'todos') { filtros.push('f.ativo = $3'); valores.push(situacao === 'ativos') }
+  // `padrao` marca o fornecedor padrão da marcenaria (já escolhido no material novo).
+  return (await pool.query(
+    `SELECT f.*, COALESCE(f.id = c.fornecedor_padrao_id, false) AS padrao
+     FROM fornecedor f LEFT JOIN configuracao c ON c.marcenaria_id = f.marcenaria_id
+     WHERE ${filtros.join(' AND ')} ORDER BY f.nome`,
+    valores,
+  )).rows
 }
 
 export async function criarFornecedor(marcenariaId: string, dados: DadosFornecedor) {
@@ -34,6 +40,10 @@ export async function atualizarFornecedor(id: string, marcenariaId: string, dado
 export async function definirSituacaoFornecedor(id: string, marcenariaId: string, ativo: boolean) {
   const resultado = await pool.query(
     'UPDATE fornecedor SET ativo=$3, atualizado_em=now() WHERE id=$1 AND marcenaria_id=$2 RETURNING id', [id, marcenariaId, ativo])
+  // Fornecedor inativo não pode ser o padrão: a escolha some junto.
+  if (!ativo && resultado.rowCount === 1) {
+    await pool.query('UPDATE configuracao SET fornecedor_padrao_id=NULL WHERE marcenaria_id=$1 AND fornecedor_padrao_id=$2', [marcenariaId, id])
+  }
   return resultado.rowCount === 1
 }
 
@@ -41,4 +51,19 @@ export async function definirSituacaoFornecedor(id: string, marcenariaId: string
 export async function fornecedorAtivoDaMarcenaria(id: string, marcenariaId: string) {
   const { rowCount } = await pool.query('SELECT 1 FROM fornecedor WHERE id=$1 AND marcenaria_id=$2 AND ativo', [id, marcenariaId])
   return rowCount === 1
+}
+
+// Escolhe o fornecedor padrão (só ativo, da própria marcenaria). A linha da configuração nasce se ainda não existir.
+export async function definirFornecedorPadrao(id: string, marcenariaId: string) {
+  if (!await fornecedorAtivoDaMarcenaria(id, marcenariaId)) return false
+  await pool.query(
+    `INSERT INTO configuracao (marcenaria_id, fornecedor_padrao_id) VALUES ($1,$2)
+     ON CONFLICT (marcenaria_id) DO UPDATE SET fornecedor_padrao_id=$2, atualizado_em=now()`,
+    [marcenariaId, id],
+  )
+  return true
+}
+
+export async function removerFornecedorPadrao(marcenariaId: string) {
+  await pool.query('UPDATE configuracao SET fornecedor_padrao_id=NULL, atualizado_em=now() WHERE marcenaria_id=$1', [marcenariaId])
 }

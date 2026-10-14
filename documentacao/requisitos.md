@@ -129,6 +129,7 @@ Versão 1.0 · Fonte canônica dos requisitos do projeto. Qualquer mudança aqui
 | RF50 | O sistema deve permitir indicar, em cada material, o fornecedor do preço (opcional) e exibi-lo na lista de materiais. | Desejável | — | 020 |
 | RF51 | O sistema deve mostrar há quantos dias o preço do material foi atualizado, destacar o preço sem atualização há mais de 30 dias (RN15) e permitir confirmar que ele continua o mesmo. | Desejável | — | 020 |
 | RF52 | O sistema deve registrar, a cada troca de custo ou de fornecedor e a cada confirmação, uma linha de histórico (data, custo, fornecedor) e exibir as últimas no cadastro do material. | Desejável | — | 020 |
+| RF53 | O sistema deve permitir escolher um fornecedor padrão (só ativo, um por marcenaria), que já vem marcado ao cadastrar material novo; inativar o fornecedor padrão tira o padrão. | Desejável | — | 020 |
 
 ---
 

@@ -25,6 +25,8 @@ export function Materiais() {
   // Spec 020: fornecedores ativos para escolher no material e histórico de preço do material aberto.
   const [fornecedores, setFornecedores] = useState<Fornecedor[]>([])
   const [historico, setHistorico] = useState<LinhaHistorico[]>([])
+  // RF53: material novo já vem com o fornecedor padrão marcado; a pessoa só troca quando for outro.
+  const padrao = fornecedores.find((f) => f.padrao)
   // Enter repetido não pode gravar o mesmo cadastro duas vezes enquanto o envio anterior não terminou.
   const salvando = useRef(false)
 
@@ -133,14 +135,14 @@ export function Materiais() {
     </section>
 
     <PainelLateral titulo={editando ? `Editar "${editando.nome}"` : 'Novo material'} aberto={painel !== null} aoFechar={() => setPainel(null)}>
-      <form key={editando?.id ?? 'novo'} onSubmit={salvar} className="formulario-painel">
+      <form key={editando?.id ?? `novo-${padrao?.id ?? ''}`} onSubmit={salvar} className="formulario-painel">
         <label>Nome<input name="nome" defaultValue={editando?.nome} required autoFocus /></label>
         <label>Unidade
           <select name="unidade" defaultValue={editando?.unidade ?? 'un'}>{UNIDADES.map((u) => <option key={u}>{u}</option>)}</select>
         </label>
         <label>Custo unitário (R$)<input name="custo" inputMode="decimal" placeholder="0,0000" defaultValue={editando?.custo_unitario.replace('.', ',')} required /></label>
         <label>Fornecedor (opcional)
-          <select name="fornecedorId" defaultValue={editando?.fornecedor_id ?? ''}>
+          <select name="fornecedorId" defaultValue={editando ? editando.fornecedor_id ?? '' : padrao?.id ?? ''}>
             <option value="">Sem fornecedor</option>
             {editando?.fornecedor_id && !fornecedores.some((f) => f.id === editando.fornecedor_id) &&
               <option value={editando.fornecedor_id}>{editando.fornecedor_nome} (inativo)</option>}

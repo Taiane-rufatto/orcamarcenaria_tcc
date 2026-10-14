@@ -13,6 +13,9 @@ CREATE TABLE IF NOT EXISTS fornecedor (
 
 ALTER TABLE material ADD COLUMN IF NOT EXISTS fornecedor_id UUID REFERENCES fornecedor(id);
 
+-- Fornecedor padrão da marcenaria: já vem escolhido no material novo. Opcional.
+ALTER TABLE configuracao ADD COLUMN IF NOT EXISTS fornecedor_padrao_id UUID REFERENCES fornecedor(id);
+
 -- Data em que o preço foi cadastrado, trocado ou confirmado. Materiais antigos partem da última atualização.
 ALTER TABLE material ADD COLUMN IF NOT EXISTS custo_atualizado_em TIMESTAMPTZ;
 UPDATE material SET custo_atualizado_em = atualizado_em WHERE custo_atualizado_em IS NULL;

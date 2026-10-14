@@ -162,6 +162,7 @@ Histórias de suporte à pesquisa; não geram funcionalidade para o usuário fin
 - **Dado** um material com fornecedor, **quando** troco o custo, **então** a data do preço renova e o histórico ganha uma linha com a data, o custo e o fornecedor.
 - **Dado** um material cujo preço não é atualizado há mais de 30 dias, **quando** abro a lista, **então** ele aparece com "Preço antigo" e o botão "Continua o mesmo", que renova a data sem mudar o custo.
 - **Dado** que mudei só o nome do material, **quando** abro o histórico, **então** não há linha nova.
+- **Dado** um fornecedor marcado como padrão, **quando** cadastro um material novo, **então** o fornecedor já vem escolhido e posso trocá-lo.
 
 ### US17 — Saber quanto sobra de lucro e ser avisado quando for pouco
 **Como** marceneiro, **quero** ver quanto de lucro sobra em cada orçamento e ser avisado quando ficar abaixo do mínimo que aceito, **para** não fechar, sem perceber, um trabalho que não compensa.

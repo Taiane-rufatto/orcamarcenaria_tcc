@@ -2,7 +2,8 @@ import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { FiltroLista, RodapeLista } from '../componentes/FiltroLista'
 import { PainelLateral } from '../componentes/PainelLateral'
 import {
-  criarFornecedor, editarFornecedor, inativarFornecedor, listarFornecedores, reativarFornecedor, type Fornecedor,
+  criarFornecedor, editarFornecedor, inativarFornecedor, listarFornecedores, reativarFornecedor, tirarPadrao, usarComoPadrao,
+  type Fornecedor,
 } from '../servicos/fornecedores'
 import type { Situacao } from '../servicos/catalogo'
 
@@ -61,6 +62,12 @@ export function Fornecedores() {
     catch (causa) { setErro(causa instanceof Error ? causa.message : 'Não foi possível inativar o fornecedor') }
   }
 
+  // RF53: o fornecedor padrão já vem escolhido ao cadastrar material novo.
+  async function alternarPadrao(fornecedor: Fornecedor) {
+    try { await (fornecedor.padrao ? tirarPadrao() : usarComoPadrao(fornecedor.id)); recarregar() }
+    catch (causa) { setErro(causa instanceof Error ? causa.message : 'Não foi possível mudar o fornecedor padrão') }
+  }
+
   async function reativar(fornecedor: Fornecedor) {
     try { await reativarFornecedor(fornecedor.id); recarregar() }
     catch (causa) { setErro(causa instanceof Error ? causa.message : 'Não foi possível reativar o fornecedor') }
@@ -70,7 +77,7 @@ export function Fornecedores() {
     <div className="cabecalho-pagina com-acao">
       <div>
         <h1>Fornecedores</h1>
-        <p>As lojas e madeireiras onde você compra. Em cada material você diz de quem vem o preço.</p>
+        <p>As lojas e madeireiras onde você compra. Em cada material você diz de quem vem o preço. O fornecedor padrão já vem marcado no material novo.</p>
       </div>
       <button onClick={() => abrir(null)}>+ Novo fornecedor</button>
     </div>
@@ -82,10 +89,11 @@ export function Fornecedores() {
       {fornecedores.length === 0 ? <p className="vazio">Nenhum fornecedor encontrado.</p> : <div className="tabela-rolagem"><table>
         <thead><tr><th>Fornecedor</th><th>Telefone</th><th>Situação</th><th><span className="sr-only">Ações</span></th></tr></thead>
         <tbody>{fornecedores.map((fornecedor) => <tr key={fornecedor.id} className={fornecedor.ativo ? '' : 'linha-inativa'}>
-          <td><b>{fornecedor.nome}</b></td>
+          <td><b>{fornecedor.nome}</b>{fornecedor.padrao && <> <span className="selo">Padrão</span></>}</td>
           <td data-label="Telefone" className="secundaria">{fornecedor.telefone ?? '—'}</td>
           <td data-label="Situação"><span className={fornecedor.ativo ? 'selo' : 'selo inativo'}>{fornecedor.ativo ? 'Ativo' : 'Inativo'}</span></td>
           <td className="acoes-linha">{fornecedor.ativo ? <>
+            <button className="discreto" onClick={() => alternarPadrao(fornecedor)}>{fornecedor.padrao ? 'Tirar padrão' : 'Usar como padrão'}</button>
             <button className="discreto" onClick={() => abrir(fornecedor)}>Editar</button>
             <button className="discreto inativar" onClick={() => inativar(fornecedor)}>Inativar</button>
           </> : <button className="discreto" onClick={() => reativar(fornecedor)}>Reativar</button>}</td>
