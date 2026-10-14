@@ -3,8 +3,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import type { Server } from 'node:http'
 import type { Orcamento } from '../../src/aplicacao/orcamento/orcamento'
 
-// Spec 018: meta mensal, horas produtivas, horas estimadas e aviso de equilíbrio.
-// Valores fictícios, os mesmos do teste de unidade: meta 8.000,00 ÷ 160 h = 50,00 por hora.
+// Spec 018: lucro mínimo e aviso de equilíbrio. Valores fictícios, os mesmos do teste de unidade.
 
 let servidor: Server
 let baseUrl: string
@@ -43,7 +42,7 @@ async function esperar<T>(resposta: Promise<Response>, status: number): Promise<
   return corpo as T
 }
 
-type Config = { equilibrio: { metaMensal: string | null; horasProdutivasMes: string | null; necessarioPorHora: string | null } }
+type Config = { equilibrio: { lucroMinimo: string | null } }
 
 async function conta(rotulo: string) {
   const r = await fetch(`${baseUrl}/auth/cadastro`, {
@@ -55,122 +54,100 @@ async function conta(rotulo: string) {
   return { token, clienteId: cliente.id }
 }
 
-// Itens simples e conferíveis à mão: material 1.200,00, serviço 800,00, adicional 100,00.
-// Markup 100% sem arredondamento: custo direto 2.100,00; preço final 4.200,00;
-// contribuição = 4.200,00 − 1.200,00 − 100,00 = 2.900,00 (o serviço não é descontado).
-async function orcamentoSimples(token: string, clienteId: string, extra: object = {}) {
-  let o = await esperar<Orcamento>(chamar(token, '/orcamentos', 'POST', {
-    clienteId, descricaoProjeto: 'Armário de cozinha', dataEmissao: '2026-10-01', modoLucro: 'markup', percentualLucro: '100', regraArredondamento: 'duas_casas', ...extra,
-  }), 201)
+const cabecalhoBase = (clienteId: string) => ({ clienteId, descricaoProjeto: 'Armário de cozinha', dataEmissao: '2026-10-01' })
+
+const criar = (token: string, clienteId: string) => esperar<Orcamento>(chamar(token, '/orcamentos', 'POST', {
+  ...cabecalhoBase(clienteId), modoLucro: 'markup', percentualLucro: '100', regraArredondamento: 'duas_casas',
+}), 201)
+
+// Material 1.200,00 + serviço 800,00 + adicional 100,00 = custo direto 2.100,00.
+// Markup 100% sem arredondamento: preço final 4.200,00; lucro 2.100,00 = 50,00% do preço.
+async function orcamentoSimples(token: string, clienteId: string) {
+  let o = await criar(token, clienteId)
   for (const [tipo, descricao, valorUnitario] of [['material', 'MDF', '1200'], ['servico', 'Montagem', '800']]) {
     o = await esperar<Orcamento>(chamar(token, `/orcamentos/${o.id}/itens`, 'POST', { origem: 'avulso', tipo, descricao, unidade: 'un', quantidade: '1', valorUnitario }), 201)
   }
   return esperar<Orcamento>(chamar(token, `/orcamentos/${o.id}/custos-adicionais`, 'POST', { descricao: 'Frete', valor: '100,00' }), 201)
 }
 
-const cabecalhoBase = (clienteId: string) => ({ clienteId, descricaoProjeto: 'Armário de cozinha', dataEmissao: '2026-10-01' })
-
-describe('configuração do equilíbrio (RF44)', () => {
+describe('lucro mínimo na configuração (RF44)', () => {
   it('exige autenticação', async () => {
     expect((await fetch(`${baseUrl}/configuracoes/equilibrio`, { method: 'PUT' })).status).toBe(401)
   })
 
-  it('conta nova não tem meta nem horas; gravar devolve o necessário por hora calculado pelo domínio', async () => {
+  it('conta nova não tem mínimo; gravar aceita vírgula e devolve com duas casas', async () => {
     const { token } = await conta('eq.config')
-    expect((await esperar<Config>(chamar(token, '/configuracoes'), 200)).equilibrio)
-      .toEqual({ metaMensal: null, horasProdutivasMes: null, necessarioPorHora: null })
-
-    const config = await esperar<Config>(chamar(token, '/configuracoes/equilibrio', 'PUT', { metaMensal: '8000,00', horasProdutivasMes: '160' }), 200)
-    expect(config.equilibrio).toEqual({ metaMensal: '8000.00', horasProdutivasMes: '160.00', necessarioPorHora: '50.00' })
+    expect((await esperar<Config>(chamar(token, '/configuracoes'), 200)).equilibrio).toEqual({ lucroMinimo: null })
+    expect((await esperar<Config>(chamar(token, '/configuracoes/equilibrio', 'PUT', { lucroMinimo: '25,5' }), 200)).equilibrio).toEqual({ lucroMinimo: '25.50' })
   })
 
-  it('vazio limpa os campos', async () => {
+  it('vazio limpa o mínimo', async () => {
     const { token } = await conta('eq.limpar')
-    await esperar(chamar(token, '/configuracoes/equilibrio', 'PUT', { metaMensal: '8000', horasProdutivasMes: '160' }), 200)
-    const config = await esperar<Config>(chamar(token, '/configuracoes/equilibrio', 'PUT', { metaMensal: '', horasProdutivasMes: '' }), 200)
-    expect(config.equilibrio).toEqual({ metaMensal: null, horasProdutivasMes: null, necessarioPorHora: null })
+    await esperar(chamar(token, '/configuracoes/equilibrio', 'PUT', { lucroMinimo: '30' }), 200)
+    expect((await esperar<Config>(chamar(token, '/configuracoes/equilibrio', 'PUT', { lucroMinimo: '' }), 200)).equilibrio).toEqual({ lucroMinimo: null })
   })
 
-  it.each([
-    ['meta zero', { metaMensal: '0', horasProdutivasMes: '160' }],
-    ['meta negativa', { metaMensal: '-5', horasProdutivasMes: '160' }],
-    ['meta com 3 casas', { metaMensal: '10,001', horasProdutivasMes: '160' }],
-    ['meta com letras', { metaMensal: 'abc', horasProdutivasMes: '160' }],
-    ['horas zero', { metaMensal: '8000', horasProdutivasMes: '0' }],
-    ['horas acima de um mês', { metaMensal: '8000', horasProdutivasMes: '745' }],
-    ['horas negativas', { metaMensal: '8000', horasProdutivasMes: '-1' }],
-  ])('recusa com 400: %s', async (_nome, corpo) => {
+  it.each(['0', '100', '150', '-5', 'abc', '10,001'])('recusa com 400: %s', async (valor) => {
     const { token } = await conta('eq.invalido')
-    await esperar(chamar(token, '/configuracoes/equilibrio', 'PUT', corpo), 400)
+    await esperar(chamar(token, '/configuracoes/equilibrio', 'PUT', { lucroMinimo: valor }), 400)
   })
 
-  it('a meta de uma marcenaria não aparece em outra', async () => {
+  it('o mínimo de uma marcenaria não aparece em outra', async () => {
     const a = await conta('eq.iso.a')
     const b = await conta('eq.iso.b')
-    await esperar(chamar(a.token, '/configuracoes/equilibrio', 'PUT', { metaMensal: '8000', horasProdutivasMes: '160' }), 200)
-    expect((await esperar<Config>(chamar(b.token, '/configuracoes'), 200)).equilibrio.metaMensal).toBeNull()
+    await esperar(chamar(a.token, '/configuracoes/equilibrio', 'PUT', { lucroMinimo: '30' }), 200)
+    expect((await esperar<Config>(chamar(b.token, '/configuracoes'), 200)).equilibrio.lucroMinimo).toBeNull()
   })
 })
 
 describe('aviso no orçamento (RF45, RF46)', () => {
-  it('sem horas estimadas não há aviso; o preço final é 4.200,00', async () => {
-    const { token, clienteId } = await conta('eq.semhoras')
-    await esperar(chamar(token, '/configuracoes/equilibrio', 'PUT', { metaMensal: '8000', horasProdutivasMes: '160' }), 200)
+  it('orçamento sem itens (preço zero) não tem aviso', async () => {
+    const { token, clienteId } = await conta('eq.vazio')
+    await esperar(chamar(token, '/configuracoes/equilibrio', 'PUT', { lucroMinimo: '30' }), 200)
+    expect((await criar(token, clienteId)).equilibrio).toBeNull()
+  })
+
+  it('sem mínimo informado mostra o lucro (2.100,00 = 50,00%) e nunca avisa', async () => {
+    const { token, clienteId } = await conta('eq.semminimo')
     const o = await orcamentoSimples(token, clienteId)
-    expect(o.horasEstimadas).toBeNull()
-    expect(o.equilibrio).toBeNull()
     expect(o.memorial).toMatchObject({ custoDiretoTotal: '2100.00', precoFinal: '4200.00' })
+    expect(o.equilibrio).toEqual({ lucro: '2100.00', percentualDoPreco: '50.00', lucroMinimo: null, abaixoDoMinimo: false })
   })
 
-  it('sem meta configurada não há aviso, mesmo com horas estimadas', async () => {
-    const { token, clienteId } = await conta('eq.semmeta')
-    const o = await orcamentoSimples(token, clienteId, { horasEstimadas: '40' })
-    expect(o.horasEstimadas).toBe('40.00')
-    expect(o.equilibrio).toBeNull()
+  it('mínimo de 40% não avisa; mínimo de 60% avisa; o preço continua 4.200,00 nos dois', async () => {
+    const { token, clienteId } = await conta('eq.minimo')
+    const base = await orcamentoSimples(token, clienteId)
+
+    await esperar(chamar(token, '/configuracoes/equilibrio', 'PUT', { lucroMinimo: '40' }), 200)
+    const ok = await esperar<Orcamento>(chamar(token, `/orcamentos/${base.id}`), 200)
+    expect(ok.equilibrio).toEqual({ lucro: '2100.00', percentualDoPreco: '50.00', lucroMinimo: '40.00', abaixoDoMinimo: false })
+
+    await esperar(chamar(token, '/configuracoes/equilibrio', 'PUT', { lucroMinimo: '60' }), 200)
+    const aviso = await esperar<Orcamento>(chamar(token, `/orcamentos/${base.id}`), 200)
+    expect(aviso.equilibrio).toMatchObject({ lucroMinimo: '60.00', abaixoDoMinimo: true })
+    expect(aviso.memorial).toEqual(base.memorial)
+    expect(aviso.memorial.precoFinal).toBe('4200.00')
   })
 
-  it('contribuição 2.900,00: com 40 h dá 72,50 por hora (acima de 50,00); com 80 h dá 36,25 (abaixo) e o preço não muda', async () => {
-    const { token, clienteId } = await conta('eq.aviso')
-    await esperar(chamar(token, '/configuracoes/equilibrio', 'PUT', { metaMensal: '8000', horasProdutivasMes: '160' }), 200)
-    const base = await orcamentoSimples(token, clienteId, { horasEstimadas: '40' })
-    expect(base.equilibrio).toEqual({ contribuicao: '2900.00', valorPorHora: '72.50', necessarioPorHora: '50.00', abaixoDoNecessario: false })
+  it('baixar o markup para ganhar o cliente: com 20% o preço cai para 2.520,00, o lucro vira 420,00 (16,67%) e avisa', async () => {
+    const { token, clienteId } = await conta('eq.baixar')
+    await esperar(chamar(token, '/configuracoes/equilibrio', 'PUT', { lucroMinimo: '30' }), 200)
+    const base = await orcamentoSimples(token, clienteId)
+    expect(base.equilibrio?.abaixoDoMinimo).toBe(false)
 
-    const editado = await esperar<Orcamento>(chamar(token, `/orcamentos/${base.id}`, 'PUT', { ...cabecalhoBase(clienteId), horasEstimadas: '80' }), 200)
-    expect(editado.horasEstimadas).toBe('80.00')
-    expect(editado.equilibrio).toEqual({ contribuicao: '2900.00', valorPorHora: '36.25', necessarioPorHora: '50.00', abaixoDoNecessario: true })
-    expect(editado.memorial.precoFinal).toBe('4200.00')
-    expect(editado.memorial).toEqual(base.memorial)
+    const baixo = await esperar<Orcamento>(chamar(token, `/orcamentos/${base.id}`, 'PUT', { ...cabecalhoBase(clienteId), percentualLucro: '20' }), 200)
+    expect(baixo.memorial.precoFinal).toBe('2520.00')
+    expect(baixo.equilibrio).toEqual({ lucro: '420.00', percentualDoPreco: '16.67', lucroMinimo: '30.00', abaixoDoMinimo: true })
   })
 
-  it('campo omitido na edição mantém as horas; vazio limpa e o aviso some', async () => {
-    const { token, clienteId } = await conta('eq.edicao')
-    await esperar(chamar(token, '/configuracoes/equilibrio', 'PUT', { metaMensal: '8000', horasProdutivasMes: '160' }), 200)
-    const base = await orcamentoSimples(token, clienteId, { horasEstimadas: '40' })
-
-    const mantido = await esperar<Orcamento>(chamar(token, `/orcamentos/${base.id}`, 'PUT', cabecalhoBase(clienteId)), 200)
-    expect(mantido.horasEstimadas).toBe('40.00')
-
-    const limpo = await esperar<Orcamento>(chamar(token, `/orcamentos/${base.id}`, 'PUT', { ...cabecalhoBase(clienteId), horasEstimadas: '' }), 200)
-    expect(limpo.horasEstimadas).toBeNull()
-    expect(limpo.equilibrio).toBeNull()
-  })
-
-  it.each(['0', '-3', 'abc', '10,555', '100000'])('recusa horas estimadas inválidas (%s) com 400', async (horas) => {
-    const { token, clienteId } = await conta('eq.horasinvalidas')
-    await esperar(chamar(token, '/orcamentos', 'POST', { ...cabecalhoBase(clienteId), horasEstimadas: horas }), 400)
-  })
-
-  it('o aviso acompanha a meta atual, inclusive no orçamento já registrado; as horas ficam travadas', async () => {
+  it('o orçamento registrado acompanha o mínimo atual', async () => {
     const { token, clienteId } = await conta('eq.registrado')
-    await esperar(chamar(token, '/configuracoes/equilibrio', 'PUT', { metaMensal: '8000', horasProdutivasMes: '160' }), 200)
-    const base = await orcamentoSimples(token, clienteId, { horasEstimadas: '40' })
-    const registrado = await esperar<Orcamento>(chamar(token, `/orcamentos/${base.id}/registrar`, 'POST'), 200)
-    expect(registrado.equilibrio?.abaixoDoNecessario).toBe(false)
+    const base = await orcamentoSimples(token, clienteId)
+    await esperar(chamar(token, `/orcamentos/${base.id}/registrar`, 'POST'), 200)
 
-    await esperar(chamar(token, '/configuracoes/equilibrio', 'PUT', { metaMensal: '16000', horasProdutivasMes: '160' }), 200)
+    await esperar(chamar(token, '/configuracoes/equilibrio', 'PUT', { lucroMinimo: '70' }), 200)
     const depois = await esperar<Orcamento>(chamar(token, `/orcamentos/${base.id}`), 200)
-    expect(depois.equilibrio).toMatchObject({ necessarioPorHora: '100.00', valorPorHora: '72.50', abaixoDoNecessario: true })
-
-    await esperar(chamar(token, `/orcamentos/${base.id}`, 'PUT', { ...cabecalhoBase(clienteId), horasEstimadas: '10' }), 409)
+    expect(depois.equilibrio).toMatchObject({ lucroMinimo: '70.00', abaixoDoMinimo: true })
+    expect(depois.memorial.precoFinal).toBe('4200.00')
   })
 })

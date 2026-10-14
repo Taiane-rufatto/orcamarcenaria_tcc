@@ -124,7 +124,6 @@ export function Orcamento() {
       modoLucro: String(dados.get('modoLucro')) as ModoLucro,
       percentualLucro: String(dados.get('percentualLucro')),
       regraArredondamento: String(dados.get('regraArredondamento')) as RegraArredondamento,
-      horasEstimadas: String(dados.get('horasEstimadas')), // vazio limpa; a API valida
       ...textos,
     }))
   }
@@ -184,7 +183,6 @@ export function Orcamento() {
             {orcamento.memorial.multiplicadorEquivalente && ` (${paraCampo(orcamento.memorial.multiplicadorEquivalente)}× o custo)`}
           </dd></div>
           <div><dt>Arredondamento</dt><dd>{REGRAS[orcamento.regraArredondamento]}</dd></div>
-          {orcamento.horasEstimadas && <div><dt>Horas estimadas</dt><dd>{exibirNumero(orcamento.horasEstimadas)} h</dd></div>}
           {orcamento.especificacoes && <div className="largo"><dt>Especificações</dt><dd className="texto-livre">{orcamento.especificacoes}</dd></div>}
           {orcamento.observacoes && <div className="largo"><dt>Observações</dt><dd className="texto-livre">{orcamento.observacoes}</dd></div>}
         </dl>
@@ -193,7 +191,7 @@ export function Orcamento() {
       {editavel && <section className="folha">
         <h2>Dados e lucro</h2>
         {/* key: após salvar, o formulário volta a mostrar o que a API gravou */}
-        <form key={JSON.stringify([orcamento.clienteId, orcamento.descricaoProjeto, orcamento.dataEmissao, orcamento.dataValidade, orcamento.modoLucro, orcamento.percentualLucro, orcamento.regraArredondamento, orcamento.horasEstimadas])} onSubmit={salvarCabecalho}>
+        <form key={JSON.stringify([orcamento.clienteId, orcamento.descricaoProjeto, orcamento.dataEmissao, orcamento.dataValidade, orcamento.modoLucro, orcamento.percentualLucro, orcamento.regraArredondamento])} onSubmit={salvarCabecalho}>
           <div className="campos">
             {/* D021: troca só para cliente ativo; o atual aparece mesmo se tiver sido inativado depois */}
             <CampoBusca rotulo="Cliente" name="clienteId" required valorInicial={orcamento.clienteId} opcoes={[
@@ -215,7 +213,6 @@ export function Orcamento() {
                 {Object.entries(REGRAS).map(([valor, rotulo]) => <option key={valor} value={valor}>{rotulo}</option>)}
               </select>
             </label>
-            <label>Horas estimadas de trabalho (opcional)<input name="horasEstimadas" inputMode="decimal" placeholder="Ex.: 40" defaultValue={orcamento.horasEstimadas ? paraCampo(orcamento.horasEstimadas) : ''} /></label>
           </div>
           {orcamento.memorial.multiplicadorEquivalente && <p className="ajuda" style={{ margin: '12px 0 0' }}>
             Markup de {paraCampo(orcamento.percentualLucro)}% = {paraCampo(orcamento.memorial.multiplicadorEquivalente)}× o custo. Para cobrar 2,5× o custo, informe 150%.
@@ -355,8 +352,8 @@ export function Orcamento() {
       </section>}
 
       <section className="folha">
-        <h2>Equilíbrio do mês</h2>
-        <AvisoEquilibrio equilibrio={orcamento.equilibrio} horasEstimadas={orcamento.horasEstimadas} />
+        <h2>Lucro de verdade</h2>
+        <AvisoEquilibrio equilibrio={orcamento.equilibrio} />
       </section>
 
       <section className="folha">

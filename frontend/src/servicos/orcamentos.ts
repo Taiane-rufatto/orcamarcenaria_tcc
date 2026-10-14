@@ -23,7 +23,6 @@ export type Cabecalho = {
   regraArredondamento?: RegraArredondamento
   especificacoes?: string // o que o cliente recebe, no alto do PDF (D022)
   observacoes?: string // prazo, pagamento etc., no fim do PDF (D022)
-  horasEstimadas?: string | null // spec 018: opcional; só alimenta o aviso de equilíbrio. Vazio limpa
 }
 
 export type Item = {
@@ -36,9 +35,9 @@ export type Memorial = {
   valorLucro: string; multiplicadorEquivalente: string | null; ajusteArredondamento: string; precoFinal: string
 }
 
-// Aviso de equilíbrio (spec 018): tudo calculado pela API; nulo quando falta meta ou horas.
+// Lucro real e aviso de lucro mínimo (spec 018): tudo calculado pela API; nulo em orçamento sem itens.
 export type Equilibrio = {
-  contribuicao: string; valorPorHora: string; necessarioPorHora: string; abaixoDoNecessario: boolean
+  lucro: string; percentualDoPreco: string; lucroMinimo: string | null; abaixoDoMinimo: boolean
 }
 
 export type Orcamento = Required<Cabecalho> & {

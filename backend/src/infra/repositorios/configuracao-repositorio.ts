@@ -12,10 +12,9 @@ export interface Padroes {
   validadeDias: number // dias, não é valor monetário
 }
 
-// Meta e horas do aviso de equilíbrio (spec 018). Opcionais: nulo = não informado.
+// Lucro mínimo do aviso de equilíbrio (spec 018): % do preço de venda. Opcional: nulo = não informado.
 export interface Equilibrio {
-  metaMensal: string | null
-  horasProdutivasMes: string | null
+  lucroMinimo: string | null
 }
 
 export interface DadosMarcenaria {
@@ -45,16 +44,15 @@ export async function lerPadroes(executor: Executor, marcenariaId: string): Prom
 
 // Só lê (não cria a linha): serve também às consultas de orçamento, que rodam em transação somente leitura.
 export async function lerEquilibrio(executor: Executor, marcenariaId: string): Promise<Equilibrio> {
-  const { rows } = await executor.query(
-    'SELECT meta_mensal, horas_produtivas_mes FROM configuracao WHERE marcenaria_id=$1', [marcenariaId])
-  return { metaMensal: rows[0]?.meta_mensal ?? null, horasProdutivasMes: rows[0]?.horas_produtivas_mes ?? null }
+  const { rows } = await executor.query('SELECT lucro_minimo FROM configuracao WHERE marcenaria_id=$1', [marcenariaId])
+  return { lucroMinimo: rows[0]?.lucro_minimo ?? null }
 }
 
 export async function gravarEquilibrio(marcenariaId: string, equilibrio: Equilibrio) {
   await pool.query(
-    `INSERT INTO configuracao (marcenaria_id, meta_mensal, horas_produtivas_mes) VALUES ($1,$2,$3)
-     ON CONFLICT (marcenaria_id) DO UPDATE SET meta_mensal=$2, horas_produtivas_mes=$3, atualizado_em=now()`,
-    [marcenariaId, equilibrio.metaMensal, equilibrio.horasProdutivasMes],
+    `INSERT INTO configuracao (marcenaria_id, lucro_minimo) VALUES ($1,$2)
+     ON CONFLICT (marcenaria_id) DO UPDATE SET lucro_minimo=$2, atualizado_em=now()`,
+    [marcenariaId, equilibrio.lucroMinimo],
   )
 }
 

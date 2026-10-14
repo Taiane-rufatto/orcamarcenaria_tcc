@@ -2,7 +2,6 @@ import { Router, type Response } from 'express'
 import { exigirAutenticacao } from '../middlewares/autenticacao'
 import { dadosMarcenariaSchema, equilibrioSchema, padroesSchema } from '../validacoes/configuracoes'
 import { multiplicadorEquivalente, validarLucro } from '../../dominio/orcamento/calculo'
-import { necessarioPorHora } from '../../dominio/equilibrio/equilibrio'
 import { pool } from '../../infra/banco/pool'
 import {
   gravarDadosMarcenaria, gravarEquilibrio, gravarPadroes, lerDadosMarcenaria, lerEquilibrio, lerPadroes,
@@ -20,8 +19,7 @@ async function responder(marcenariaId: string) {
   const equilibrio = await lerEquilibrio(pool, marcenariaId)
   return {
     marcenaria: dados,
-    // Spec 018. O valor necessário por hora vem do domínio; a tela não calcula.
-    equilibrio: { ...equilibrio, necessarioPorHora: necessarioPorHora(equilibrio) },
+    equilibrio, // spec 018: lucro mínimo (opcional)
     // O multiplicador vem do domínio, como no orçamento (D018): a tela não calcula.
     padroes: { ...padroes, multiplicadorEquivalente: multiplicadorEquivalente(padroes.modoLucro, padroes.percentualLucro) },
   }

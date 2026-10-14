@@ -1,70 +1,52 @@
 import DecimalBase from 'decimal.js'
 
-// Aviso de equilíbrio (spec 018, RN12 e RN13): compara o que um orçamento rende por hora de trabalho
-// com o que a marcenaria precisa por hora para fechar o mês. NÃO faz parte do cálculo do preço
+// Aviso de lucro mínimo (spec 018, RN12 e RN13): mostra quanto do preço de venda é lucro de verdade
+// e avisa quando fica abaixo do mínimo que o marceneiro aceita. NÃO faz parte do cálculo do preço
 // (calculo.ts): só lê valores já calculados e nunca altera o preço.
 // Fonte das regras: documentacao/regras-de-calculo.md §6. Valores entram e saem como texto decimal.
 
 const Decimal = DecimalBase.clone({ precision: 50, rounding: DecimalBase.ROUND_HALF_UP })
-type Decimal = InstanceType<typeof Decimal>
+const CEM = new Decimal(100)
 
-const arred2 = (valor: Decimal) => valor.toDecimalPlaces(2, Decimal.ROUND_HALF_UP)
-
-// Texto decimal simples e positivo; o resto (vazio, nulo, zero, "NaN", "1e3") significa "não informado".
-function lerPositivo(texto: string | null | undefined): Decimal | null {
-  if (texto === null || texto === undefined) return null
-  if (!/^\d+(\.\d{1,2})?$/.test(texto)) return null
+// Lucro mínimo em pontos percentuais do preço de venda: maior que zero e menor que 100.
+// Qualquer outra coisa (vazio, nulo, zero, "NaN", "1e3") vale como "não informado".
+function lerMinimo(texto: string | null | undefined): InstanceType<typeof Decimal> | null {
+  if (texto === null || texto === undefined || !/^\d{1,2}(\.\d{1,2})?$/.test(texto)) return null
   const valor = new Decimal(texto)
-  return valor.gt(0) ? valor : null
+  return valor.gt(0) && valor.lt(CEM) ? valor : null
 }
 
-export interface ConfiguracaoEquilibrio {
-  metaMensal: string | null // quanto precisa sobrar por mês, depois de pagar os materiais
-  horasProdutivasMes: string | null
-}
-
-// RN12: valor necessário por hora = meta mensal ÷ horas produtivas por mês.
-// Sem meta ou sem horas produtivas, não há como calcular: devolve null.
-export function necessarioPorHora(config: ConfiguracaoEquilibrio): string | null {
-  const meta = lerPositivo(config.metaMensal)
-  const horas = lerPositivo(config.horasProdutivasMes)
-  if (!meta || !horas) return null
-  return arred2(meta.div(horas)).toFixed(2)
-}
-
-export interface EntradaEquilibrio extends ConfiguracaoEquilibrio {
-  horasEstimadas: string | null
+export interface EntradaEquilibrio {
+  lucroMinimo: string | null // % do preço de venda; opcional
   precoFinal: string
-  subtotalMateriais: string
-  totalAdicionais: string
+  custoDiretoTotal: string
 }
 
 export interface ResultadoEquilibrio {
-  contribuicao: string // preço final − materiais − custos adicionais
-  valorPorHora: string // contribuição ÷ horas estimadas
-  necessarioPorHora: string
-  abaixoDoNecessario: boolean
+  lucro: string // preço final − custo direto total (o que sobra depois de pagar tudo)
+  percentualDoPreco: string // lucro ÷ preço final × 100, duas casas
+  lucroMinimo: string | null
+  abaixoDoMinimo: boolean
 }
 
-// RN13: valor do orçamento por hora = (preço final − materiais − custos adicionais) ÷ horas estimadas.
-// Os serviços não são descontados: o trabalho do marceneiro é o que a meta precisa remunerar.
-// A comparação usa os valores já arredondados a duas casas, os mesmos que a tela mostra, para o aviso
-// nunca contradizer o que a pessoa lê. Sem meta, sem horas produtivas ou sem horas estimadas devolve
-// null: nada é inventado e nenhum aviso aparece.
+// RN12: lucro real = preço final − custo direto total (materiais, serviços e custos adicionais).
+// Inclui o ajuste de arredondamento, porque ele também fica com a marcenaria.
+// RN13: percentual do preço = arred2(lucro ÷ preço final × 100). É a margem de verdade do orçamento
+// e vale para markup e para margem. Aviso quando o percentual (já arredondado, como a tela mostra)
+// é menor que o mínimo informado. Sem mínimo, só informa o lucro e nunca avisa.
+// Preço zero (orçamento sem itens) não tem percentual: devolve null.
 export function avaliarEquilibrio(entrada: EntradaEquilibrio): ResultadoEquilibrio | null {
-  const necessario = necessarioPorHora(entrada)
-  const horasEstimadas = lerPositivo(entrada.horasEstimadas)
-  if (necessario === null || !horasEstimadas) return null
+  const preco = new Decimal(entrada.precoFinal)
+  if (!preco.gt(0)) return null
 
-  const contribuicao = new Decimal(entrada.precoFinal)
-    .minus(entrada.subtotalMateriais)
-    .minus(entrada.totalAdicionais)
-  const valorPorHora = arred2(contribuicao.div(horasEstimadas))
+  const lucro = preco.minus(entrada.custoDiretoTotal)
+  const percentual = lucro.div(preco).times(CEM).toDecimalPlaces(2, Decimal.ROUND_HALF_UP)
+  const minimo = lerMinimo(entrada.lucroMinimo)
 
   return {
-    contribuicao: contribuicao.toFixed(2),
-    valorPorHora: valorPorHora.toFixed(2),
-    necessarioPorHora: necessario,
-    abaixoDoNecessario: valorPorHora.lt(necessario),
+    lucro: lucro.toFixed(2),
+    percentualDoPreco: percentual.toFixed(2),
+    lucroMinimo: minimo ? minimo.toFixed(2) : null,
+    abaixoDoMinimo: minimo ? percentual.lt(minimo) : false,
   }
 }

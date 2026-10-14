@@ -2,7 +2,7 @@
 
 **Atualizado em:** 2026-10-08 · Última sessão: 014 e 015 integrados e publicados na VPS.
 
-> **Próxima sessão (2026-10-13):** o foco passou a ser a orientação de 08/10: 016 (análise), 017 (diagnóstico de segurança) e 018 (diferencial, em implementação; falta conferência da autora e percurso de tela). Ver `ESTADO_ATUAL.md`. A migração `010` ainda não foi aplicada na VPS.
+> **Próxima sessão (2026-10-13):** o foco passou a ser a orientação de 08/10: 016 (análise), 017 (diagnóstico de segurança) e 018 (diferencial: lucro de verdade e lucro mínimo; falta conferência da autora e percurso de tela). Ver `ESTADO_ATUAL.md`. A migração `010` ainda não foi aplicada na VPS.
 >
 > **Antes disso:** 014 e 015 estão integrados em `main` e publicados na VPS (`186396d`). Antes de mandar o link ao orientador: conferir o CT03 no site e revisar a base publicada (dados fictícios, RNF15). O 009 (avaliação de uso) volta quando o termo estiver assinado (material em `evidencias/avaliacao-de-uso/`).
 

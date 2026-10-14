@@ -21,12 +21,6 @@ const valorCustoAdicional = decimal(10, 2, 'Informe o valor do custo adicional c
 // NUMERIC(5,2): até 999,99%. O limite da margem (< 100) é conferido pelo domínio.
 export const percentualLucro = decimal(3, 2, 'Informe o percentual de lucro com até 2 casas decimais (máximo 999,99)')
 
-// Horas de trabalho (spec 018): maior que zero, até 2 casas. Vazio vale como "não informado" (nulo).
-export const horas = (mensagem: string) => z.preprocess(
-  (v) => (typeof v === 'string' && v.trim() === '' ? null : v),
-  decimal(5, 2, mensagem).refine(maiorQueZero, mensagem).nullable(),
-)
-
 const texto = (mensagem: string) => z.string(mensagem).trim().min(1, mensagem)
 const data = z.iso.date('Informe uma data válida')
 const tipo = z.enum(['material', 'servico'], 'Informe se o item é material ou serviço')
@@ -44,7 +38,6 @@ export const cabecalhoSchema = z
     regraArredondamento: z.enum(['duas_casas', 'real_inteiro', 'dezena'], 'Selecione a regra de arredondamento').optional(),
     especificacoes: z.string().trim().max(4000, 'As especificações devem ter até 4.000 caracteres').optional(),
     observacoes: z.string().trim().max(1000, 'As observações devem ter até 1.000 caracteres').optional(),
-    horasEstimadas: horas('Informe as horas estimadas com até 2 casas decimais, maiores que zero').optional(),
   })
 
 export const itemSchema = z.discriminatedUnion('origem', [

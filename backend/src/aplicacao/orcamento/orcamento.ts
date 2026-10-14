@@ -76,14 +76,11 @@ async function montarResposta(c: PoolClient, marcenariaId: string, id: string) {
     regraArredondamento: o.regra_arredondamento,
     especificacoes: (o.especificacoes ?? '') as string,
     observacoes: (o.observacoes ?? '') as string,
-    horasEstimadas: (o.horas_estimadas ?? null) as string | null,
-    // Aviso de equilíbrio (spec 018): só compara valores já calculados, nunca altera o preço. Nulo = sem aviso.
+    // Aviso de lucro mínimo (spec 018): só compara valores já calculados, nunca altera o preço. Nulo = orçamento sem itens.
     equilibrio: avaliarEquilibrio({
-      ...config,
-      horasEstimadas: o.horas_estimadas ?? null,
+      lucroMinimo: config.lucroMinimo,
       precoFinal: o.preco_final ?? '0',
-      subtotalMateriais: o.subtotal_materiais ?? '0',
-      totalAdicionais: o.total_adicionais ?? '0',
+      custoDiretoTotal: o.custo_direto_total ?? '0',
     }),
     itens: itens.map((i) => ({
       id: i.id, tipo: i.tipo, materialId: i.material_id, servicoId: i.servico_id,
@@ -141,7 +138,6 @@ export function criarOrcamento(marcenariaId: string, entrada: EntradaCabecalho):
       dataValidade: entrada.dataValidade ?? await repositorio.somarDias(c, entrada.dataEmissao, padroes.validadeDias),
       especificacoes: entrada.especificacoes ?? '',
       observacoes: entrada.observacoes ?? '',
-      horasEstimadas: entrada.horasEstimadas ?? null,
     }
     exigirValidadeCoerente(cabecalho)
     const id = await repositorio.inserirOrcamento(c, marcenariaId, cabecalho)
@@ -176,7 +172,6 @@ export const alterarCabecalho = (marcenariaId: string, id: string, entrada: Entr
       regraArredondamento: entrada.regraArredondamento ?? o.regra_arredondamento,
       especificacoes: entrada.especificacoes ?? o.especificacoes ?? '',
       observacoes: entrada.observacoes ?? o.observacoes ?? '',
-      horasEstimadas: entrada.horasEstimadas === undefined ? o.horas_estimadas ?? null : entrada.horasEstimadas,
     }
     exigirValidadeCoerente(cabecalho)
     return repositorio.atualizarCabecalho(c, id, marcenariaId, cabecalho)

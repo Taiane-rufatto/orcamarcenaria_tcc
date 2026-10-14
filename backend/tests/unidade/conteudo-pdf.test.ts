@@ -28,8 +28,8 @@ const PROIBIDOS = [
   '724,75', '37,05', '207,00', '106,80', '360,00', '330,00',
   '1.075,60', '690,00', '165,50', '1.931,10', '2.758,71', '827,61', '1,29', '30,00',
   '%', 'markup', 'margem', 'lucro', 'custo', 'multiplic', 'subtotal',
-  // Spec 018: o aviso de equilíbrio e as horas estimadas são internos e nunca saem para o cliente.
-  'equilíbrio', 'horas estimadas', 'por hora', 'precisa', 'meta do mês',
+  // Spec 018: o lucro real e o aviso de lucro mínimo são internos e nunca saem para o cliente.
+  'lucro mínimo', 'do preço', 'abaixo do mínimo', 'equilíbrio',
 ]
 const textoCompleto = (mostrarItens: boolean) => JSON.stringify(montarConteudoPdf(ct03, mostrarItens)).toLowerCase()
 

@@ -1,95 +1,55 @@
 import { describe, expect, it } from 'vitest'
-import { avaliarEquilibrio, necessarioPorHora, type EntradaEquilibrio } from '../../src/dominio/equilibrio/equilibrio'
+import { avaliarEquilibrio, type EntradaEquilibrio } from '../../src/dominio/equilibrio/equilibrio'
 
 // Valores fictícios, conferíveis à mão (spec 018):
-// meta R$ 8.000,00 por mês ÷ 160 h = R$ 50,00 por hora necessários.
-// Orçamento: preço final 2.760,00 − materiais 1.200,00 − adicionais 100,00 = contribuição 1.460,00.
-const base: EntradaEquilibrio = {
-  metaMensal: '8000.00',
-  horasProdutivasMes: '160',
-  horasEstimadas: '40',
-  precoFinal: '2760.00',
-  subtotalMateriais: '1200.00',
-  totalAdicionais: '100.00',
-}
+// preço final 4.200,00 e custo direto 2.100,00 → lucro 2.100,00 → 50,00% do preço.
+const base: EntradaEquilibrio = { lucroMinimo: '40', precoFinal: '4200.00', custoDiretoTotal: '2100.00' }
 
-describe('RN12 — valor necessário por hora', () => {
-  it('divide a meta mensal pelas horas produtivas', () => {
-    expect(necessarioPorHora(base)).toBe('50.00')
+describe('RN12 e RN13 — lucro real e percentual do preço', () => {
+  it('acima do mínimo: lucro 2.100,00 = 50,00% do preço (mínimo 40%) → não avisa', () => {
+    expect(avaliarEquilibrio(base)).toEqual({ lucro: '2100.00', percentualDoPreco: '50.00', lucroMinimo: '40.00', abaixoDoMinimo: false })
   })
 
-  it('arredonda para cima na terceira casa (10000,00 ÷ 176 = 56,8181…)', () => {
-    expect(necessarioPorHora({ metaMensal: '10000.00', horasProdutivasMes: '176' })).toBe('56.82')
+  it('abaixo do mínimo: 50,00% com mínimo de 60% → avisa', () => {
+    expect(avaliarEquilibrio({ ...base, lucroMinimo: '60' })).toMatchObject({ percentualDoPreco: '50.00', lucroMinimo: '60.00', abaixoDoMinimo: true })
   })
 
-  it.each([
-    ['sem meta', { metaMensal: null, horasProdutivasMes: '160' }],
-    ['sem horas produtivas', { metaMensal: '8000.00', horasProdutivasMes: null }],
-    ['meta zero', { metaMensal: '0', horasProdutivasMes: '160' }],
-    ['horas produtivas zero', { metaMensal: '8000.00', horasProdutivasMes: '0' }],
-    ['texto inválido', { metaMensal: '1e3', horasProdutivasMes: 'abc' }],
-  ])('devolve nulo quando falta dado: %s', (_nome, config) => {
-    expect(necessarioPorHora(config)).toBeNull()
-  })
-})
-
-describe('RN13 — valor do orçamento por hora e aviso', () => {
-  it('abaixo do necessário: 1.460,00 ÷ 40 h = R$ 36,50 por hora (< 50,00) → avisa', () => {
-    expect(avaliarEquilibrio(base)).toEqual({
-      contribuicao: '1460.00',
-      valorPorHora: '36.50',
-      necessarioPorHora: '50.00',
-      abaixoDoNecessario: true,
-    })
+  it('exatamente no mínimo: 1.000,00 de preço com custo 700,00 = 30,00% (mínimo 30%) → não avisa', () => {
+    const resultado = avaliarEquilibrio({ lucroMinimo: '30', precoFinal: '1000.00', custoDiretoTotal: '700.00' })
+    expect(resultado).toMatchObject({ lucro: '300.00', percentualDoPreco: '30.00', abaixoDoMinimo: false })
   })
 
-  it('acima do necessário: 1.460,00 ÷ 25 h = R$ 58,40 por hora (≥ 50,00) → não avisa', () => {
-    expect(avaliarEquilibrio({ ...base, horasEstimadas: '25' })).toEqual({
-      contribuicao: '1460.00',
-      valorPorHora: '58.40',
-      necessarioPorHora: '50.00',
-      abaixoDoNecessario: false,
-    })
+  it('compara o percentual já arredondado, o mesmo que a tela mostra: 1/3 = 33,33% → mínimo 33,34 avisa, 33,33 não', () => {
+    const entrada = { precoFinal: '3.00', custoDiretoTotal: '2.00' }
+    expect(avaliarEquilibrio({ ...entrada, lucroMinimo: '33.34' })).toMatchObject({ percentualDoPreco: '33.33', abaixoDoMinimo: true })
+    expect(avaliarEquilibrio({ ...entrada, lucroMinimo: '33.33' })).toMatchObject({ percentualDoPreco: '33.33', abaixoDoMinimo: false })
   })
 
-  it('exatamente igual à meta: 1.460,00 ÷ 29,2 h = R$ 50,00 por hora → não avisa', () => {
-    const resultado = avaliarEquilibrio({ ...base, horasEstimadas: '29.2' })
-    expect(resultado?.valorPorHora).toBe('50.00')
-    expect(resultado?.abaixoDoNecessario).toBe(false)
+  it('arredonda meio para cima: lucro 0,01 em preço de 8,00 = 0,125% → 0,13%', () => {
+    expect(avaliarEquilibrio({ lucroMinimo: null, precoFinal: '8.00', custoDiretoTotal: '7.99' })?.percentualDoPreco).toBe('0.13')
+    expect(avaliarEquilibrio({ lucroMinimo: null, precoFinal: '8.00', custoDiretoTotal: '7.00' })?.percentualDoPreco).toBe('12.50')
   })
 
-  it('compara os valores já arredondados: 1.459,88 ÷ 29,2 = 49,9958… vira 50,00 e não avisa', () => {
-    const resultado = avaliarEquilibrio({ ...base, precoFinal: '2759.88', horasEstimadas: '29.2' })
-    expect(resultado?.valorPorHora).toBe('50.00')
-    expect(resultado?.abaixoDoNecessario).toBe(false)
+  it('CT03 (preço 2.760,00, custo 1.931,10): lucro 828,90 (827,61 + ajuste 1,29) = 30,03% do preço', () => {
+    expect(avaliarEquilibrio({ lucroMinimo: '30', precoFinal: '2760.00', custoDiretoTotal: '1931.10' }))
+      .toEqual({ lucro: '828.90', percentualDoPreco: '30.03', lucroMinimo: '30.00', abaixoDoMinimo: false })
   })
 
-  it('arredonda meio para cima: 1,00 ÷ 8 h = 0,125 → R$ 0,13', () => {
-    const resultado = avaliarEquilibrio({
-      ...base, precoFinal: '1.00', subtotalMateriais: '0.00', totalAdicionais: '0.00', horasEstimadas: '8',
-    })
-    expect(resultado?.valorPorHora).toBe('0.13')
+  it('sem mínimo informado: mostra o lucro e nunca avisa', () => {
+    expect(avaliarEquilibrio({ ...base, lucroMinimo: null })).toEqual({ lucro: '2100.00', percentualDoPreco: '50.00', lucroMinimo: null, abaixoDoMinimo: false })
   })
 
-  it('serviços não são descontados: só materiais e custos adicionais saem do preço', () => {
-    // O preço 2.760,00 inclui serviços; eles não aparecem na entrada e a contribuição continua 1.460,00.
-    expect(avaliarEquilibrio(base)?.contribuicao).toBe('1460.00')
+  it.each(['0', '100', '150', '-5', 'abc', '1e1', '', '10.123'])('mínimo inválido (%s) vale como não informado', (minimo) => {
+    expect(avaliarEquilibrio({ ...base, lucroMinimo: minimo })).toMatchObject({ lucroMinimo: null, abaixoDoMinimo: false })
   })
 
-  it('contribuição negativa (materiais acima do preço) é calculada e avisa', () => {
-    const resultado = avaliarEquilibrio({
-      ...base, precoFinal: '100.00', subtotalMateriais: '150.00', totalAdicionais: '0.00', horasEstimadas: '10',
-    })
-    expect(resultado).toMatchObject({ contribuicao: '-50.00', valorPorHora: '-5.00', abaixoDoNecessario: true })
+  it('lucro negativo (custo acima do preço) é calculado e avisa', () => {
+    expect(avaliarEquilibrio({ lucroMinimo: '10', precoFinal: '100.00', custoDiretoTotal: '150.00' }))
+      .toEqual({ lucro: '-50.00', percentualDoPreco: '-50.00', lucroMinimo: '10.00', abaixoDoMinimo: true })
   })
 
-  it.each([
-    ['sem horas estimadas', { horasEstimadas: null }],
-    ['horas estimadas zero', { horasEstimadas: '0' }],
-    ['sem meta', { metaMensal: null }],
-    ['sem horas produtivas', { horasProdutivasMes: null }],
-  ])('não calcula e não avisa: %s', (_nome, mudanca) => {
-    expect(avaliarEquilibrio({ ...base, ...mudanca })).toBeNull()
+  it('preço zero (orçamento sem itens): não calcula', () => {
+    expect(avaliarEquilibrio({ lucroMinimo: '30', precoFinal: '0.00', custoDiretoTotal: '0.00' })).toBeNull()
   })
 
   it('não devolve nem altera o preço final', () => {

@@ -11,9 +11,9 @@ Prazo: defesa em novembro/2026. Faltam cerca de três a quatro semanas, com a ú
 
 ## Recomendação em uma frase
 
-Fazer agora: o **diagnóstico de segurança** e, em seguida, **o diferencial em versão enxuta** (meta mensal e horas disponíveis, aviso no orçamento quando o valor por hora fica abaixo do necessário, e painel do mês com taxa de conversão). Depois os **ajustes de uso**, o **CPF/CNPJ** e, se sobrar prazo, **fornecedor com histórico de preço** e **duplicar**. Deixar para o TCC II: relatórios completos, estados de produção, lista de compras e integrações.
+Fazer agora: o **diagnóstico de segurança** e, em seguida, **o diferencial em versão enxuta** (lucro de verdade e lucro mínimo com aviso no orçamento, e painel do mês com taxa de conversão). Depois os **ajustes de uso**, o **CPF/CNPJ** e, se sobrar prazo, **fornecedor com histórico de preço** e **duplicar**. Deixar para o TCC II: relatórios completos, estados de produção, lista de compras e integrações.
 
-> **Decisão da autora (2026-10-13):** o diferencial (ponto de equilíbrio, S7) entra no TCC I, com as horas vindo de um **campo no orçamento** e escopo de **aviso no orçamento + painel do mês**.
+> **Decisão da autora (2026-10-13):** o diferencial (ponto de equilíbrio, S7) entra no TCC I, primeiro com meta mensal e horas, **trocada em 2026-10-13 por lucro de verdade e lucro mínimo** (D033), por ser mais simples e usada na prática.
 
 ## Análise por sugestão
 
@@ -27,7 +27,7 @@ Tamanho: P = menos de um dia, M = um a dois dias, G = mais de dois dias.
 | S4 | Histórico de atualização de custo (data, valor, fornecedor) | **RF16, hoje pós-TCC** | M | Não: o orçamento já guarda o valor da época (RN08) | **Agora, se houver prazo** (021). Promover o RF16; registrar a decisão em `decisoes.md` | |
 | S5 | Alerta de preço antigo | S4 | P | Não | **Agora, se houver prazo** (021), com um prazo fixo configurável (padrão 30 dias). Os prazos da conversa eram só exemplos | |
 | S6 | Lista interna de compras por fornecedor | RF41 | M | Não | **TCC II.** Depende do S3 estar em uso. O PDF do cliente continua sem custo (RF42) | |
-| S7 | Ponto de equilíbrio e alerta de orçamento abaixo do necessário | novo | G | Não altera o preço; só compara. A conta fica no domínio (decimal.js) | **Agora (018 e 019), versão enxuta.** Entradas novas: meta mensal e horas disponíveis (configuração) e horas estimadas (campo opcional no orçamento). Saída: aviso se o valor por hora está abaixo do necessário e painel do mês. **Decisão da autora** | **Aceito** |
+| S7 | Ponto de equilíbrio e alerta de orçamento abaixo do necessário | novo | M | Não altera o preço; só compara. A conta fica no domínio (decimal.js) | **Agora (018), em outra forma.** A primeira versão (meta mensal e horas) foi trocada por **lucro de verdade e lucro mínimo**, mais simples e usada na prática (ver D033). O que passar disso fica para o TCC II | **Aceito, revisado** |
 | S8 | Relatórios (variação de preço, materiais frequentes) | S4 | M a G | Não | **TCC II**, salvo o painel do mês (019). Com o S4 gravando histórico, os dados começam a se acumular | |
 | S9 | Estados "em produção" e "entregue" | RF34–RF39, D020 | M | Não | **TCC II.** Mexe nas situações e na RN09. **Já agora:** conversão com as situações existentes, dentro do painel do mês (019) | |
 | S10 | Duplicar orçamento | **RF40, pós-TCC** | M | Não: recalcula pelo mesmo domínio (D019) | **Agora, se sobrar prazo** (022). O desenho já está em `roadmap.md` §5.1. É o que de fato resolve o "não posso editar depois de enviar" | |
@@ -46,7 +46,7 @@ Tamanho: P = menos de um dia, M = um a dois dias, G = mais de dois dias.
 | # | Incremento | Itens | Tamanho | Observação |
 |---|---|---|---|---|
 | 017 | Diagnóstico de segurança | — | M | Só relatório e lista de pontos de atenção, como pediu o professor. A autora decide depois quais corrigir. Rodar com o modelo mais capaz disponível |
-| 018 | **Meta mensal e aviso de equilíbrio no orçamento** (diferencial, parte 1) | S7 | G | Configuração: meta mensal e horas disponíveis. Orçamento: campo opcional "horas estimadas". Ao montar o orçamento, mostrar o valor por hora e avisar se está abaixo do necessário para a meta. A conta mora no domínio, com decimal.js e casos de teste conferidos à mão |
+| 018 | **Lucro de verdade e aviso de lucro mínimo** (diferencial, parte 1) | S7 | M | Mostra o lucro do orçamento e quanto é do preço de venda; avisa abaixo do mínimo definido pela pessoa. A conta mora no domínio, com decimal.js e casos de teste conferidos à mão |
 | 019 | **Painel do mês** (diferencial, parte 2) | S7, S8 e S9 (partes) | M | Aprovado no mês contra a meta; orçamentos enviados, aprovados, recusados e vencidos; taxa de conversão. Só com as situações que já existem |
 | 020 | Ajustes de uso e cadastro | S1, S2, S12, S14, mensagem de quantidade | M no total | Cinco melhorias pequenas, uma migração (CPF/CNPJ) |
 | 021 | Fornecedor e histórico de preço do material | S3, S4, S5 | M a G | Só se houver prazo. Promove o RF16 |
@@ -54,13 +54,13 @@ Tamanho: P = menos de um dia, M = um a dois dias, G = mais de dois dias.
 
 Cada um segue o mesmo ciclo dos anteriores: spec curta, testes, evidência em `evidencias/testes/`, revisão do diff e PR. A suíte de cálculo (CT01–CT10) roda em todos, para provar que nada mudou.
 
-### Como o diferencial funciona (versão enxuta, a detalhar na spec 018)
+### Como o diferencial funciona (versão atual, D033)
 
-1. **Entradas.** Em "Minha marcenaria": quanto a marcenaria precisa que sobre por mês e quantas horas produtivas tem por mês. No orçamento: horas estimadas (opcional).
-2. **Conta.** Valor necessário por hora = meta ÷ horas disponíveis. Valor do orçamento por hora = parte do preço que sobra para a marcenaria ÷ horas estimadas. Se o segundo for menor que o primeiro, aparece o aviso. Sem horas informadas, o aviso não aparece (nada é inventado).
-3. **Regra de ouro.** O preço do orçamento **não muda**: o indicador só compara e avisa. Assim o critério central do TCC (cálculo conferido nos dez casos) fica protegido.
-4. **A definir na spec 018 com a autora:** qual parte do preço entra na comparação (lucro, ou preço menos materiais), já que o professor falou em "pagar o material e ainda manter a meta". O valor de R$ 20 mil da conversa era só um exemplo.
-5. **Validar com o professor** que essa leitura simplificada do ponto de equilíbrio atende ao que ele chamou de "visão de saúde do negócio".
+1. **Entrada única e opcional.** Em "Minha marcenaria": o lucro mínimo que a pessoa aceita, em % do preço de venda.
+2. **Conta.** Lucro = preço final − custo direto total. Percentual = lucro ÷ preço final. Se o percentual ficar abaixo do mínimo, aparece o aviso.
+3. **Regra de ouro.** O preço do orçamento **não muda**: o indicador só mostra e avisa. O critério central do TCC (cálculo conferido nos dez casos) fica protegido.
+4. **Origem.** A versão anterior (meta mensal e horas) foi trocada por ser complicada; a pesquisa de mercado mostrou que o problema real é fechar preço "no olho" e perder margem sem perceber.
+5. **Validar com o professor** que essa leitura simplificada atende ao que ele chamou de "visão de saúde do negócio".
 
 ## O que fica para o TCC II (e como apresentar)
 

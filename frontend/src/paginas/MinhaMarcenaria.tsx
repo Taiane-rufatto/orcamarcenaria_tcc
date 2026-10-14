@@ -1,7 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { alterarSenha } from '../servicos/autenticacao'
 import { obterConfiguracao, salvarDadosMarcenaria, salvarEquilibrio, salvarPadroes, type Configuracao } from '../servicos/configuracoes'
-import { exibirMoeda, paraCampo, type ModoLucro, type RegraArredondamento } from '../servicos/orcamentos'
+import { paraCampo, type ModoLucro, type RegraArredondamento } from '../servicos/orcamentos'
 
 type Mensagem = { texto: string; erro: boolean } | null
 
@@ -50,12 +50,9 @@ export function MinhaMarcenaria() {
     evento.preventDefault()
     const dados = new FormData(evento.currentTarget)
     try {
-      setConfiguracao(await salvarEquilibrio({
-        metaMensal: String(dados.get('metaMensal')),
-        horasProdutivasMes: String(dados.get('horasProdutivasMes')),
-      }))
-      avisar('equilibrio', { texto: 'Meta salva. Ela vale para o aviso de todos os orçamentos.', erro: false })
-    } catch (causa) { avisar('equilibrio', erroDe(causa, 'Não foi possível salvar a meta')) }
+      setConfiguracao(await salvarEquilibrio({ lucroMinimo: String(dados.get('lucroMinimo')) }))
+      avisar('equilibrio', { texto: 'Lucro mínimo salvo. Vale para o aviso de todos os orçamentos.', erro: false })
+    } catch (causa) { avisar('equilibrio', erroDe(causa, 'Não foi possível salvar o lucro mínimo')) }
   }
 
   async function trocarSenha(evento: FormEvent<HTMLFormElement>) {
@@ -127,20 +124,16 @@ export function MinhaMarcenaria() {
     </section>
 
     <section className="folha">
-      <h2>Meta do mês</h2>
-      <p className="ajuda">Opcional. Com a meta e as horas, cada orçamento mostra se o valor por hora paga o mês. É só um aviso: o preço não muda.</p>
+      <h2>Lucro mínimo</h2>
+      <p className="ajuda">Opcional. Defina o menor lucro que você aceita, em % do preço de venda (por exemplo, 30). Se um orçamento ficar abaixo, a tela avisa. É só um aviso: o preço não muda.</p>
       <form key={JSON.stringify(e)} onSubmit={salvarEquilibrioDoMes}>
         <div className="campos">
-          <label>Quanto preciso que sobre por mês, depois de pagar os materiais (R$)
-            <input name="metaMensal" inputMode="decimal" placeholder="Ex.: 8000,00" defaultValue={e.metaMensal ? paraCampo(e.metaMensal) : ''} />
-          </label>
-          <label>Horas de trabalho por mês
-            <input name="horasProdutivasMes" inputMode="decimal" placeholder="Ex.: 160" defaultValue={e.horasProdutivasMes ? paraCampo(e.horasProdutivasMes) : ''} />
+          <label>Lucro mínimo (% do preço de venda)
+            <input name="lucroMinimo" inputMode="decimal" placeholder="Ex.: 30" defaultValue={e.lucroMinimo ? paraCampo(e.lucroMinimo) : ''} />
           </label>
         </div>
-        {e.necessarioPorHora && <p className="aviso" style={{ marginTop: 16 }}>Você precisa de {exibirMoeda(e.necessarioPorHora)} por hora de trabalho.</p>}
         {aviso(mensagens.equilibrio)}
-        <div className="acoes"><button>Salvar meta</button></div>
+        <div className="acoes"><button>Salvar lucro mínimo</button></div>
       </form>
     </section>
 

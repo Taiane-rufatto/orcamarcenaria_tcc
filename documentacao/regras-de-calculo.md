@@ -178,21 +178,20 @@ A linha do lucro traz só o rótulo "Lucro" (D027). A forma de lucro, o percentu
 
 Esse bloco é a evidência visual de que o sistema não é uma caixa-preta — requisito para a defesa e para os testes de conferência manual.
 
-## 6. Aviso de equilíbrio (spec 018, D033) — não faz parte do preço
+## 6. Lucro de verdade e aviso de lucro mínimo (spec 018, D033) — não faz parte do preço
 
 Estas regras **não alteram** os passos 1–9 da §2: só leem valores já calculados. Implementação em `backend/src/dominio/equilibrio/equilibrio.ts`, texto decimal, `ROUND_HALF_UP`.
 
-**RN12 — Valor necessário por hora.** `necessario_h = arred2(meta_mensal ÷ horas_produtivas_mes)`. Sem meta ou sem horas produtivas (nulas ou zero), não há valor.
+**RN12 — Lucro real.** `lucro = preco_final − custo_direto_total` (materiais, serviços e custos adicionais). Inclui o ajuste de arredondamento, porque ele também fica com a marcenaria. É o que sobra depois de pagar tudo o que o orçamento custa.
 
-**RN13 — Valor do orçamento por hora.**
+**RN13 — Percentual do preço e aviso.**
 ```
-contribuicao   = preco_final − subtotal_materiais − total_adicionais
-valor_hora     = arred2(contribuicao ÷ horas_estimadas)
-aviso          = valor_hora < necessario_h
+percentual = arred2(lucro ÷ preco_final × 100)     (preço final zero: não calcula)
+aviso      = percentual < lucro_minimo             (só se o mínimo foi informado)
 ```
-Os serviços não são descontados. A comparação usa os valores já arredondados a duas casas, os mesmos que a tela mostra. Sem horas estimadas (nulas ou zero), ou sem RN12, não há cálculo nem aviso. A contribuição pode ser negativa.
+É a margem de verdade do orçamento e vale tanto para markup quanto para margem. A comparação usa o percentual já arredondado a duas casas, o mesmo que a tela mostra. O lucro mínimo é opcional, maior que 0 e menor que 100; fora disso vale como "não informado". Lucro negativo é calculado e avisa.
 
-**Exemplo (valores fictícios).** Meta R$ 8.000,00 ÷ 160 h = R$ 50,00 por hora. Preço final R$ 4.200,00, materiais R$ 1.200,00, adicionais R$ 100,00 → contribuição R$ 2.900,00. Com 40 h: R$ 72,50 por hora (sem aviso). Com 80 h: R$ 36,25 (aviso). O preço final é R$ 4.200,00 nos dois casos. Casos de unidade com mais valores em `backend/tests/unidade/equilibrio.test.ts`.
+**Exemplos (valores fictícios).** Preço R$ 4.200,00, custo R$ 2.100,00: lucro R$ 2.100,00 = 50,00%. Mínimo 40%: sem aviso; mínimo 60%: aviso. CT03 (preço R$ 2.760,00, custo R$ 1.931,10): lucro R$ 828,90 (827,61 + ajuste 1,29) = 30,03%. Baixando o markup para 20% no primeiro exemplo: preço R$ 2.520,00, lucro R$ 420,00 = 16,67%, com mínimo de 30% avisa. Casos de unidade em `backend/tests/unidade/equilibrio.test.ts`.
 
 ## 7. Fora destas regras (registrado, não implementado no MVP)
 

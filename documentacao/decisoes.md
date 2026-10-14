@@ -6,16 +6,16 @@ Formato: contexto → decisão → consequência → situação (`provisória` e
 
 ---
 
-## D033 — Aviso de equilíbrio: o diferencial do trabalho, sem alterar o preço
-**Data:** 2026-10-13 · **Situação:** firme (decidido pela autora); a leitura simplificada do ponto de equilíbrio ainda deve ser validada com o orientador
+## D033 — Lucro mínimo e aviso de equilíbrio: o diferencial do trabalho, sem alterar o preço
+**Data:** 2026-10-13 · **Situação:** firme (decidido pela autora); a leitura ainda deve ser validada com o orientador
 
-**Contexto.** Na orientação de 08/10/2026 o professor Muriel sugeriu, como contribuição do TCC, uma visão simplificada de ponto de equilíbrio: relacionar o que a marcenaria precisa ganhar por mês, o tempo disponível e o valor cobrado, para o marceneiro perceber ao orçar se o trabalho paga a operação. A análise da spec 016 trouxe o item (S7) como direção para o TCC II; a autora decidiu trazê-lo para o TCC I, em versão enxuta.
+**Contexto.** Na orientação de 08/10/2026 o professor Muriel sugeriu, como contribuição do TCC, uma visão simplificada de ponto de equilíbrio. A primeira versão (meta mensal e horas de trabalho) foi considerada complicada pela autora, que pediu algo que o marceneiro use de verdade. Pesquisa de mercado: o erro mais comum é fechar preço "no olho" e a margem ir sumindo (Omie); o Sebrae manda o preço cobrir custos variáveis e fixos **e deixar um lucro desejado**, refazendo a conta quando o mercado paga menos; na oficina, o costume é um multiplicador sobre o custo que já embute despesas fixas e lucro.
 
-**Decisão.** Três dados opcionais: **meta mensal** (quanto precisa sobrar por mês depois de pagar os materiais) e **horas produtivas por mês**, em "Minha marcenaria", e **horas estimadas** em cada orçamento. O valor necessário por hora é a meta dividida pelas horas produtivas (RN12); o valor do orçamento por hora é `preço final − materiais − custos adicionais`, dividido pelas horas estimadas (RN13). Os serviços não são descontados, porque o trabalho do marceneiro é o que a meta remunera. Se o valor por hora ficar abaixo do necessário, a tela avisa; **não bloqueia nada e não altera o preço**. A conta mora no domínio (`backend/src/dominio/equilibrio/`), em arquivo separado do cálculo do preço.
+**Decisão.** O orçamento passa a mostrar o **lucro de verdade** (preço final menos o custo direto total, RN12) e quanto isso representa **do preço de venda** (RN13). Em "Minha marcenaria" a pessoa pode definir um **lucro mínimo** (% do preço, opcional); se o orçamento ficar abaixo, a tela avisa. Serve especialmente quando o marceneiro baixa o percentual para ganhar um cliente. **Não bloqueia nada e não altera o preço.** A conta mora no domínio (`backend/src/dominio/equilibrio/`), em arquivo separado do cálculo do preço.
 
-**Alternativas.** Comparar só o lucro (`valor_lucro`): rejeitada, dá uma meta bem menor e mais difícil de explicar. Horas somadas dos serviços por hora já existentes: rejeitada, não serve a quem cobra por multiplicador, como o proprietário. Painel do mês e taxa de conversão: ficam no incremento 019.
+**Alternativas.** Meta mensal e horas de trabalho: rejeitada, difícil de entender e de preencher, e pouco usada na hora de orçar. Sinal de entrada de 50% e saldo (prática do setor): boa candidata a incremento próprio. Comparar com preço de mercado: sem fonte de dados.
 
-**Consequência.** Migração `010` (colunas opcionais). Sem meta, sem horas produtivas ou sem horas estimadas, nada é calculado e nenhum aviso aparece. O aviso e as horas nunca vão para o PDF do cliente (RF42). O aviso usa a meta **atual**, inclusive em orçamentos já registrados. `calcularOrcamento` e os casos CT01–CT10 não mudam. Promove RF44–RF46 e US17; os exemplos de valores (R$ 8.000,00, 160 h) são fictícios.
+**Consequência.** Migração `010` (coluna opcional `lucro_minimo`; remove as colunas da primeira ideia, que nunca foram publicadas). Sem lucro mínimo, a tela só mostra o lucro e nunca avisa. Orçamento sem itens não tem aviso. O aviso usa o mínimo **atual**, inclusive em orçamentos registrados, e nunca vai para o PDF do cliente (RF42). `calcularOrcamento` e os casos CT01–CT10 não mudam. Promove RF44–RF46 e US17; os valores de exemplo são fictícios.
 
 ---
 
