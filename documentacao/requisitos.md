@@ -39,7 +39,7 @@ Versão 1.0 · Fonte canônica dos requisitos do projeto. Qualquer mudança aqui
 
 | ID | Requisito | Prioridade | OE | Incremento |
 |---|---|---|---|---|
-| RF08 | O sistema deve permitir cadastrar clientes com nome, telefone, e-mail e endereço, sendo obrigatório apenas o nome. O nome é gravado em maiúsculas (D032). | Essencial | OE4 | 005 |
+| RF08 | O sistema deve permitir cadastrar clientes com nome, telefone, e-mail e endereço, sendo obrigatório apenas o nome. O nome é gravado em maiúsculas (D032). CPF ou CNPJ opcional: ver RF54. | Essencial | OE4 | 005 |
 | RF09 | O sistema deve permitir listar, buscar por nome, editar e inativar clientes. | Essencial | OE4 | 005 |
 | RF10 | O sistema deve impedir a exclusão definitiva de cliente vinculado a orçamento, permitindo apenas a inativação. | Essencial | OE4 | 005 |
 
@@ -93,7 +93,7 @@ Versão 1.0 · Fonte canônica dos requisitos do projeto. Qualquer mudança aqui
 | RF34 | O sistema deve registrar o orçamento com número sequencial por marcenaria, gerado automaticamente. | Essencial | OE5 | 004 |
 | RF35 | O sistema deve manter a situação do orçamento entre: rascunho, enviado, aprovado, recusado e vencido (RN09). | Importante | OE5 | 004 |
 | RF36 | O sistema deve marcar automaticamente como vencido o orçamento cuja data de validade tenha passado e que esteja na situação "enviado". | Importante | OE5 | 004 |
-| RF37 | O sistema deve listar os orçamentos com número, cliente, data, preço final e situação, permitindo busca por cliente e filtro por situação e período. | Essencial | OE5 | 004 |
+| RF37 | O sistema deve listar os orçamentos com número, cliente, data, preço final e situação, permitindo busca por cliente e filtro por situação e período; a busca também aceita o número do orçamento (RF55). | Essencial | OE5 | 004 |
 | RF38 | O sistema deve permitir consultar um orçamento registrado com todos os seus itens e valores originais. | Essencial | OE5 | 004 |
 | RF39 | O sistema deve permitir editar um orçamento em rascunho e bloquear a edição de itens após o envio, permitindo apenas mudança de situação. | Importante | OE5 | 004 |
 | RF40 | O sistema deve permitir duplicar um orçamento existente como novo rascunho. | Desejável | — | pós-TCC |
@@ -130,6 +130,21 @@ Versão 1.0 · Fonte canônica dos requisitos do projeto. Qualquer mudança aqui
 | RF51 | O sistema deve mostrar há quantos dias o preço do material foi atualizado, destacar o preço sem atualização há mais de 30 dias (RN15) e permitir confirmar que ele continua o mesmo. | Desejável | — | 020 |
 | RF52 | O sistema deve registrar, a cada troca de custo ou de fornecedor e a cada confirmação, uma linha de histórico (data, custo, fornecedor) e exibir as últimas no cadastro do material. | Desejável | — | 020 |
 | RF53 | O sistema deve permitir escolher um fornecedor padrão (só ativo, um por marcenaria), que já vem marcado ao cadastrar material novo; inativar o fornecedor padrão tira o padrão. | Desejável | — | 020 |
+
+### 1.12 Ajustes de uso (D036)
+
+| ID | Requisito | Prioridade | OE | Incremento |
+|---|---|---|---|---|
+| RF54 | O sistema deve permitir informar CPF ou CNPJ no cliente (opcional, com ou sem pontuação), recusando números inválidos pelos dígitos verificadores (RN16) e guardando só os dígitos. Não consta no PDF do orçamento. | Desejável | — | 022 |
+| RF55 | O sistema deve permitir buscar orçamento pelo número ("2", "#2" ou "nº 2"), além do nome do cliente (RN17). | Desejável | — | 022 |
+| RF56 | O sistema deve explicar cada regra de arredondamento com um exemplo numérico e informar mensagens de quantidade que digam o problema (negativa, zero ou casas decimais demais). | Desejável | — | 022 |
+| RF57 | A tela de criar conta deve informar que o acesso é de demonstração e pedir dados fictícios. | Desejável | — | 022 |
+
+### 1.13 Segurança do acesso (D037)
+
+| ID | Requisito | Prioridade | OE | Incremento |
+|---|---|---|---|---|
+| RNF27 | A API deve limitar tentativas de login, cadastro, recuperação e redefinição de senha por endereço (e, no login, por e-mail), respondendo 429 com `Retry-After`. Verificação: testes de unidade e de integração. | Importante | — | 021 |
 
 ---
 

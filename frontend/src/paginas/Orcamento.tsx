@@ -13,9 +13,9 @@ import {
 
 const UNIDADES = ['un', 'm', 'm²', 'ml', 'ch', 'kg', 'L', 'pç', 'h']
 const REGRAS: Record<RegraArredondamento, string> = {
-  duas_casas: 'Não arredondar (centavos)',
-  real_inteiro: 'Para cima, ao real inteiro',
-  dezena: 'Para cima, à dezena',
+  duas_casas: 'Não arredondar: mantém os centavos',
+  real_inteiro: 'Para cima, ao real: R$ 2.758,71 vira R$ 2.759,00',
+  dezena: 'Para cima, à dezena: R$ 2.758,71 vira R$ 2.760,00',
 }
 type Origem = 'material' | 'servico' | 'avulso'
 

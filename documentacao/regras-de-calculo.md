@@ -199,6 +199,12 @@ aviso      = percentual < lucro_minimo             (só se o mínimo foi informa
 
 **RN15 — Preço antigo.** O custo de um material está antigo quando a última atualização ou confirmação foi há **mais de 30 dias** (30 dias ainda não é antigo). Só avisa; nunca muda custo nem orçamento. Implementação em `backend/src/dominio/catalogo/preco-antigo.ts`.
 
+### 6.2 CPF/CNPJ e busca por número (spec 022) — também fora do preço
+
+**RN16 — CPF ou CNPJ.** Aceita com ou sem pontuação; só vale com 11 dígitos (CPF) ou 14 (CNPJ), com os dois dígitos verificadores corretos (soma ponderada, resto da divisão por 11: resto menor que 2 vira 0, senão 11 menos o resto) e sem sequência repetida (111.111.111-11). Guarda só os dígitos. Só confere se o número é plausível; não consulta a Receita. Implementação em `backend/src/dominio/cliente/documento.ts`. Exemplos públicos de material didático: CPF 529.982.247-25 e CNPJ 11.222.333/0001-81.
+
+**RN17 — Busca de orçamento.** Se o texto digitado for um número, com ou sem `#` ou `nº`, o orçamento de **mesmo número** entra no resultado junto com os que têm o texto no nome do cliente. Sem número, busca só pelo nome. Sempre só da própria marcenaria.
+
 ## 7. Fora destas regras (registrado, não implementado no MVP)
 
 - Aproveitamento de chapa / plano de corte (comprar chapa inteira e usar fração): tratado hoje pela quantidade fracionada informada pelo usuário (2,5 ch), sem otimização automática.

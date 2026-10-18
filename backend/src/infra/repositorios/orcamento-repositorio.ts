@@ -195,7 +195,17 @@ export async function listarOrcamentos(c: PoolClient, marcenariaId: string, filt
   const condicoes = ['o.marcenaria_id = $1']
   const valores: unknown[] = [marcenariaId]
   const filtrar = (condicao: string, valor: unknown) => { valores.push(valor); condicoes.push(condicao.replace('?', `$${valores.length}`)) }
-  if (filtros.busca?.trim()) filtrar(`cl.nome ILIKE ? ESCAPE '\\'`, `%${escaparCuringas(filtros.busca.trim())}%`)
+  if (filtros.busca?.trim()) {
+    const busca = filtros.busca.trim()
+    // Spec 022 (RF55): "12", "#12" ou "nº 12" também acha o orçamento de número 12, além do nome do cliente.
+    const numero = /^(?:n[º°o]\.?\s*|#)?(\d{1,9})$/i.exec(busca)?.[1]
+    valores.push(`%${escaparCuringas(busca)}%`)
+    const porNome = `cl.nome ILIKE $${valores.length} ESCAPE '\\'`
+    if (numero) {
+      valores.push(Number(numero))
+      condicoes.push(`(${porNome} OR o.numero = $${valores.length})`)
+    } else condicoes.push(porNome)
+  }
   if (filtros.situacao) filtrar('o.situacao = ?', filtros.situacao)
   if (filtros.de) filtrar('o.data_emissao >= ?', filtros.de)
   if (filtros.ate) filtrar('o.data_emissao <= ?', filtros.ate)

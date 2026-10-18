@@ -147,6 +147,15 @@ Histórias de suporte à pesquisa; não geram funcionalidade para o usuário fin
 
 - **Dado** os dez casos definidos em `qualidade-e-testes.md`, **quando** executo a suíte, **então** todos apresentam diferença nula após o arredondamento e o resultado é registrado na tabela de evidências.
 
+### US20 — Achar e identificar com menos esforço
+**Como** marceneiro, **quero** achar um orçamento pelo número, registrar o CPF ou CNPJ de quem recebe o orçamento e entender o arredondamento, **para** não perder tempo nem errar por falta de clareza.
+`RF54, RF55, RF56, RF57, D036`
+
+- **Dado** o orçamento nº 2, **quando** busco "2", "#2" ou "nº 2", **então** ele aparece, e a busca pelo nome do cliente continua funcionando.
+- **Dado** um cliente, **quando** informo um CPF ou CNPJ com dígito verificador errado, **então** a tela diz "CPF ou CNPJ inválido: confira os números"; vazio continua valendo.
+- **Dado** a escolha do arredondamento, **quando** olho as opções, **então** cada uma traz um exemplo (R$ 2.758,71 vira R$ 2.759,00 ou R$ 2.760,00) e a explicação de que ele só sobe o preço.
+- **Dado** uma quantidade negativa, **quando** incluo o item, **então** a mensagem é "A quantidade não pode ser negativa".
+
 ### US19 — Ver como foi o mês
 **Como** marceneiro, **quero** ver quantos orçamentos enviei no mês, quantos foram aprovados e quanto isso rendeu, **para** saber se o meu trabalho de orçar está dando resultado.
 `RF47, RF48, D035`

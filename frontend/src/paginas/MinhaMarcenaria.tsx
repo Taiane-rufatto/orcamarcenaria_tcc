@@ -108,11 +108,12 @@ export function MinhaMarcenaria() {
           <label>Percentual de lucro (%)<input name="percentualLucro" inputMode="decimal" defaultValue={paraCampo(p.percentualLucro)} required /></label>
           <label>Arredondamento do preço
             <select name="regraArredondamento" defaultValue={p.regraArredondamento}>
-              <option value="duas_casas">Não arredondar (centavos)</option>
-              <option value="real_inteiro">Para cima, ao real inteiro</option>
-              <option value="dezena">Para cima, à dezena</option>
+              <option value="duas_casas">Não arredondar: mantém os centavos</option>
+              <option value="real_inteiro">Para cima, ao real: R$ 2.758,71 vira R$ 2.759,00</option>
+              <option value="dezena">Para cima, à dezena: R$ 2.758,71 vira R$ 2.760,00</option>
             </select>
           </label>
+          <p className="ajuda largo">O arredondamento só sobe o preço, nunca desce. A diferença aparece no memorial do orçamento como "ajuste de arredondamento".</p>
           <label>Validade (dias)<input name="validadeDias" type="number" min={1} max={365} step={1} defaultValue={p.validadeDias} required /></label>
         </div>
         {p.multiplicadorEquivalente && <p className="aviso" style={{ marginTop: 16 }}>

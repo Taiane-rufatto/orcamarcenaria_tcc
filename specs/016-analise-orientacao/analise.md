@@ -21,8 +21,8 @@ Tamanho: P = menos de um dia, M = um a dois dias, G = mais de dois dias.
 
 | # | Sugestão | Requisito | Tam. | Mexe no cálculo? | Recomendação | Autora |
 |---|---|---|---|---|---|---|
-| S1 | CPF/CNPJ no cliente | RF08 | P | Não | **Agora** (021). Campo opcional; só nome continua obrigatório. Validar dígitos; sair no PDF só se a autora quiser | |
-| S2 | Texto de apoio na descrição do serviço (quando incluir montagem, acabamento) | RF17 | P | Não | **Agora** (021). Só texto de ajuda e exemplo no campo; sem regra de preço | |
+| S1 | CPF/CNPJ no cliente | RF08 | P | Não | **Feito** (022, D036). Campo opcional; só nome continua obrigatório. Validar dígitos; sair no PDF só se a autora quiser | |
+| S2 | Texto de apoio na descrição do serviço (quando incluir montagem, acabamento) | RF17 | P | Não | **Feito** (022, D036). Só texto de ajuda e exemplo no campo; sem regra de preço | |
 | S3 | Fornecedor vinculado ao material | RF11 | M | Não | **Feito** (020, D034), na forma mínima que o professor chamou de "pelo menos isso": saber de quem vem o preço. Um cadastro simples de fornecedor (nome, telefone) e o material aponta para um | |
 | S4 | Histórico de atualização de custo (data, valor, fornecedor) | **RF16, hoje pós-TCC** | M | Não: o orçamento já guarda o valor da época (RN08) | **Feito** (020, D034). Promover o RF16; registrar a decisão em `decisoes.md` | |
 | S5 | Alerta de preço antigo | S4 | P | Não | **Feito** (020, D034), com um prazo fixo configurável (padrão 30 dias). Os prazos da conversa eram só exemplos | |
@@ -32,13 +32,13 @@ Tamanho: P = menos de um dia, M = um a dois dias, G = mais de dois dias.
 | S9 | Estados "em produção" e "entregue" | RF34–RF39, D020 | M | Não | **TCC II.** Mexe nas situações e na RN09. **Já agora:** conversão com as situações existentes, dentro do painel do mês (019) | |
 | S10 | Duplicar orçamento | **RF40, pós-TCC** | M | Não: recalcula pelo mesmo domínio (D019) | **Agora, se sobrar prazo** (022). O desenho já está em `roadmap.md` §5.1. É o que de fato resolve o "não posso editar depois de enviar" | |
 | S11 | Separar "registrar" de "enviar" | D020, RN09 | M | Não | **Manter como está.** Com a duplicação (S10) o problema prático some, e rever a D020 é caro. Registrar a justificativa | |
-| S12 | Descrição do arredondamento mais clara | RF21 | P | Não, só texto | **Agora** (021). Mostrar exemplo ao lado de cada opção (R$ 2,50 → R$ 3,00; dezena → R$ 10,00) | |
+| S12 | Descrição do arredondamento mais clara | RF21 | P | Não, só texto | **Feito** (022, D036). Mostrar exemplo ao lado de cada opção (R$ 2,50 → R$ 3,00; dezena → R$ 10,00) | |
 | S13 | Forma de pagamento | — | — | — | **Manter em observação.** O pai disse que basta; um módulo financeiro foge do escopo | |
-| S14 | Busca de orçamento por número | RF37 | P | Não | **Agora** (021) | |
+| S14 | Busca de orçamento por número | RF37 | P | Não | **Feito** (022, D036) | |
 | S15 | Logo no PDF | RF05, RF41 | M | Não | **TCC II.** Exige upload e armazenamento de arquivo | |
 | S16 | Busca de preço por API do Google | — | G | Não | **Descartar para o TCC I.** Nome da API, limite e aderência não foram verificados | |
 | S17 | Cotação por WhatsApp | — | M | Não | **TCC II**, depende do S3 | |
-| — | Mensagem de quantidade negativa | achado do 008 | P | Não | **Agora** (021) | |
+| — | Mensagem de quantidade negativa | achado do 008 | P | Não | **Feito** (022, D036) | |
 | — | Diagnóstico de segurança (login e dados) | RNF11–RNF15 | M | Não | **Primeiro de tudo** (017), só diagnóstico, sem corrigir | |
 
 ## Plano proposto, em ordem
@@ -49,8 +49,9 @@ Tamanho: P = menos de um dia, M = um a dois dias, G = mais de dois dias.
 | 018 | **Lucro de verdade e aviso de lucro mínimo** (diferencial, parte 1) | S7 | M | Mostra o lucro do orçamento e quanto é do preço de venda; avisa abaixo do mínimo definido pela pessoa. A conta mora no domínio, com decimal.js e casos de teste conferidos à mão |
 | 019 | **Painel do mês** (diferencial, parte 2, **feito**, D035) | S7, S8 e S9 (partes) | M | Aprovado no mês contra a meta; orçamentos enviados, aprovados, recusados e vencidos; taxa de conversão. Só com as situações que já existem |
 | 020 | **Fornecedor e histórico de preço do material** | S3, S4, S5 | M a G | **Feito** (D034): fornecedor, histórico a cada troca ou confirmação e selo de preço antigo (mais de 30 dias) |
-| 021 | Ajustes de uso e cadastro | S1, S2, S12, S14, mensagem de quantidade | M no total | Cinco melhorias pequenas, uma migração (CPF/CNPJ) |
-| 022 | Duplicar orçamento | S10 | M | Só se sobrar prazo |
+| 021 | **Endurecimento de segurança** | achados do diagnóstico (017) | M | **Feito no código** (D037): limite de tentativas, `/saude`, `JWT_SECRET`, dependência. Falta aplicar cabeçalhos e systemd na VPS |
+| 022 | **Ajustes de uso e cadastro** | S1, S2, S12, S14, mensagem de quantidade | M | **Feito** (D036): CPF/CNPJ, busca por número, textos do arredondamento e da quantidade, aviso de acesso de teste |
+| 023 | Duplicar orçamento | S10 | M | Só se sobrar prazo (ainda não iniciado) |
 
 Cada um segue o mesmo ciclo dos anteriores: spec curta, testes, evidência em `evidencias/testes/`, revisão do diff e PR. A suíte de cálculo (CT01–CT10) roda em todos, para provar que nada mudou.
 
