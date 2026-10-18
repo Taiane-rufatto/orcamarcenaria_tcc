@@ -13,6 +13,8 @@ import { rotasFornecedores } from './api/rotas/fornecedores'
 
 export const app = express()
 
+// A API roda atrás do nginx (D029): confiar em 1 salto para enxergar o endereço real do cliente no limite de tentativas.
+app.set('trust proxy', 1)
 app.use(cors({ origin: ambiente.origemPermitida }))
 app.use(express.json())
 app.use('/auth', rotasAutenticacao)
@@ -32,11 +34,9 @@ app.get('/saude', async (_requisicao, resposta) => {
       horaDoBanco: resultado.rows[0].agora,
     })
   } catch (erro) {
-    resposta.status(503).json({
-      api: 'ok',
-      banco: 'indisponivel',
-      detalhe: erro instanceof Error ? erro.message : 'erro desconhecido',
-    })
+    // Achado A6: a rota é pública, então a causa do erro (host, porta, usuário do banco) fica só no log do servidor.
+    console.error('Banco indisponível na verificação de saúde.', erro)
+    resposta.status(503).json({ api: 'ok', banco: 'indisponivel' })
   }
 })
 

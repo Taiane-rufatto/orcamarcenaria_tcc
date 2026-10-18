@@ -95,6 +95,23 @@ O cadastro de clientes guarda nome, telefone, e-mail e endereço de pessoas que 
 6. Configuração TLS do nginx (versões e cifras): conferir com uma ferramenta de teste de TLS.
 7. Nenhum teste dinâmico foi feito (injeção, quebra de sessão, abuso de rotas).
 
+## Correções aplicadas em 2026-10-18 (spec 021)
+
+O repositório é público e a branch com este diagnóstico foi enviada ao GitHub; por isso os itens mais graves foram corrigidos logo em seguida, no código, com testes:
+
+| Achado | Situação |
+|---|---|
+| A1 Sem limite de tentativas | **Corrigido no código.** Login: 10 tentativas por e-mail e 30 por endereço em 15 min; cadastro e recuperação de senha: 10 por hora por endereço; redefinição: 10 em 15 min. Resposta 429 com `Retry-After`. Testes: unidade e integração |
+| A2 Dependência com aviso crítico | **Corrigido.** `npm audit fix`; 0 vulnerabilidades no backend e no frontend |
+| A3 Cabeçalhos de segurança | **Modelo pronto, falta aplicar na VPS** (`implantacao/nginx-orcamarcenaria.conf` e `documentacao/publicacao.md`) |
+| A5 Tempo de resposta do login | **Corrigido.** Comparação com hash falso quando o e-mail não existe |
+| A6 `/saude` com detalhe | **Corrigido.** Só `api`, `banco` e hora; o detalhe vai para o log |
+| A7 `JWT_SECRET` | **Corrigido.** A API recusa segredo com menos de 32 caracteres ou o texto do exemplo (cuidado ao atualizar a VPS, ver `publicacao.md`) |
+| A11 systemd | **Modelo pronto, falta aplicar na VPS** |
+| A4, A8, A9, A10 | **Em aberto** (cookie `HttpOnly`, lista de senhas comuns, backup agendado, aviso de privacidade): TCC II ou próximo incremento |
+
+Continua valendo a lista "Não verificado": ela exige acesso à VPS.
+
 ## Proposta de correção, em ordem
 
 Um incremento pequeno de endurecimento resolve o que mais pesa, sem tocar no cálculo:

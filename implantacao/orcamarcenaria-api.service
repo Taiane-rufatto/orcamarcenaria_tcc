@@ -13,5 +13,11 @@ ExecStart=/usr/bin/node dist/servidor.js
 Restart=on-failure
 RestartSec=5
 
+# Achado A11 do diagnóstico de segurança: restringe o que o processo da API pode fazer.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+
 [Install]
 WantedBy=multi-user.target
