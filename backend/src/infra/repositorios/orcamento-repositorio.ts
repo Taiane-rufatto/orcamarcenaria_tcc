@@ -35,14 +35,15 @@ export interface NovoItem {
   valorUnitarioCatalogo: string | null // nulo no item avulso
 }
 
-export async function inserirOrcamento(c: PoolClient, marcenariaId: string, dados: Cabecalho): Promise<string> {
+// `origemId` (spec 025): o orçamento de onde este rascunho foi duplicado, ou nulo.
+export async function inserirOrcamento(c: PoolClient, marcenariaId: string, dados: Cabecalho, origemId: string | null = null): Promise<string> {
   const id = randomUUID()
   await c.query(
     `INSERT INTO orcamento (id, marcenaria_id, cliente_id, descricao_projeto, data_emissao, data_validade,
-       modo_lucro, percentual_lucro, regra_arredondamento, observacoes, especificacoes)
-     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
+       modo_lucro, percentual_lucro, regra_arredondamento, observacoes, especificacoes, origem_id)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`,
     [id, marcenariaId, dados.clienteId, dados.descricaoProjeto, dados.dataEmissao, dados.dataValidade,
-      dados.modoLucro, dados.percentualLucro, dados.regraArredondamento, dados.observacoes || null, dados.especificacoes || null],
+      dados.modoLucro, dados.percentualLucro, dados.regraArredondamento, dados.observacoes || null, dados.especificacoes || null, origemId],
   )
   return id
 }
@@ -140,7 +141,9 @@ export async function removerCustoAdicional(c: PoolClient, id: string, marcenari
 export async function lerOrcamento(c: PoolClient, id: string, marcenariaId: string) {
   // O nome do cliente vem do cadastro, não de uma cópia no orçamento (D021).
   const orcamento = (await c.query(
-    `SELECT o.*, cl.nome AS cliente_nome FROM orcamento o JOIN cliente cl ON cl.id = o.cliente_id
+    `SELECT o.*, cl.nome AS cliente_nome, origem.numero AS origem_numero
+     FROM orcamento o JOIN cliente cl ON cl.id = o.cliente_id
+     LEFT JOIN orcamento origem ON origem.id = o.origem_id AND origem.marcenaria_id = o.marcenaria_id
      WHERE o.id=$1 AND o.marcenaria_id=$2`, [id, marcenariaId])).rows[0]
   if (!orcamento) return null
   // Spec 023: junto de cada item de material do catálogo, o custo atual dele e há quantos dias o preço foi
@@ -326,4 +329,10 @@ export async function itensParaCompra(c: PoolClient, id: string, marcenariaId: s
     descricao: string; quantidade: string; unidade: string
     fornecedor_id: string | null; fornecedor_nome: string | null; fornecedor_telefone: string | null; fornecedor_endereco: string | null
   }[]
+}
+
+// Data de hoje em São Paulo (AAAA-MM-DD), para a emissão do orçamento duplicado.
+export async function hoje(c: PoolClient): Promise<string> {
+  const { rows } = await c.query<{ data: string }>(`SELECT ((now() AT TIME ZONE 'America/Sao_Paulo')::date)::text AS data`)
+  return rows[0].data
 }

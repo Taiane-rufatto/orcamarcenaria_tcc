@@ -96,7 +96,7 @@ Versão 1.0 · Fonte canônica dos requisitos do projeto. Qualquer mudança aqui
 | RF37 | O sistema deve listar os orçamentos com número, cliente, data, preço final e situação, permitindo busca por cliente e filtro por situação e período; a busca também aceita o número do orçamento (RF55). | Essencial | OE5 | 004 |
 | RF38 | O sistema deve permitir consultar um orçamento registrado com todos os seus itens e valores originais. | Essencial | OE5 | 004 |
 | RF39 | O sistema deve permitir editar um orçamento em rascunho e bloquear a edição de itens após o envio, permitindo apenas mudança de situação. | Importante | OE5 | 004 |
-| RF40 | O sistema deve permitir duplicar um orçamento existente como novo rascunho. | Desejável | — | pós-TCC |
+| RF40 | O sistema deve permitir duplicar um orçamento já enviado como novo rascunho, sem número, com os dados e os valores congelados do original, emissão de hoje e validade da configuração, guardando a referência ao original. O original não muda. | Desejável | — | 025 |
 
 ### 1.8 Saída para o cliente
 

@@ -77,6 +77,8 @@ async function montarResposta(c: PoolClient, marcenariaId: string, id: string) {
     regraArredondamento: o.regra_arredondamento,
     especificacoes: (o.especificacoes ?? '') as string,
     observacoes: (o.observacoes ?? '') as string,
+    // Spec 025: número do orçamento de onde este rascunho foi duplicado (nulo se não veio de outro).
+    origemNumero: (o.origem_numero ?? null) as number | null,
     // Aviso de lucro mínimo (spec 018): só compara valores já calculados, nunca altera o preço. Nulo = orçamento sem itens.
     equilibrio: avaliarEquilibrio({
       lucroMinimo: config.lucroMinimo,
@@ -304,4 +306,44 @@ export async function listaDeCompras(marcenariaId: string, id: string) {
     }
     return { orcamentoId: id, grupos }
   }, 'BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY')
+}
+
+// ---------- Duplicar para ajustar (spec 025, RF40, D040) ----------
+
+// O orçamento enviado fica travado para o número entregue ao cliente nunca corresponder a outros valores (D020).
+// Quando o cliente pede um ajuste, em vez de redigitar tudo, duplica-se: nasce um RASCUNHO novo, sem número, com o
+// mesmo cliente, projeto, itens (valores congelados, RN08), custos adicionais, lucro, arredondamento, especificações
+// e observações. A emissão é hoje e a validade segue a configuração (D024). O original não muda. O preço do rascunho
+// novo é refeito pelo mesmo domínio (D019); como a entrada é igual, o resultado é o mesmo até a pessoa ajustar.
+export function duplicarOrcamento(marcenariaId: string, id: string): Promise<Orcamento> {
+  return emTransacao(async (c) => {
+    const original = await repositorio.lerOrcamento(c, id, marcenariaId)
+    if (!original) throw new ErroHttp(404, 'Orçamento não encontrado')
+    const { orcamento: o, itens, custos } = original
+    if (o.situacao === 'rascunho') throw new ErroHttp(409, 'Este orçamento ainda é um rascunho: edite-o direto, não precisa duplicar')
+
+    const padroes = await lerPadroes(c, marcenariaId)
+    const hoje = await repositorio.hoje(c)
+    const cabecalho: Cabecalho = {
+      clienteId: o.cliente_id,
+      descricaoProjeto: o.descricao_projeto,
+      dataEmissao: hoje,
+      dataValidade: await repositorio.somarDias(c, hoje, padroes.validadeDias),
+      modoLucro: o.modo_lucro,
+      percentualLucro: o.percentual_lucro,
+      regraArredondamento: o.regra_arredondamento,
+      especificacoes: o.especificacoes ?? '',
+      observacoes: o.observacoes ?? '',
+    }
+    const novoId = await repositorio.inserirOrcamento(c, marcenariaId, cabecalho, id)
+    for (const i of itens) {
+      await repositorio.inserirItem(c, novoId, marcenariaId, {
+        tipo: i.tipo, materialId: i.material_id, servicoId: i.servico_id, descricao: i.descricao, unidade: i.unidade,
+        quantidade: i.quantidade, valorUnitario: i.valor_unitario, valorUnitarioCatalogo: i.valor_unitario_catalogo,
+      })
+    }
+    for (const custo of custos) await repositorio.inserirCustoAdicional(c, novoId, marcenariaId, custo.descricao, custo.valor)
+    await recalcular(c, marcenariaId, novoId)
+    return (await montarResposta(c, marcenariaId, novoId))!
+  })
 }

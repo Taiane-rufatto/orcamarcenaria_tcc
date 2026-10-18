@@ -6,6 +6,19 @@ Formato: contexto → decisão → consequência → situação (`provisória` e
 
 ---
 
+## D040 — Duplicar orçamento para ajustar (RF40 promovido)
+**Data:** 2026-10-18 · **Situação:** firme (decidido pela autora; desenho escolhido em 2026-09-28, `roadmap.md` §5.1)
+
+**Contexto.** O orçamento registrado fica travado, para o número entregue ao cliente nunca corresponder a valores alterados depois (D020). Quando o cliente pede um ajuste, a única saída era criar outro do zero e redigitar tudo. O orientador mencionou a duplicação em 08/10/2026 e a autora a pediu.
+
+**Decisão.** Botão **"Duplicar para ajustar"** em qualquer orçamento já enviado (enviado, aprovado, em produção, entregue, recusado ou vencido). Nasce um **rascunho** novo, sem número, com o mesmo cliente, projeto, itens (valores congelados, RN08, inclusive os ajustados à mão), custos adicionais, lucro, arredondamento, especificações e observações. A emissão é hoje e a validade segue a configuração (D024). O rascunho guarda de qual orçamento veio e a tela mostra "Ajuste do orçamento nº X". O original **não muda**. O preço é refeito pelo mesmo domínio (D019).
+
+**Alternativas.** Reabrir o enviado para edição: rejeitada, quebra a rastreabilidade (D020). Versões (nº 12, 12-A): rejeitada no prazo do TCC. Duplicar rascunho: 409, edita-se direto.
+
+**Consequência.** Migração `015` (coluna `origem_id`). Promove o RF40, que sai da lista de trabalhos futuros. O cálculo e o PDF não mudam.
+
+---
+
 ## D039 — Em produção e entregue, painel de saúde do negócio e meta do mês
 **Data:** 2026-10-18 · **Situação:** firme (decidido pela autora)
 

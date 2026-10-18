@@ -49,6 +49,7 @@ export type Orcamento = Required<Cabecalho> & {
   numero: number | null // nulo enquanto rascunho (D020)
   clienteNome: string // do cadastro (D021)
   situacao: Situacao
+  origemNumero: number | null // spec 025: número do orçamento de onde este rascunho foi duplicado
   itens: Item[]
   custosAdicionais: { id: string; descricao: string; valor: string }[]
   memorial: Memorial
@@ -99,6 +100,9 @@ export function textoDaLista(grupos: GrupoDeCompra[]): string {
 }
 
 export const listaDeCompras = (id: string) => requisitar<{ orcamentoId: string; grupos: GrupoDeCompra[] }>(rota(id, '/lista-de-compras'))
+
+// Spec 025 (RF40): cria um rascunho novo igual ao orçamento já enviado, para ajustar sem redigitar.
+export const duplicarOrcamento = (id: string) => requisitar<Orcamento>(rota(id, '/duplicar'), 'POST')
 
 export const registrarOrcamento = (id: string) => requisitar<Orcamento>(rota(id, '/registrar'), 'POST')
 export const mudarSituacao = (id: string, situacao: 'aprovado' | 'recusado' | 'em_producao' | 'entregue') =>

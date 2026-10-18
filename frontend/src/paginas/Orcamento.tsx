@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { CampoBusca } from '../componentes/CampoBusca'
 import { AvisoEquilibrio } from '../componentes/AvisoEquilibrio'
 import { ListaDeCompras } from '../componentes/ListaDeCompras'
@@ -8,7 +8,7 @@ import { confirmarPrecoMaterial, exibirValor, listarMateriais, listarServicos, t
 import { listarClientes, type Cliente } from '../servicos/clientes'
 import {
   adicionarCustoAdicional, adicionarItem, alterarCabecalho, alterarItem, consultarOrcamento, exibirData, exibirMoeda, exibirNumero,
-  baixarPdf, mudarSituacao, paraCampo, registrarOrcamento, removerCustoAdicional, removerItem, SITUACOES,
+  baixarPdf, duplicarOrcamento, mudarSituacao, paraCampo, registrarOrcamento, removerCustoAdicional, removerItem, SITUACOES,
   type ModoLucro, type NovoItem, type Orcamento as DadosOrcamento, type RegraArredondamento, type TipoItem,
 } from '../servicos/orcamentos'
 
@@ -25,6 +25,7 @@ type Origem = 'material' | 'servico' | 'avulso'
 // Esta tela não faz contas. Fora de rascunho, é somente leitura: só a situação muda (RF39).
 export function Orcamento() {
   const { id = '' } = useParams()
+  const navegar = useNavigate()
   const [orcamento, setOrcamento] = useState<DadosOrcamento | null>(null)
   const [materiais, setMateriais] = useState<Material[]>([])
   const [servicos, setServicos] = useState<Servico[]>([])
@@ -48,6 +49,16 @@ export function Orcamento() {
       .catch((causa) => { if (atual) setErro(causa instanceof Error ? causa.message : 'Não foi possível carregar o orçamento') })
     return () => { atual = false }
   }, [id])
+
+  // Spec 025 (RF40): cria um rascunho novo igual a este e abre na tela de edição; este continua como está.
+  async function duplicar() {
+    try {
+      const novo = await duplicarOrcamento(id)
+      navegar(`/orcamentos/${novo.id}`)
+    } catch (causa) {
+      setErro(causa instanceof Error ? causa.message : 'Não foi possível duplicar o orçamento')
+    }
+  }
 
   // Spec 023 (RF58): "o preço continua o mesmo" renova a data do material no catálogo; o item não muda.
   const confirmarPrecoDoMaterial = (materialId: string) => executar(confirmarPrecoMaterial(materialId).then(() => consultarOrcamento(id)))
@@ -171,6 +182,7 @@ export function Orcamento() {
       <p>
         {orcamento.numero !== null && <>{orcamento.descricaoProjeto} · </>}Cliente: {orcamento.clienteNome}
         {' · '}<span className={`selo ${orcamento.situacao}`}>{SITUACOES[orcamento.situacao]}</span>
+        {orcamento.origemNumero !== null && <> · Ajuste do orçamento nº {orcamento.origemNumero}</>}
       </p>
     </div>
 
@@ -362,6 +374,10 @@ export function Orcamento() {
         {orcamento.situacao === 'entregue' && <p className="ajuda">Este orçamento foi entregue ao cliente.</p>}
         {orcamento.situacao === 'recusado' && <p className="ajuda">O cliente recusou este orçamento.</p>}
         {orcamento.situacao === 'vencido' && <p className="ajuda">A validade terminou em {exibirData(orcamento.dataValidade)} sem resposta do cliente.</p>}
+        {!editavel && <>
+          <p className="ajuda">Precisa mudar alguma coisa? Duplique: nasce um rascunho novo igual a este, e este continua como está.</p>
+          <div className="acoes"><button className="secundario" onClick={duplicar}>Duplicar para ajustar</button></div>
+        </>}
       </section>
 
       {!editavel && <section className="folha">

@@ -147,6 +147,14 @@ Histórias de suporte à pesquisa; não geram funcionalidade para o usuário fin
 
 - **Dado** os dez casos definidos em `qualidade-e-testes.md`, **quando** executo a suíte, **então** todos apresentam diferença nula após o arredondamento e o resultado é registrado na tabela de evidências.
 
+### US23 — Ajustar um orçamento já enviado sem redigitar
+**Como** marceneiro, **quero** duplicar um orçamento que já enviei, **para** mudar só o que o cliente pediu sem perder o número que ele já tem.
+`RF40, D040`
+
+- **Dado** um orçamento enviado, **quando** clico em "Duplicar para ajustar", **então** abre um rascunho novo, sem número, com os mesmos itens, custos, lucro e textos, e a tela diz "Ajuste do orçamento nº X".
+- **Dado** o rascunho novo, **quando** troco um item, **então** só ele muda e o preço é recalculado; o orçamento original continua como estava.
+- **Dado** um orçamento ainda em rascunho, **quando** tento duplicar, **então** o sistema avisa que basta editá-lo.
+
 ### US22 — Ter uma visão de saúde do meu negócio
 **Como** marceneiro, **quero** ver num lugar só quanto aprovei contra a minha meta, quanto estou cobrando pela mão de obra e como estão os preços dos materiais que mais uso, **para** perceber cedo se preciso reajustar o que cobro.
 `RF60, RF61, RF62, RF63, D039`

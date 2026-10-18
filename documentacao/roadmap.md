@@ -43,6 +43,7 @@ Prioridade e dependência definem a ordem. Um incremento só é aberto quando o 
 | 022 | Ajustes de uso: CPF/CNPJ no cliente, busca por número, textos do arredondamento e da quantidade, aviso de acesso de teste (D036; origem: orientação de 08/10/2026) | M3 | 020 | US20 | RF54–RF57 |
 | 023 | Fornecedor completo: endereço, aviso de preço dentro do orçamento e lista de compras (D038; origem: resumo da orientação feito pela autora) | M3 | 020 | US21 | RF58, RF59 |
 | 024 | Em produção e entregue, painel de saúde do negócio (mão de obra, preços dos materiais) e meta do mês (D039; origem: resumo da orientação feito pela autora) | M3 | 019, 023 | US22 | RF60–RF63 |
+| 025 | Duplicar orçamento para ajustar (RF40; D040; origem: orientação de 08/10/2026 e pedido da autora) | M3 | 024 | US23 | RF40 |
 
 ### Observações de sequenciamento
 
@@ -80,7 +81,7 @@ Baseado no cronograma da proposta (implementação em outubro e novembro, defesa
 
 Registrado para a seção de trabalhos futuros e para dar destino às ideias que surgirem durante o desenvolvimento, sem contaminar o escopo:
 
-- Duplicação e versionamento de orçamento (RF40) — detalhado em §5.1
+- ~~Duplicação de orçamento (RF40)~~ — **feita no incremento 025 (D040)**; o versionamento (nº 12, 12-A) continua pós-TCC. Desenho em §5.1
 - Desconto comercial no fechamento (RF33)
 - Múltiplos usuários e papéis por marcenaria
 - Histórico de variação de custo dos materiais (RF16)
