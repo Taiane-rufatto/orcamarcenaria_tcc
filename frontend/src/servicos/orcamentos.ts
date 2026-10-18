@@ -6,11 +6,12 @@ import { baixarArquivo, requisitar } from './api'
 export type ModoLucro = 'margem' | 'markup'
 export type RegraArredondamento = 'duas_casas' | 'real_inteiro' | 'dezena'
 export type TipoItem = 'material' | 'servico'
-export type Situacao = 'rascunho' | 'enviado' | 'aprovado' | 'recusado' | 'vencido'
+export type Situacao = 'rascunho' | 'enviado' | 'aprovado' | 'recusado' | 'vencido' | 'em_producao' | 'entregue'
 
 // Rótulos das situações da RN09, na ordem do ciclo de vida.
 export const SITUACOES: Record<Situacao, string> = {
-  rascunho: 'Rascunho', enviado: 'Enviado', aprovado: 'Aprovado', recusado: 'Recusado', vencido: 'Vencido',
+  rascunho: 'Rascunho', enviado: 'Enviado', aprovado: 'Aprovado', em_producao: 'Em produção', entregue: 'Entregue',
+  recusado: 'Recusado', vencido: 'Vencido',
 }
 
 export type Cabecalho = {
@@ -100,7 +101,7 @@ export function textoDaLista(grupos: GrupoDeCompra[]): string {
 export const listaDeCompras = (id: string) => requisitar<{ orcamentoId: string; grupos: GrupoDeCompra[] }>(rota(id, '/lista-de-compras'))
 
 export const registrarOrcamento = (id: string) => requisitar<Orcamento>(rota(id, '/registrar'), 'POST')
-export const mudarSituacao = (id: string, situacao: 'aprovado' | 'recusado') =>
+export const mudarSituacao = (id: string, situacao: 'aprovado' | 'recusado' | 'em_producao' | 'entregue') =>
   requisitar<Orcamento>(rota(id, '/situacao'), 'POST', { situacao })
 
 // PDF para o cliente (RF41–RF43): a lista de materiais e serviços (sem valores) só entra se pedida (D022).

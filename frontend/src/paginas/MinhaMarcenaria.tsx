@@ -1,6 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { alterarSenha } from '../servicos/autenticacao'
-import { obterConfiguracao, salvarDadosMarcenaria, salvarEquilibrio, salvarPadroes, type Configuracao } from '../servicos/configuracoes'
+import { obterConfiguracao, salvarDadosMarcenaria, salvarEquilibrio, salvarMeta, salvarPadroes, type Configuracao } from '../servicos/configuracoes'
 import { paraCampo, type ModoLucro, type RegraArredondamento } from '../servicos/orcamentos'
 
 type Mensagem = { texto: string; erro: boolean } | null
@@ -9,7 +9,7 @@ type Mensagem = { texto: string; erro: boolean } | null
 // orçamentos novos e troca de senha. A tela não calcula nada; o multiplicador vem da API.
 export function MinhaMarcenaria() {
   const [configuracao, setConfiguracao] = useState<Configuracao | null>(null)
-  const [mensagens, setMensagens] = useState<{ dados: Mensagem; padroes: Mensagem; equilibrio: Mensagem; senha: Mensagem }>({ dados: null, padroes: null, equilibrio: null, senha: null })
+  const [mensagens, setMensagens] = useState<{ dados: Mensagem; padroes: Mensagem; equilibrio: Mensagem; meta: Mensagem; senha: Mensagem }>({ dados: null, padroes: null, equilibrio: null, meta: null, senha: null })
   const avisar = (secao: keyof typeof mensagens, mensagem: Mensagem) => setMensagens((atuais) => ({ ...atuais, [secao]: mensagem }))
   const erroDe = (causa: unknown, padrao: string) => ({ texto: causa instanceof Error ? causa.message : padrao, erro: true })
 
@@ -55,6 +55,15 @@ export function MinhaMarcenaria() {
     } catch (causa) { avisar('equilibrio', erroDe(causa, 'Não foi possível salvar o lucro mínimo')) }
   }
 
+  async function salvarMetaDoMes(evento: FormEvent<HTMLFormElement>) {
+    evento.preventDefault()
+    const dados = new FormData(evento.currentTarget)
+    try {
+      setConfiguracao(await salvarMeta(String(dados.get('metaDoMes'))))
+      avisar('meta', { texto: 'Meta do mês salva. Ela aparece no Painel do mês.', erro: false })
+    } catch (causa) { avisar('meta', erroDe(causa, 'Não foi possível salvar a meta do mês')) }
+  }
+
   async function trocarSenha(evento: FormEvent<HTMLFormElement>) {
     evento.preventDefault()
     const formulario = evento.currentTarget
@@ -70,7 +79,7 @@ export function MinhaMarcenaria() {
     <p role={mensagem.erro ? 'alert' : 'status'} className={mensagem.erro ? 'alerta' : 'aviso'} style={{ marginTop: 16 }}>{mensagem.texto}</p>
 
   if (!configuracao) return <main className="pagina"><h1>Minha marcenaria</h1>{aviso(mensagens.dados) ?? <p>Carregando…</p>}</main>
-  const { marcenaria: m, padroes: p, equilibrio: e } = configuracao
+  const { marcenaria: m, padroes: p, equilibrio: e, meta } = configuracao
 
   return <main className="pagina">
     <div className="cabecalho-pagina">
@@ -135,6 +144,20 @@ export function MinhaMarcenaria() {
         </div>
         {aviso(mensagens.equilibrio)}
         <div className="acoes"><button>Salvar lucro mínimo</button></div>
+      </form>
+    </section>
+
+    <section className="folha">
+      <h2>Meta do mês</h2>
+      <p className="ajuda">Opcional. Quanto você quer aprovar em orçamentos por mês, em reais. O Painel do mês mostra quanto já foi aprovado e quanto falta. Não muda nenhum preço.</p>
+      <form key={JSON.stringify(meta)} onSubmit={salvarMetaDoMes}>
+        <div className="campos">
+          <label>Meta do mês (R$)
+            <input name="metaDoMes" inputMode="decimal" placeholder="Ex.: 10000,00" defaultValue={meta.metaDoMes ? paraCampo(meta.metaDoMes) : ''} />
+          </label>
+        </div>
+        {aviso(mensagens.meta)}
+        <div className="acoes"><button>Salvar meta</button></div>
       </form>
     </section>
 

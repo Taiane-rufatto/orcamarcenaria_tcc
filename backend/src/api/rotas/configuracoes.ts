@@ -1,10 +1,10 @@
 import { Router, type Response } from 'express'
 import { exigirAutenticacao } from '../middlewares/autenticacao'
-import { dadosMarcenariaSchema, equilibrioSchema, padroesSchema } from '../validacoes/configuracoes'
+import { dadosMarcenariaSchema, equilibrioSchema, metaSchema, padroesSchema } from '../validacoes/configuracoes'
 import { multiplicadorEquivalente, validarLucro } from '../../dominio/orcamento/calculo'
 import { pool } from '../../infra/banco/pool'
 import {
-  gravarDadosMarcenaria, gravarEquilibrio, gravarPadroes, lerDadosMarcenaria, lerEquilibrio, lerPadroes,
+  gravarDadosMarcenaria, gravarEquilibrio, gravarMeta, gravarPadroes, lerDadosMarcenaria, lerEquilibrio, lerMeta, lerPadroes,
 } from '../../infra/repositorios/configuracao-repositorio'
 
 // Página "Minha marcenaria" (RF05, RF19–RF22, D024). Só lê e grava; não há regra além de validar.
@@ -20,6 +20,7 @@ async function responder(marcenariaId: string) {
   return {
     marcenaria: dados,
     equilibrio, // spec 018: lucro mínimo (opcional)
+    meta: await lerMeta(pool, marcenariaId), // spec 024: meta de faturamento do mês (opcional)
     // O multiplicador vem do domínio, como no orçamento (D018): a tela não calcula.
     padroes: { ...padroes, multiplicadorEquivalente: multiplicadorEquivalente(padroes.modoLucro, padroes.percentualLucro) },
   }
@@ -45,5 +46,11 @@ rotasConfiguracoes.put('/configuracoes/padroes', async (req, res) => {
 // Spec 018: vale para os avisos de todos os orçamentos, novos e antigos (não é um padrão copiado, D033).
 rotasConfiguracoes.put('/configuracoes/equilibrio', async (req, res) => {
   await gravarEquilibrio(marcenaria(res), equilibrioSchema.parse(req.body))
+  res.json(await responder(marcenaria(res)))
+})
+
+// Spec 024: meta de faturamento do mês, só para o painel comparar com o que foi aprovado (D039).
+rotasConfiguracoes.put('/configuracoes/meta', async (req, res) => {
+  await gravarMeta(marcenaria(res), metaSchema.parse(req.body).metaDoMes)
   res.json(await responder(marcenaria(res)))
 })

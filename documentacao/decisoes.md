@@ -6,6 +6,19 @@ Formato: contexto → decisão → consequência → situação (`provisória` e
 
 ---
 
+## D039 — Em produção e entregue, painel de saúde do negócio e meta do mês
+**Data:** 2026-10-18 · **Situação:** firme (decidido pela autora)
+
+**Contexto.** O resumo da orientação de 08/10/2026 pede novos estados ("em produção" e "entregue"), um funil com taxa de conversão, uma visão de preços de material e da cobrança de mão de obra, tudo num painel simples (a "visão de saúde do negócio"), e, no ponto de equilíbrio, uma meta mensal. A autora já tinha achado a meta com horas e valor da hora complicada; escolheu **só a meta do mês no painel**.
+
+**Decisão.** (1) Depois de aprovado, o orçamento pode ir para **em produção** e **entregue** (ou direto para entregue). Os dois contam como aprovados no painel. (2) O **painel do mês** ganha: a **meta do mês** (um campo opcional em Minha marcenaria, comparado com o valor aprovado, RN20); a **cobrança de mão de obra** (soma, participação no preço e valor médio da hora de serviço contra o mês anterior, RN18 e RN19); e os **preços dos materiais mais usados** nos últimos 90 dias, subindo, estáveis ou caindo, a partir do histórico de custo (RN19). (3) Tudo calculado no domínio (`backend/src/dominio/painel/`), só com valores já gravados; nada muda preço.
+
+**Alternativas.** Meta com horas disponíveis, valor da hora e valor mínimo por orçamento (a primeira ideia do ponto de equilíbrio): rejeitada pela autora por ser complicada; fica como direção do TCC II. Gráficos e comparação de vários meses: TCC II. Relatório de estoque: fora, o professor deu só como exemplo.
+
+**Consequência.** Migração `014` (situações novas, coluna `situacao` alargada para 20 caracteres, `meta_do_mes`). **Exceção à regra "migração nova, nunca editar a antiga":** a `004-situacoes.sql` foi editada para aceitar as sete situações, porque o migrador reaplica todos os arquivos a cada execução e a 004 recriaria a restrição só com cinco, o que falharia assim que existisse um orçamento em produção. A edição não muda nada em bancos já migrados. Promove RF60 a RF63 e a US22.
+
+---
+
 ## D038 — Fornecedor completo: endereço, aviso no orçamento e lista de compras
 **Data:** 2026-10-18 · **Situação:** firme (decidido pela autora)
 

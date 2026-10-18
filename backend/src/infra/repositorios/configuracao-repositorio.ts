@@ -56,6 +56,20 @@ export async function gravarEquilibrio(marcenariaId: string, equilibrio: Equilib
   )
 }
 
+// Meta de faturamento do mês (spec 024): opcional. Só lê (não cria a linha), para servir ao painel.
+export async function lerMeta(executor: Executor, marcenariaId: string): Promise<{ metaDoMes: string | null }> {
+  const { rows } = await executor.query('SELECT meta_do_mes FROM configuracao WHERE marcenaria_id=$1', [marcenariaId])
+  return { metaDoMes: rows[0]?.meta_do_mes ?? null }
+}
+
+export async function gravarMeta(marcenariaId: string, metaDoMes: string | null) {
+  await pool.query(
+    `INSERT INTO configuracao (marcenaria_id, meta_do_mes) VALUES ($1,$2)
+     ON CONFLICT (marcenaria_id) DO UPDATE SET meta_do_mes=$2, atualizado_em=now()`,
+    [marcenariaId, metaDoMes],
+  )
+}
+
 export async function gravarPadroes(marcenariaId: string, padroes: Padroes) {
   await pool.query(
     `INSERT INTO configuracao (marcenaria_id, modo_lucro, percentual_lucro_padrao, regra_arredondamento, validade_padrao_dias)

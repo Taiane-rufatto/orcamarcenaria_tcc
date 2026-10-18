@@ -98,6 +98,8 @@ rascunho ──enviar──▶ enviado ──aprovar──▶ aprovado
 - `vencido` é atribuído automaticamente quando a data de validade é anterior à data corrente e a situação é `enviado`.
 - Um orçamento `vencido` pode ser reaberto como rascunho apenas por duplicação (RF40, pós-TCC).
 
+**Atualização (spec 024, D039).** Depois de `aprovado`, o orçamento pode passar a `em_producao` e a `entregue`, ou ir direto de `aprovado` a `entregue`; essas duas situações não voltam atrás e, como `aprovado`, `recusado` e `vencido`, deixam o orçamento somente leitura (RF39). Para o painel, `aprovado`, `em_producao` e `entregue` contam todos como aprovados.
+
 ### RN10 — Validações de entrada
 
 | Campo | Regra |
@@ -204,6 +206,14 @@ aviso      = percentual < lucro_minimo             (só se o mínimo foi informa
 **RN16 — CPF ou CNPJ.** Aceita com ou sem pontuação; só vale com 11 dígitos (CPF) ou 14 (CNPJ), com os dois dígitos verificadores corretos (soma ponderada, resto da divisão por 11: resto menor que 2 vira 0, senão 11 menos o resto) e sem sequência repetida (111.111.111-11). Guarda só os dígitos. Só confere se o número é plausível; não consulta a Receita. Implementação em `backend/src/dominio/cliente/documento.ts`. Exemplos públicos de material didático: CPF 529.982.247-25 e CNPJ 11.222.333/0001-81.
 
 **RN17 — Busca de orçamento.** Se o texto digitado for um número, com ou sem `#` ou `nº`, o orçamento de **mesmo número** entra no resultado junto com os que têm o texto no nome do cliente. Sem número, busca só pelo nome. Sempre só da própria marcenaria.
+
+### 6.3 Mão de obra, variação de preço e meta do mês (spec 024) — também fora do preço
+
+**RN18 — Cobrança de mão de obra.** Só orçamentos enviados do mês (tudo, menos rascunho). Mão de obra = soma dos subtotais de serviço; participação = mão de obra ÷ soma dos preços finais × 100. **Valor médio da hora** = soma dos valores dos serviços cobrados por hora (unidade `h`) ÷ soma das horas, média ponderada; sem horas, não há valor. Exemplo: 8 h a 50,00 e 2 h a 100,00 dão 600,00 ÷ 10 h = 60,00 por hora. Implementação em `backend/src/dominio/painel/painel.ts`.
+
+**RN19 — Variação de preço.** `percentual = arred2((atual − anterior) ÷ anterior × 100)`; "subindo" se positivo, "caindo" se negativo e "estável" se 0,00% (tendência pelo percentual já arredondado). Sem valor anterior (ou zero), não compara. Serve ao custo dos materiais (de 90 dias atrás, ou o primeiro registrado do histórico, até o custo atual; os 10 mais usados nos orçamentos enviados dos últimos 90 dias) e ao valor médio da hora (contra o mês anterior). Exemplos: de 289,90 para 313,09 é +8,00%; de 50,00 para 45,00 é −10,00%.
+
+**RN20 — Meta do mês.** `percentual = arred2(aprovado ÷ meta × 100)` (passa de 100 quando a meta é superada); `falta = meta − aprovado`, nunca negativa; `atingida` quando o aprovado alcança a meta. "Aprovado" inclui em produção e entregue (RN09). Sem meta (nula ou zero), não há progresso. Só compara: não é previsão e não muda preço. Exemplo: 6.960,00 de 10.000,00 = 69,60%, faltam 3.040,00.
 
 ## 7. Fora destas regras (registrado, não implementado no MVP)
 

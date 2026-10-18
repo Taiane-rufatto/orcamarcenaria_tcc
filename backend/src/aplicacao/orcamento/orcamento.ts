@@ -221,9 +221,17 @@ export const removerCustoAdicional = (marcenariaId: string, id: string, custoId:
 // ---------- Registro e situação (Spec 004, RN09, RN11, D020) ----------
 
 // Transições permitidas pela RN09 por ação do usuário. `rascunho → enviado` acontece só pelo registro;
-// `enviado → vencido` é automático (RF36). Aprovado, recusado e vencido não saem da situação.
+// `enviado → vencido` é automático (RF36). Depois de aprovado, o orçamento segue para em produção e entregue
+// (spec 024); pode pular direto para entregue. Recusado, vencido e entregue não saem da situação.
 const TRANSICOES: Partial<Record<Situacao, Situacao[]>> = {
   enviado: ['aprovado', 'recusado'],
+  aprovado: ['em_producao', 'entregue'],
+  em_producao: ['entregue'],
+}
+
+const NOME_DA_SITUACAO: Record<Situacao, string> = {
+  rascunho: 'rascunho', enviado: 'enviado', aprovado: 'aprovado', recusado: 'recusado', vencido: 'vencido',
+  em_producao: 'em produção', entregue: 'entregue',
 }
 
 // Registrar = enviar (D020): confere RF32, atribui o próximo número da marcenaria e trava a edição.
@@ -246,7 +254,7 @@ export function mudarSituacao(marcenariaId: string, id: string, nova: Situacao):
     await repositorio.vencerOrcamentos(c, marcenariaId) // um enviado vencido não pode mais ser aprovado
     const atual = await repositorio.travarOrcamento(c, id, marcenariaId) as Situacao | null
     if (!atual) throw new ErroHttp(404, 'Orçamento não encontrado')
-    if (!TRANSICOES[atual]?.includes(nova)) throw new ErroHttp(409, `Não é possível passar um orçamento ${atual} para ${nova}`)
+    if (!TRANSICOES[atual]?.includes(nova)) throw new ErroHttp(409, `Não é possível passar um orçamento ${NOME_DA_SITUACAO[atual]} para ${NOME_DA_SITUACAO[nova]}`)
     await repositorio.mudarSituacao(c, id, marcenariaId, nova)
     return (await montarResposta(c, marcenariaId, id))!
   })

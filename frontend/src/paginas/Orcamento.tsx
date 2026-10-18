@@ -348,7 +348,18 @@ export function Orcamento() {
             <button className="secundario" onClick={() => executar(mudarSituacao(id, 'recusado'))}>Cliente recusou</button>
           </div>
         </>}
-        {orcamento.situacao === 'aprovado' && <p className="ajuda">O cliente aprovou este orçamento.</p>}
+        {orcamento.situacao === 'aprovado' && <>
+          <p className="ajuda">O cliente aprovou este orçamento. Quando começar a produzir, marque aqui.</p>
+          <div className="acoes">
+            <button onClick={() => executar(mudarSituacao(id, 'em_producao'))}>Começou a produção</button>
+            <button className="secundario" onClick={() => executar(mudarSituacao(id, 'entregue'))}>Já foi entregue</button>
+          </div>
+        </>}
+        {orcamento.situacao === 'em_producao' && <>
+          <p className="ajuda">Este orçamento está em produção.</p>
+          <div className="acoes"><button onClick={() => executar(mudarSituacao(id, 'entregue'))}>Marcar como entregue</button></div>
+        </>}
+        {orcamento.situacao === 'entregue' && <p className="ajuda">Este orçamento foi entregue ao cliente.</p>}
         {orcamento.situacao === 'recusado' && <p className="ajuda">O cliente recusou este orçamento.</p>}
         {orcamento.situacao === 'vencido' && <p className="ajuda">A validade terminou em {exibirData(orcamento.dataValidade)} sem resposta do cliente.</p>}
       </section>

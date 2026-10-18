@@ -174,7 +174,7 @@ export async function gravarCalculo(c: PoolClient, id: string, marcenariaId: str
 
 // ---------- Registro e situação (Spec 004) ----------
 
-export type Situacao = 'rascunho' | 'enviado' | 'aprovado' | 'recusado' | 'vencido'
+export type Situacao = 'rascunho' | 'enviado' | 'aprovado' | 'recusado' | 'vencido' | 'em_producao' | 'entregue'
 
 export interface FiltrosListagem {
   busca?: string
@@ -264,13 +264,47 @@ export async function mesAtual(c: PoolClient): Promise<string> {
 // Orçamentos do mês pela data de emissão (não há data de aprovação gravada). Só lê valores já calculados.
 export async function listarDoMes(c: PoolClient, marcenariaId: string, mes: string) {
   const { rows } = await c.query(
-    `SELECT situacao, preco_final, custo_direto_total FROM orcamento
-     WHERE marcenaria_id=$1
-       AND data_emissao >= ($2 || '-01')::date
-       AND data_emissao < (($2 || '-01')::date + interval '1 month')`,
+    `SELECT o.situacao, o.preco_final, o.custo_direto_total, o.subtotal_servicos,
+            COALESCE((SELECT SUM(i.quantidade) FROM orcamento_item i
+                      WHERE i.orcamento_id = o.id AND i.tipo = 'servico' AND i.unidade = 'h'), 0) AS horas,
+            COALESCE((SELECT SUM(i.valor_linha) FROM orcamento_item i
+                      WHERE i.orcamento_id = o.id AND i.tipo = 'servico' AND i.unidade = 'h'), 0) AS valor_das_horas
+     FROM orcamento o
+     WHERE o.marcenaria_id=$1
+       AND o.data_emissao >= ($2 || '-01')::date
+       AND o.data_emissao < (($2 || '-01')::date + interval '1 month')`,
     [marcenariaId, mes],
   )
-  return rows as { situacao: 'rascunho' | 'enviado' | 'aprovado' | 'recusado' | 'vencido'; preco_final: string; custo_direto_total: string }[]
+  return rows as {
+    situacao: Situacao; preco_final: string; custo_direto_total: string
+    subtotal_servicos: string; horas: string; valor_das_horas: string
+  }[]
+}
+
+// Materiais mais usados nos orçamentos enviados dos últimos 90 dias, com o custo de agora e o de 90 dias atrás
+// (ou o primeiro registrado, se o material é mais novo). Só lê o histórico de custo; a conta da variação é do domínio.
+export async function materiaisMaisUsados(c: PoolClient, marcenariaId: string) {
+  const { rows } = await c.query(
+    `WITH uso AS (
+       SELECT i.material_id, count(*)::int AS usos
+       FROM orcamento_item i JOIN orcamento o ON o.id = i.orcamento_id
+       WHERE o.marcenaria_id = $1 AND o.situacao <> 'rascunho' AND i.material_id IS NOT NULL
+         AND o.data_emissao >= (now() AT TIME ZONE 'America/Sao_Paulo')::date - 90
+       GROUP BY i.material_id
+     )
+     SELECT m.id AS material_id, m.nome, u.usos, m.custo_unitario AS custo_atual,
+       COALESCE(
+         (SELECT h.custo_unitario FROM material_custo_historico h
+          WHERE h.material_id = m.id AND h.marcenaria_id = $1 AND h.registrado_em <= now() - interval '90 days'
+          ORDER BY h.registrado_em DESC LIMIT 1),
+         (SELECT h.custo_unitario FROM material_custo_historico h
+          WHERE h.material_id = m.id AND h.marcenaria_id = $1 ORDER BY h.registrado_em ASC LIMIT 1)
+       ) AS custo_anterior
+     FROM uso u JOIN material m ON m.id = u.material_id AND m.marcenaria_id = $1
+     ORDER BY u.usos DESC, m.nome LIMIT 10`,
+    [marcenariaId],
+  )
+  return rows as { material_id: string; nome: string; usos: number; custo_atual: string; custo_anterior: string | null }[]
 }
 
 // ---------- Lista de compras (spec 023) ----------
