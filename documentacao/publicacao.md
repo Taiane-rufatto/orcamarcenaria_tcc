@@ -104,6 +104,17 @@ O `atualizar.sh` instala as dependências, compila API e front, aplica as migra�
 - E-mail não chegou: `journalctl -u orcamarcenaria-api -n 30`. `SMTP não configurado` = faltam as variáveis; `Invalid login` ou `535` = senha de app errada ou verificação em duas etapas desligada; `ETIMEDOUT` = porta 465 bloqueada (trocar para 587); nenhuma linha = o e-mail digitado não tem conta.
 - Problemas: `journalctl -u orcamarcenaria-api -n 50` mostra o log da API; `tail /var/log/nginx/error.log`, o do nginx.
 
+## Se o SSH parar de funcionar (o seu IP mudou)
+
+O grupo de segurança só aceita SSH (porta 22) de **um IP**, para a VPS não ficar aberta à internet. Quando o seu IP muda (outra rede, o provedor trocou o endereço), a conexão expira. Em vez de entrar no console da AWS, rode no seu computador, na pasta do projeto:
+
+```powershell
+.\implantacao\liberar-meu-ip-ssh.ps1 -SomenteVer   # só mostra o que faria
+.\implantacao\liberar-meu-ip-ssh.ps1               # libera o IP de agora e remove os antigos
+```
+
+O script libera o IP novo **antes** de remover os antigos (nunca fica sem acesso), acha o grupo pelo nome (`orcamarcenaria-sg`, região `sa-east-1`) e não mexe nas portas 80 e 443. Precisa do AWS CLI configurado (`aws configure`) com um usuário que possa alterar regras do grupo de segurança. Nenhum IP ou ID de conta fica no repositório, que é público.
+
 ## Atualizar depois de novos commits
 
 Envie os commits para o GitHub e, na VPS:
