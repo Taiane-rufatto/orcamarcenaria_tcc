@@ -39,3 +39,15 @@ export const equilibrioSchema = z.object({
       .nullable(),
   ),
 })
+
+// Spec 024. Meta de faturamento do mês em reais: maior que zero, até 2 casas. Vazio = sem meta.
+export const metaSchema = z.object({
+  metaDoMes: z.preprocess(
+    (v) => (typeof v === 'string' && v.trim() === '' ? null : v),
+    z.string('Informe a meta do mês com até 2 casas decimais').trim()
+      .transform((valor) => valor.replace(',', '.'))
+      .pipe(z.string().regex(/^\d{1,10}(\.\d{1,2})?$/, 'Informe a meta do mês com até 2 casas decimais')
+        .refine((v) => /[1-9]/.test(v), 'A meta do mês deve ser maior que zero'))
+      .nullable(),
+  ),
+})

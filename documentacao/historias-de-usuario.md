@@ -147,6 +147,31 @@ Histórias de suporte à pesquisa; não geram funcionalidade para o usuário fin
 
 - **Dado** os dez casos definidos em `qualidade-e-testes.md`, **quando** executo a suíte, **então** todos apresentam diferença nula após o arredondamento e o resultado é registrado na tabela de evidências.
 
+### US23 — Ajustar um orçamento já enviado sem redigitar
+**Como** marceneiro, **quero** duplicar um orçamento que já enviei, **para** mudar só o que o cliente pediu sem perder o número que ele já tem.
+`RF40, D040`
+
+- **Dado** um orçamento enviado, **quando** clico em "Duplicar para ajustar", **então** abre um rascunho novo, sem número, com os mesmos itens, custos, lucro e textos, e a tela diz "Ajuste do orçamento nº X".
+- **Dado** o rascunho novo, **quando** troco um item, **então** só ele muda e o preço é recalculado; o orçamento original continua como estava.
+- **Dado** um orçamento ainda em rascunho, **quando** tento duplicar, **então** o sistema avisa que basta editá-lo.
+
+### US22 — Ter uma visão de saúde do meu negócio
+**Como** marceneiro, **quero** ver num lugar só quanto aprovei contra a minha meta, quanto estou cobrando pela mão de obra e como estão os preços dos materiais que mais uso, **para** perceber cedo se preciso reajustar o que cobro.
+`RF60, RF61, RF62, RF63, D039`
+
+- **Dado** uma meta de R$ 10.000,00 e R$ 6.960,00 aprovados no mês, **quando** abro o Painel do mês, **então** vejo 69,60% da meta e que faltam R$ 3.040,00.
+- **Dado** um orçamento aprovado, **quando** começo a produzir e depois entrego, **então** posso marcar "em produção" e "entregue", e o painel mostra quantos estão em cada fase.
+- **Dado** que o valor médio da minha hora de serviço subiu de R$ 50,00 para R$ 55,00, **quando** abro o painel, **então** vejo "subiu 10,00%" em relação ao mês anterior.
+- **Dado** que o MDF subiu de R$ 289,90 para R$ 313,09, **quando** abro o painel, **então** ele aparece entre os materiais mais usados como "subindo 8,00%".
+
+### US21 — Comprar o material certo, do fornecedor certo
+**Como** marceneiro, **quero** ver no orçamento quais materiais estão com preço velho e ter uma lista do que comprar de cada fornecedor, **para** não orçar com custo desatualizado e comprar de uma vez só.
+`RF58, RF59, D038`
+
+- **Dado** um rascunho com um material de preço com mais de 30 dias, **quando** abro o orçamento, **então** o item mostra "Preço do material com N dias" e o botão "Continua o mesmo", que confirma o preço sem mudar o valor do item.
+- **Dado** que o custo do material mudou no catálogo depois de entrar no orçamento, **quando** abro o rascunho, **então** vejo "O custo do catálogo agora é R$ X" e o botão "Usar o novo custo", que atualiza o item e o preço.
+- **Dado** um orçamento com materiais de dois fornecedores, **quando** abro a lista de compras, **então** vejo um bloco por fornecedor com telefone e quantidades, os sem fornecedor no fim, e posso copiar o texto para o WhatsApp.
+
 ### US20 — Achar e identificar com menos esforço
 **Como** marceneiro, **quero** achar um orçamento pelo número, registrar o CPF ou CNPJ de quem recebe o orçamento e entender o arredondamento, **para** não perder tempo nem errar por falta de clareza.
 `RF54, RF55, RF56, RF57, D036`

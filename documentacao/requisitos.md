@@ -96,7 +96,7 @@ Versão 1.0 · Fonte canônica dos requisitos do projeto. Qualquer mudança aqui
 | RF37 | O sistema deve listar os orçamentos com número, cliente, data, preço final e situação, permitindo busca por cliente e filtro por situação e período; a busca também aceita o número do orçamento (RF55). | Essencial | OE5 | 004 |
 | RF38 | O sistema deve permitir consultar um orçamento registrado com todos os seus itens e valores originais. | Essencial | OE5 | 004 |
 | RF39 | O sistema deve permitir editar um orçamento em rascunho e bloquear a edição de itens após o envio, permitindo apenas mudança de situação. | Importante | OE5 | 004 |
-| RF40 | O sistema deve permitir duplicar um orçamento existente como novo rascunho. | Desejável | — | pós-TCC |
+| RF40 | O sistema deve permitir duplicar um orçamento já enviado como novo rascunho, sem número, com os dados e os valores congelados do original, emissão de hoje e validade da configuração, guardando a referência ao original. O original não muda. | Desejável | — | 025 |
 
 ### 1.8 Saída para o cliente
 
@@ -139,6 +139,22 @@ Versão 1.0 · Fonte canônica dos requisitos do projeto. Qualquer mudança aqui
 | RF55 | O sistema deve permitir buscar orçamento pelo número ("2", "#2" ou "nº 2"), além do nome do cliente (RN17). | Desejável | — | 022 |
 | RF56 | O sistema deve explicar cada regra de arredondamento com um exemplo numérico e informar mensagens de quantidade que digam o problema (negativa, zero ou casas decimais demais). | Desejável | — | 022 |
 | RF57 | A tela de criar conta deve informar que o acesso é de demonstração e pedir dados fictícios. | Desejável | — | 022 |
+
+### 1.15 Produção e painel de saúde do negócio (D039)
+
+| ID | Requisito | Prioridade | OE | Incremento |
+|---|---|---|---|---|
+| RF60 | O sistema deve permitir marcar o orçamento aprovado como "em produção" e como "entregue" (ou direto como entregue), sem voltar atrás. Os dois contam como aprovados nos indicadores. | Desejável | — | 024 |
+| RF61 | O sistema deve permitir definir, em "Minha marcenaria", a meta de faturamento do mês (opcional, maior que zero, até 2 casas) e mostrar no painel o valor aprovado, o percentual e quanto falta (RN20). | Desejável | — | 024 |
+| RF62 | O painel deve mostrar a mão de obra dos orçamentos enviados (soma e participação no preço) e o valor médio da hora de serviço, comparado com o mês anterior (RN18, RN19). | Desejável | — | 024 |
+| RF63 | O painel deve mostrar os materiais mais usados nos últimos 90 dias e se o custo de cada um está subindo, estável ou caindo, a partir do histórico de custo (RN19). | Desejável | — | 024 |
+
+### 1.14 Fornecedor completo (D038)
+
+| ID | Requisito | Prioridade | OE | Incremento |
+|---|---|---|---|---|
+| RF58 | No orçamento em rascunho, o sistema deve sinalizar o material do catálogo com preço antigo (mais de 30 dias) ou com custo diferente do item, permitindo confirmar que o preço continua o mesmo ou usar o novo custo, sem alterar o valor do item sozinho; e deve oferecer uma lista de compras interna, com os materiais agrupados por fornecedor e só com quantidades, que não consta no PDF do cliente. | Desejável | — | 023 |
+| RF59 | O fornecedor pode ter endereço (opcional, até 300 caracteres). | Desejável | — | 023 |
 
 ### 1.13 Segurança do acesso (D037)
 

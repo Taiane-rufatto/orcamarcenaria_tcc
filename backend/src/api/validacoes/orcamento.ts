@@ -71,12 +71,12 @@ const opcional = <T extends z.ZodType>(schema: T) => z.preprocess((v) => (v === 
 
 export const filtrosListagemSchema = z.object({
   busca: opcional(z.string()),
-  situacao: opcional(z.enum(['rascunho', 'enviado', 'aprovado', 'recusado', 'vencido'], 'Situação inválida')),
+  situacao: opcional(z.enum(['rascunho', 'enviado', 'aprovado', 'recusado', 'vencido', 'em_producao', 'entregue'], 'Situação inválida')),
   de: opcional(data),
   ate: opcional(data),
 })
 
-// Só aprovado e recusado são escolhidos pelo usuário; enviado vem do registro e vencido é automático (RN09).
+// Escolhidos pelo usuário: aprovado e recusado (depois de enviado) e, depois de aprovado, em produção e entregue (spec 024); enviado vem do registro e vencido é automático (RN09).
 export const mudancaSituacaoSchema = z.object({
-  situacao: z.enum(['aprovado', 'recusado'], 'Escolha aprovado ou recusado'),
+  situacao: z.enum(['aprovado', 'recusado', 'em_producao', 'entregue'], 'Escolha uma situação válida'),
 })

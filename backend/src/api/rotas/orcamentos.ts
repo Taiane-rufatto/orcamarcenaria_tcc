@@ -70,6 +70,16 @@ rotasOrcamentos.post('/orcamentos/:id/registrar', async (req, res) => {
   res.json(await casos.registrarOrcamento(marcenaria(res), lerId(req.params.id)))
 })
 
+// Spec 025 (RF40): duplica um orçamento já enviado como rascunho novo, para ajustar sem redigitar.
+rotasOrcamentos.post('/orcamentos/:id/duplicar', async (req, res) => {
+  res.status(201).json(await casos.duplicarOrcamento(marcenaria(res), lerId(req.params.id)))
+})
+
+// Spec 023 (RF58): lista interna de compras, só quantidades, agrupada por fornecedor.
+rotasOrcamentos.get('/orcamentos/:id/lista-de-compras', async (req, res) => {
+  res.json(await casos.listaDeCompras(marcenaria(res), lerId(req.params.id)))
+})
+
 rotasOrcamentos.post('/orcamentos/:id/situacao', async (req, res) => {
   const { situacao } = mudancaSituacaoSchema.parse(req.body)
   res.json(await casos.mudarSituacao(marcenaria(res), lerId(req.params.id), situacao))

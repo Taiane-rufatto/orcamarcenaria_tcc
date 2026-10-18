@@ -6,6 +6,45 @@ Formato: contexto → decisão → consequência → situação (`provisória` e
 
 ---
 
+## D040 — Duplicar orçamento para ajustar (RF40 promovido)
+**Data:** 2026-10-18 · **Situação:** firme (decidido pela autora; desenho escolhido em 2026-09-28, `roadmap.md` §5.1)
+
+**Contexto.** O orçamento registrado fica travado, para o número entregue ao cliente nunca corresponder a valores alterados depois (D020). Quando o cliente pede um ajuste, a única saída era criar outro do zero e redigitar tudo. O orientador mencionou a duplicação em 08/10/2026 e a autora a pediu.
+
+**Decisão.** Botão **"Duplicar para ajustar"** em qualquer orçamento já enviado (enviado, aprovado, em produção, entregue, recusado ou vencido). Nasce um **rascunho** novo, sem número, com o mesmo cliente, projeto, itens (valores congelados, RN08, inclusive os ajustados à mão), custos adicionais, lucro, arredondamento, especificações e observações. A emissão é hoje e a validade segue a configuração (D024). O rascunho guarda de qual orçamento veio e a tela mostra "Ajuste do orçamento nº X". O original **não muda**. O preço é refeito pelo mesmo domínio (D019).
+
+**Alternativas.** Reabrir o enviado para edição: rejeitada, quebra a rastreabilidade (D020). Versões (nº 12, 12-A): rejeitada no prazo do TCC. Duplicar rascunho: 409, edita-se direto.
+
+**Consequência.** Migração `015` (coluna `origem_id`). Promove o RF40, que sai da lista de trabalhos futuros. O cálculo e o PDF não mudam.
+
+---
+
+## D039 — Em produção e entregue, painel de saúde do negócio e meta do mês
+**Data:** 2026-10-18 · **Situação:** firme (decidido pela autora)
+
+**Contexto.** O resumo da orientação de 08/10/2026 pede novos estados ("em produção" e "entregue"), um funil com taxa de conversão, uma visão de preços de material e da cobrança de mão de obra, tudo num painel simples (a "visão de saúde do negócio"), e, no ponto de equilíbrio, uma meta mensal. A autora já tinha achado a meta com horas e valor da hora complicada; escolheu **só a meta do mês no painel**.
+
+**Decisão.** (1) Depois de aprovado, o orçamento pode ir para **em produção** e **entregue** (ou direto para entregue). Os dois contam como aprovados no painel. (2) O **painel do mês** ganha: a **meta do mês** (um campo opcional em Minha marcenaria, comparado com o valor aprovado, RN20); a **cobrança de mão de obra** (soma, participação no preço e valor médio da hora de serviço contra o mês anterior, RN18 e RN19); e os **preços dos materiais mais usados** nos últimos 90 dias, subindo, estáveis ou caindo, a partir do histórico de custo (RN19). (3) Tudo calculado no domínio (`backend/src/dominio/painel/`), só com valores já gravados; nada muda preço.
+
+**Alternativas.** Meta com horas disponíveis, valor da hora e valor mínimo por orçamento (a primeira ideia do ponto de equilíbrio): rejeitada pela autora por ser complicada; fica como direção do TCC II. Gráficos e comparação de vários meses: TCC II. Relatório de estoque: fora, o professor deu só como exemplo.
+
+**Consequência.** Migração `014` (situações novas, coluna `situacao` alargada para 20 caracteres, `meta_do_mes`). **Exceção à regra "migração nova, nunca editar a antiga":** a `004-situacoes.sql` foi editada para aceitar as sete situações, porque o migrador reaplica todos os arquivos a cada execução e a 004 recriaria a restrição só com cinco, o que falharia assim que existisse um orçamento em produção. A edição não muda nada em bancos já migrados. Promove RF60 a RF63 e a US22.
+
+---
+
+## D038 — Fornecedor completo: endereço, aviso no orçamento e lista de compras
+**Data:** 2026-10-18 · **Situação:** firme (decidido pela autora)
+
+**Contexto.** O resumo que a autora fez da orientação de 08/10/2026 pede o endereço do fornecedor, o alerta de preço dentro do orçamento (com "continua o mesmo" ou registrar o novo) e uma segunda saída do orçamento: uma lista de compras por fornecedor.
+
+**Decisão.** (1) Endereço opcional no fornecedor. (2) No orçamento em rascunho, cada material do catálogo mostra quando o preço está antigo (mais de 30 dias, RN15) ou quando o custo do catálogo mudou depois de o item entrar, com os botões "Continua o mesmo" e "Usar o novo custo"; o valor do item **nunca** muda sozinho (RN08). (3) **Lista de compras** interna: materiais agrupados por fornecedor atual, só quantidades, com botão "Copiar lista" (texto para WhatsApp); fora do PDF do cliente. (4) O campo de descrição do serviço vira "Quando cobrar", o que a análise da spec 016 marcava como feito sem estar (S2).
+
+**Alternativas.** Vários fornecedores por material e sugestão do mais barato: ficam para o TCC II (o proprietário usa um só). Imprimir a lista e custo estimado por fornecedor: depois, se a autora quiser. Envio automático por WhatsApp: não aprovado pelo professor.
+
+**Consequência.** Migração `013`. Promove RF58, RF59 e a US21. O cálculo do orçamento e o PDF não mudam.
+
+---
+
 ## D037 — Endurecimento de segurança a partir do diagnóstico (spec 021)
 **Data:** 2026-10-18 · **Situação:** firme
 

@@ -187,6 +187,8 @@ dialog.painel-lateral::backdrop { background: rgba(23, 38, 29, .28); }
 .selo.rascunho { background: var(--neutro-claro); color: var(--tinta); }
 .selo.enviado { background: var(--laranja-claro); color: var(--laranja-escuro); }
 .selo.aprovado { background: var(--verde-claro); color: var(--verde-escuro); }
+.selo.em_producao { background: var(--laranja-claro); color: var(--laranja-escuro); }
+.selo.entregue { background: var(--verde-claro); color: var(--verde-escuro); }
 .selo.recusado, .selo.vencido { background: var(--neutro-claro); color: var(--tinta-suave); }
 .filtros-orcamento { grid-template-columns: 2fr 1fr 1fr 1fr; }
 .resumo { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }

@@ -35,14 +35,15 @@ export interface NovoItem {
   valorUnitarioCatalogo: string | null // nulo no item avulso
 }
 
-export async function inserirOrcamento(c: PoolClient, marcenariaId: string, dados: Cabecalho): Promise<string> {
+// `origemId` (spec 025): o orçamento de onde este rascunho foi duplicado, ou nulo.
+export async function inserirOrcamento(c: PoolClient, marcenariaId: string, dados: Cabecalho, origemId: string | null = null): Promise<string> {
   const id = randomUUID()
   await c.query(
     `INSERT INTO orcamento (id, marcenaria_id, cliente_id, descricao_projeto, data_emissao, data_validade,
-       modo_lucro, percentual_lucro, regra_arredondamento, observacoes, especificacoes)
-     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
+       modo_lucro, percentual_lucro, regra_arredondamento, observacoes, especificacoes, origem_id)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`,
     [id, marcenariaId, dados.clienteId, dados.descricaoProjeto, dados.dataEmissao, dados.dataValidade,
-      dados.modoLucro, dados.percentualLucro, dados.regraArredondamento, dados.observacoes || null, dados.especificacoes || null],
+      dados.modoLucro, dados.percentualLucro, dados.regraArredondamento, dados.observacoes || null, dados.especificacoes || null, origemId],
   )
   return id
 }
@@ -140,11 +141,18 @@ export async function removerCustoAdicional(c: PoolClient, id: string, marcenari
 export async function lerOrcamento(c: PoolClient, id: string, marcenariaId: string) {
   // O nome do cliente vem do cadastro, não de uma cópia no orçamento (D021).
   const orcamento = (await c.query(
-    `SELECT o.*, cl.nome AS cliente_nome FROM orcamento o JOIN cliente cl ON cl.id = o.cliente_id
+    `SELECT o.*, cl.nome AS cliente_nome, origem.numero AS origem_numero
+     FROM orcamento o JOIN cliente cl ON cl.id = o.cliente_id
+     LEFT JOIN orcamento origem ON origem.id = o.origem_id AND origem.marcenaria_id = o.marcenaria_id
      WHERE o.id=$1 AND o.marcenaria_id=$2`, [id, marcenariaId])).rows[0]
   if (!orcamento) return null
+  // Spec 023: junto de cada item de material do catálogo, o custo atual dele e há quantos dias o preço foi
+  // atualizado, para avisar no rascunho quando o preço está velho ou mudou depois de entrar no orçamento.
   const itens = (await c.query(
-    `SELECT * FROM orcamento_item WHERE ${DO_ORCAMENTO_DA_MARCENARIA} ORDER BY ordem`, [id, marcenariaId])).rows
+    `SELECT i.*, m.custo_unitario AS material_custo_atual,
+            floor(extract(epoch FROM (now() - m.custo_atualizado_em)) / 86400)::int AS material_dias
+     FROM orcamento_item i LEFT JOIN material m ON m.id = i.material_id
+     WHERE ${DO_ORCAMENTO_DA_MARCENARIA.replace('orcamento_id', 'i.orcamento_id')} ORDER BY i.ordem`, [id, marcenariaId])).rows
   const custos = (await c.query(
     `SELECT * FROM orcamento_custo_adicional WHERE ${DO_ORCAMENTO_DA_MARCENARIA} ORDER BY ordem`, [id, marcenariaId])).rows
   return { orcamento, itens, custos }
@@ -169,7 +177,7 @@ export async function gravarCalculo(c: PoolClient, id: string, marcenariaId: str
 
 // ---------- Registro e situação (Spec 004) ----------
 
-export type Situacao = 'rascunho' | 'enviado' | 'aprovado' | 'recusado' | 'vencido'
+export type Situacao = 'rascunho' | 'enviado' | 'aprovado' | 'recusado' | 'vencido' | 'em_producao' | 'entregue'
 
 export interface FiltrosListagem {
   busca?: string
@@ -259,11 +267,72 @@ export async function mesAtual(c: PoolClient): Promise<string> {
 // Orçamentos do mês pela data de emissão (não há data de aprovação gravada). Só lê valores já calculados.
 export async function listarDoMes(c: PoolClient, marcenariaId: string, mes: string) {
   const { rows } = await c.query(
-    `SELECT situacao, preco_final, custo_direto_total FROM orcamento
-     WHERE marcenaria_id=$1
-       AND data_emissao >= ($2 || '-01')::date
-       AND data_emissao < (($2 || '-01')::date + interval '1 month')`,
+    `SELECT o.situacao, o.preco_final, o.custo_direto_total, o.subtotal_servicos,
+            COALESCE((SELECT SUM(i.quantidade) FROM orcamento_item i
+                      WHERE i.orcamento_id = o.id AND i.tipo = 'servico' AND i.unidade = 'h'), 0) AS horas,
+            COALESCE((SELECT SUM(i.valor_linha) FROM orcamento_item i
+                      WHERE i.orcamento_id = o.id AND i.tipo = 'servico' AND i.unidade = 'h'), 0) AS valor_das_horas
+     FROM orcamento o
+     WHERE o.marcenaria_id=$1
+       AND o.data_emissao >= ($2 || '-01')::date
+       AND o.data_emissao < (($2 || '-01')::date + interval '1 month')`,
     [marcenariaId, mes],
   )
-  return rows as { situacao: 'rascunho' | 'enviado' | 'aprovado' | 'recusado' | 'vencido'; preco_final: string; custo_direto_total: string }[]
+  return rows as {
+    situacao: Situacao; preco_final: string; custo_direto_total: string
+    subtotal_servicos: string; horas: string; valor_das_horas: string
+  }[]
+}
+
+// Materiais mais usados nos orçamentos enviados dos últimos 90 dias, com o custo de agora e o de 90 dias atrás
+// (ou o primeiro registrado, se o material é mais novo). Só lê o histórico de custo; a conta da variação é do domínio.
+export async function materiaisMaisUsados(c: PoolClient, marcenariaId: string) {
+  const { rows } = await c.query(
+    `WITH uso AS (
+       SELECT i.material_id, count(*)::int AS usos
+       FROM orcamento_item i JOIN orcamento o ON o.id = i.orcamento_id
+       WHERE o.marcenaria_id = $1 AND o.situacao <> 'rascunho' AND i.material_id IS NOT NULL
+         AND o.data_emissao >= (now() AT TIME ZONE 'America/Sao_Paulo')::date - 90
+       GROUP BY i.material_id
+     )
+     SELECT m.id AS material_id, m.nome, u.usos, m.custo_unitario AS custo_atual,
+       COALESCE(
+         (SELECT h.custo_unitario FROM material_custo_historico h
+          WHERE h.material_id = m.id AND h.marcenaria_id = $1 AND h.registrado_em <= now() - interval '90 days'
+          ORDER BY h.registrado_em DESC LIMIT 1),
+         (SELECT h.custo_unitario FROM material_custo_historico h
+          WHERE h.material_id = m.id AND h.marcenaria_id = $1 ORDER BY h.registrado_em ASC LIMIT 1)
+       ) AS custo_anterior
+     FROM uso u JOIN material m ON m.id = u.material_id AND m.marcenaria_id = $1
+     ORDER BY u.usos DESC, m.nome LIMIT 10`,
+    [marcenariaId],
+  )
+  return rows as { material_id: string; nome: string; usos: number; custo_atual: string; custo_anterior: string | null }[]
+}
+
+// ---------- Lista de compras (spec 023) ----------
+
+// Itens de material do orçamento com o fornecedor ATUAL de cada material (não o de quando o item entrou).
+// Item avulso não tem material, então vem sem fornecedor. Só quantidades: nenhum valor sai aqui.
+export async function itensParaCompra(c: PoolClient, id: string, marcenariaId: string) {
+  const { rows } = await c.query(
+    `SELECT i.descricao, i.quantidade, i.unidade,
+            f.id AS fornecedor_id, f.nome AS fornecedor_nome, f.telefone AS fornecedor_telefone, f.endereco AS fornecedor_endereco
+     FROM orcamento_item i
+     LEFT JOIN material m ON m.id = i.material_id
+     LEFT JOIN fornecedor f ON f.id = m.fornecedor_id
+     WHERE i.tipo = 'material' AND ${DO_ORCAMENTO_DA_MARCENARIA.replace('orcamento_id', 'i.orcamento_id')}
+     ORDER BY f.nome NULLS LAST, i.ordem`,
+    [id, marcenariaId],
+  )
+  return rows as {
+    descricao: string; quantidade: string; unidade: string
+    fornecedor_id: string | null; fornecedor_nome: string | null; fornecedor_telefone: string | null; fornecedor_endereco: string | null
+  }[]
+}
+
+// Data de hoje em São Paulo (AAAA-MM-DD), para a emissão do orçamento duplicado.
+export async function hoje(c: PoolClient): Promise<string> {
+  const { rows } = await c.query<{ data: string }>(`SELECT ((now() AT TIME ZONE 'America/Sao_Paulo')::date)::text AS data`)
+  return rows[0].data
 }

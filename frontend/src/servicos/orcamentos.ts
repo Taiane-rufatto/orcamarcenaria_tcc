@@ -6,11 +6,12 @@ import { baixarArquivo, requisitar } from './api'
 export type ModoLucro = 'margem' | 'markup'
 export type RegraArredondamento = 'duas_casas' | 'real_inteiro' | 'dezena'
 export type TipoItem = 'material' | 'servico'
-export type Situacao = 'rascunho' | 'enviado' | 'aprovado' | 'recusado' | 'vencido'
+export type Situacao = 'rascunho' | 'enviado' | 'aprovado' | 'recusado' | 'vencido' | 'em_producao' | 'entregue'
 
 // Rótulos das situações da RN09, na ordem do ciclo de vida.
 export const SITUACOES: Record<Situacao, string> = {
-  rascunho: 'Rascunho', enviado: 'Enviado', aprovado: 'Aprovado', recusado: 'Recusado', vencido: 'Vencido',
+  rascunho: 'Rascunho', enviado: 'Enviado', aprovado: 'Aprovado', em_producao: 'Em produção', entregue: 'Entregue',
+  recusado: 'Recusado', vencido: 'Vencido',
 }
 
 export type Cabecalho = {
@@ -28,6 +29,9 @@ export type Cabecalho = {
 export type Item = {
   id: string; tipo: TipoItem; descricao: string; unidade: string
   quantidade: string; valorUnitario: string; valorLinha: string; valorAjustadoManualmente: boolean
+  // Spec 023: avisos sobre o material do catálogo, decididos pela API (nulos e falsos no item avulso e no serviço).
+  materialId: string | null; materialCustoAtual: string | null; materialDias: number | null
+  precoDoMaterialAntigo: boolean; custoDoCatalogoMudou: boolean
 }
 
 export type Memorial = {
@@ -45,6 +49,7 @@ export type Orcamento = Required<Cabecalho> & {
   numero: number | null // nulo enquanto rascunho (D020)
   clienteNome: string // do cadastro (D021)
   situacao: Situacao
+  origemNumero: number | null // spec 025: número do orçamento de onde este rascunho foi duplicado
   itens: Item[]
   custosAdicionais: { id: string; descricao: string; valor: string }[]
   memorial: Memorial
@@ -78,8 +83,29 @@ export const adicionarCustoAdicional = (id: string, descricao: string, valor: st
 export const removerCustoAdicional = (id: string, custoId: string) =>
   requisitar<Orcamento>(rota(id, `/custos-adicionais/${custoId}`), 'DELETE')
 
+// Lista de compras (spec 023, RF58): materiais por fornecedor, só quantidades. Saída interna, fora do PDF do cliente.
+export type GrupoDeCompra = {
+  fornecedor: { id: string; nome: string; telefone: string | null; endereco: string | null } | null
+  itens: { descricao: string; quantidade: string; unidade: string }[]
+}
+// Texto pronto para colar no WhatsApp ou numa mensagem: um bloco por fornecedor, uma linha por material.
+// Só quantidades; nenhum valor sai aqui (é uma lista interna, não vai para o cliente).
+export function textoDaLista(grupos: GrupoDeCompra[]): string {
+  return grupos.map((grupo) => [
+    grupo.fornecedor
+      ? `${grupo.fornecedor.nome}${grupo.fornecedor.telefone ? ` · ${grupo.fornecedor.telefone}` : ''}`
+      : 'Sem fornecedor cadastrado',
+    ...grupo.itens.map((item) => `- ${exibirNumero(item.quantidade)} ${item.unidade} ${item.descricao}`),
+  ].join('\n')).join('\n\n')
+}
+
+export const listaDeCompras = (id: string) => requisitar<{ orcamentoId: string; grupos: GrupoDeCompra[] }>(rota(id, '/lista-de-compras'))
+
+// Spec 025 (RF40): cria um rascunho novo igual ao orçamento já enviado, para ajustar sem redigitar.
+export const duplicarOrcamento = (id: string) => requisitar<Orcamento>(rota(id, '/duplicar'), 'POST')
+
 export const registrarOrcamento = (id: string) => requisitar<Orcamento>(rota(id, '/registrar'), 'POST')
-export const mudarSituacao = (id: string, situacao: 'aprovado' | 'recusado') =>
+export const mudarSituacao = (id: string, situacao: 'aprovado' | 'recusado' | 'em_producao' | 'entregue') =>
   requisitar<Orcamento>(rota(id, '/situacao'), 'POST', { situacao })
 
 // PDF para o cliente (RF41–RF43): a lista de materiais e serviços (sem valores) só entra se pedida (D022).
