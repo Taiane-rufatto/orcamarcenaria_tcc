@@ -195,7 +195,17 @@ export async function listarOrcamentos(c: PoolClient, marcenariaId: string, filt
   const condicoes = ['o.marcenaria_id = $1']
   const valores: unknown[] = [marcenariaId]
   const filtrar = (condicao: string, valor: unknown) => { valores.push(valor); condicoes.push(condicao.replace('?', `$${valores.length}`)) }
-  if (filtros.busca?.trim()) filtrar(`cl.nome ILIKE ? ESCAPE '\\'`, `%${escaparCuringas(filtros.busca.trim())}%`)
+  if (filtros.busca?.trim()) {
+    const busca = filtros.busca.trim()
+    // Spec 022 (RF55): "12", "#12" ou "nº 12" também acha o orçamento de número 12, além do nome do cliente.
+    const numero = /^(?:n[º°o]\.?\s*|#)?(\d{1,9})$/i.exec(busca)?.[1]
+    valores.push(`%${escaparCuringas(busca)}%`)
+    const porNome = `cl.nome ILIKE $${valores.length} ESCAPE '\\'`
+    if (numero) {
+      valores.push(Number(numero))
+      condicoes.push(`(${porNome} OR o.numero = $${valores.length})`)
+    } else condicoes.push(porNome)
+  }
   if (filtros.situacao) filtrar('o.situacao = ?', filtros.situacao)
   if (filtros.de) filtrar('o.data_emissao >= ?', filtros.de)
   if (filtros.ate) filtrar('o.data_emissao <= ?', filtros.ate)
@@ -236,4 +246,24 @@ export async function registrarOrcamento(c: PoolClient, id: string, marcenariaId
 export async function mudarSituacao(c: PoolClient, id: string, marcenariaId: string, situacao: Situacao) {
   await c.query(
     'UPDATE orcamento SET situacao=$3, atualizado_em=now() WHERE id=$1 AND marcenaria_id=$2', [id, marcenariaId, situacao])
+}
+
+// ---------- Painel do mês (spec 019) ----------
+
+// Mês corrente na data de São Paulo, no formato AAAA-MM (o servidor pode estar em outro fuso).
+export async function mesAtual(c: PoolClient): Promise<string> {
+  const { rows } = await c.query<{ mes: string }>(`SELECT to_char(now() AT TIME ZONE 'America/Sao_Paulo', 'YYYY-MM') AS mes`)
+  return rows[0].mes
+}
+
+// Orçamentos do mês pela data de emissão (não há data de aprovação gravada). Só lê valores já calculados.
+export async function listarDoMes(c: PoolClient, marcenariaId: string, mes: string) {
+  const { rows } = await c.query(
+    `SELECT situacao, preco_final, custo_direto_total FROM orcamento
+     WHERE marcenaria_id=$1
+       AND data_emissao >= ($2 || '-01')::date
+       AND data_emissao < (($2 || '-01')::date + interval '1 month')`,
+    [marcenariaId, mes],
+  )
+  return rows as { situacao: 'rascunho' | 'enviado' | 'aprovado' | 'recusado' | 'vencido'; preco_final: string; custo_direto_total: string }[]
 }

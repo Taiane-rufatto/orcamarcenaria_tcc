@@ -27,3 +27,15 @@ export const padroesSchema = z.object({
   validadeDias: z.number('Informe a validade em dias').int('Informe um número inteiro de dias')
     .min(1, 'A validade deve ser de 1 a 365 dias').max(365, 'A validade deve ser de 1 a 365 dias'),
 })
+
+// Spec 018. Lucro mínimo em % do preço de venda: maior que zero e menor que 100, até 2 casas. Vazio = não informado.
+export const equilibrioSchema = z.object({
+  lucroMinimo: z.preprocess(
+    (v) => (typeof v === 'string' && v.trim() === '' ? null : v),
+    z.string('Informe o lucro mínimo em porcentagem, com até 2 casas decimais').trim()
+      .transform((valor) => valor.replace(',', '.'))
+      .pipe(z.string().regex(/^\d{1,2}(\.\d{1,2})?$/, 'Informe o lucro mínimo em porcentagem, com até 2 casas decimais')
+        .refine((v) => Number(v) > 0, 'O lucro mínimo deve ser maior que zero'))
+      .nullable(),
+  ),
+})

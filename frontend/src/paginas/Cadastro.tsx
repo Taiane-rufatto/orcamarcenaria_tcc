@@ -22,6 +22,8 @@ export function Cadastro() {
   }
 
   return <PainelAcesso titulo="Crie a conta da sua marcenaria">
+    {/* Orientação de 08/10/2026: deixar explícito que o cadastro aberto existe para teste. */}
+    <p className="aviso">Acesso de demonstração, aberto para testes do trabalho de conclusão de curso. Use dados fictícios: não coloque informações reais de clientes.</p>
     <form onSubmit={enviar}>
       <label>Nome da marcenaria<input name="nomeMarcenaria" required /></label>
       <label>Seu nome<input name="nomeResponsavel" autoComplete="name" required /></label>

@@ -12,6 +12,11 @@ export interface Padroes {
   validadeDias: number // dias, não é valor monetário
 }
 
+// Lucro mínimo do aviso de equilíbrio (spec 018): % do preço de venda. Opcional: nulo = não informado.
+export interface Equilibrio {
+  lucroMinimo: string | null
+}
+
 export interface DadosMarcenaria {
   nome: string
   responsavel: string
@@ -35,6 +40,20 @@ export async function lerPadroes(executor: Executor, marcenariaId: string): Prom
     regraArredondamento: linha.regra_arredondamento,
     validadeDias: linha.validade_padrao_dias,
   }
+}
+
+// Só lê (não cria a linha): serve também às consultas de orçamento, que rodam em transação somente leitura.
+export async function lerEquilibrio(executor: Executor, marcenariaId: string): Promise<Equilibrio> {
+  const { rows } = await executor.query('SELECT lucro_minimo FROM configuracao WHERE marcenaria_id=$1', [marcenariaId])
+  return { lucroMinimo: rows[0]?.lucro_minimo ?? null }
+}
+
+export async function gravarEquilibrio(marcenariaId: string, equilibrio: Equilibrio) {
+  await pool.query(
+    `INSERT INTO configuracao (marcenaria_id, lucro_minimo) VALUES ($1,$2)
+     ON CONFLICT (marcenaria_id) DO UPDATE SET lucro_minimo=$2, atualizado_em=now()`,
+    [marcenariaId, equilibrio.lucroMinimo],
+  )
 }
 
 export async function gravarPadroes(marcenariaId: string, padroes: Padroes) {

@@ -35,6 +35,11 @@ export type Memorial = {
   valorLucro: string; multiplicadorEquivalente: string | null; ajusteArredondamento: string; precoFinal: string
 }
 
+// Lucro real e aviso de lucro mínimo (spec 018): tudo calculado pela API; nulo em orçamento sem itens.
+export type Equilibrio = {
+  lucro: string; percentualDoPreco: string; lucroMinimo: string | null; abaixoDoMinimo: boolean
+}
+
 export type Orcamento = Required<Cabecalho> & {
   id: string
   numero: number | null // nulo enquanto rascunho (D020)
@@ -43,6 +48,7 @@ export type Orcamento = Required<Cabecalho> & {
   itens: Item[]
   custosAdicionais: { id: string; descricao: string; valor: string }[]
   memorial: Memorial
+  equilibrio: Equilibrio | null
 }
 
 export type ResumoOrcamento = {

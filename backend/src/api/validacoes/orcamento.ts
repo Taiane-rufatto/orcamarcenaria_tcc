@@ -13,7 +13,12 @@ function decimal(inteiros: number, casas: number, mensagem: string) {
 }
 const maiorQueZero = (valor: string) => /[1-9]/.test(valor)
 
-const quantidade = decimal(9, 3, 'Informe a quantidade com até 3 casas decimais')
+// Quantidade negativa tinha a mesma mensagem de formato ("até 3 casas decimais"), que não explicava o problema.
+const quantidade = z
+  .string('Informe a quantidade com até 3 casas decimais')
+  .trim()
+  .refine((valor) => !valor.startsWith('-'), 'A quantidade não pode ser negativa')
+  .pipe(decimal(9, 3, 'Informe a quantidade com até 3 casas decimais'))
   .refine(maiorQueZero, 'A quantidade deve ser maior que zero')
 const valorUnitario = decimal(8, 4, 'Informe o valor unitário, sem sinal negativo, com até 4 casas decimais')
 const valorCustoAdicional = decimal(10, 2, 'Informe o valor do custo adicional com até 2 casas decimais')

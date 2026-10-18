@@ -178,7 +178,34 @@ A linha do lucro traz só o rótulo "Lucro" (D027). A forma de lucro, o percentu
 
 Esse bloco é a evidência visual de que o sistema não é uma caixa-preta — requisito para a defesa e para os testes de conferência manual.
 
-## 6. Fora destas regras (registrado, não implementado no MVP)
+## 6. Lucro de verdade e aviso de lucro mínimo (spec 018, D033) — não faz parte do preço
+
+Estas regras **não alteram** os passos 1–9 da §2: só leem valores já calculados. Implementação em `backend/src/dominio/equilibrio/equilibrio.ts`, texto decimal, `ROUND_HALF_UP`.
+
+**RN12 — Lucro real.** `lucro = preco_final − custo_direto_total` (materiais, serviços e custos adicionais). Inclui o ajuste de arredondamento, porque ele também fica com a marcenaria. É o que sobra depois de pagar tudo o que o orçamento custa.
+
+**RN13 — Percentual do preço e aviso.**
+```
+percentual = arred2(lucro ÷ preco_final × 100)     (preço final zero: não calcula)
+aviso      = percentual < lucro_minimo             (só se o mínimo foi informado)
+```
+É a margem de verdade do orçamento e vale tanto para markup quanto para margem. A comparação usa o percentual já arredondado a duas casas, o mesmo que a tela mostra. O lucro mínimo é opcional, maior que 0 e menor que 100; fora disso vale como "não informado". Lucro negativo é calculado e avisa.
+
+**Exemplos (valores fictícios).** Preço R$ 4.200,00, custo R$ 2.100,00: lucro R$ 2.100,00 = 50,00%. Mínimo 40%: sem aviso; mínimo 60%: aviso. CT03 (preço R$ 2.760,00, custo R$ 1.931,10): lucro R$ 828,90 (827,61 + ajuste 1,29) = 30,03%. Baixando o markup para 20% no primeiro exemplo: preço R$ 2.520,00, lucro R$ 420,00 = 16,67%, com mínimo de 30% avisa. Casos de unidade em `backend/tests/unidade/equilibrio.test.ts`.
+
+### 6.1 Painel do mês e preço antigo (specs 019 e 020) — também fora do preço
+
+**RN14 — Resumo do mês.** Entram os orçamentos cuja data de emissão está no mês. Rascunho não é enviado. `enviados` = todos menos rascunhos. `valor aprovado` = soma dos preços finais dos aprovados; `lucro aprovado` = soma de (preço final − custo direto total) deles, orçamento a orçamento (RN12). `taxa de aprovação = arred2(aprovados ÷ enviados × 100)`; sem enviados, não há taxa. Só soma valores já gravados; não recalcula preço. Implementação em `backend/src/dominio/painel/painel.ts`. Exemplo: aprovados 4.200,00 (custo 2.100,00) e 2.760,00 (custo 1.931,10), mais recusado, vencido, enviado e rascunho → 5 enviados, valor 6.960,00, lucro 2.928,90 (42,08% do preço), taxa 40,00%.
+
+**RN15 — Preço antigo.** O custo de um material está antigo quando a última atualização ou confirmação foi há **mais de 30 dias** (30 dias ainda não é antigo). Só avisa; nunca muda custo nem orçamento. Implementação em `backend/src/dominio/catalogo/preco-antigo.ts`.
+
+### 6.2 CPF/CNPJ e busca por número (spec 022) — também fora do preço
+
+**RN16 — CPF ou CNPJ.** Aceita com ou sem pontuação; só vale com 11 dígitos (CPF) ou 14 (CNPJ), com os dois dígitos verificadores corretos (soma ponderada, resto da divisão por 11: resto menor que 2 vira 0, senão 11 menos o resto) e sem sequência repetida (111.111.111-11). Guarda só os dígitos. Só confere se o número é plausível; não consulta a Receita. Implementação em `backend/src/dominio/cliente/documento.ts`. Exemplos públicos de material didático: CPF 529.982.247-25 e CNPJ 11.222.333/0001-81.
+
+**RN17 — Busca de orçamento.** Se o texto digitado for um número, com ou sem `#` ou `nº`, o orçamento de **mesmo número** entra no resultado junto com os que têm o texto no nome do cliente. Sem número, busca só pelo nome. Sempre só da própria marcenaria.
+
+## 7. Fora destas regras (registrado, não implementado no MVP)
 
 - Aproveitamento de chapa / plano de corte (comprar chapa inteira e usar fração): tratado hoje pela quantidade fracionada informada pelo usuário (2,5 ch), sem otimização automática.
 - Rateio de custos indiretos (energia, aluguel, depreciação) por hora produtiva.

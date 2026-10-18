@@ -6,6 +6,71 @@ Formato: contexto → decisão → consequência → situação (`provisória` e
 
 ---
 
+## D037 — Endurecimento de segurança a partir do diagnóstico (spec 021)
+**Data:** 2026-10-18 · **Situação:** firme
+
+**Contexto.** O diagnóstico da spec 017 achou, como mais grave, a falta de limite de tentativas no login. O repositório é **público** e a branch com o diagnóstico foi enviada ao GitHub, o que tornou urgente corrigir o que o código resolve.
+
+**Decisão.** Corrigir no código os achados A1 (limite de tentativas), A2 (dependência com aviso crítico), A5 (tempo de resposta do login), A6 (`/saude` sem detalhe) e A7 (`JWT_SECRET` forte). O limite é em memória, sem dependência nova (a API roda em um processo só): login 10 por e-mail e 30 por endereço em 15 minutos; cadastro e recuperação de senha 10 por hora por endereço; redefinição 10 em 15 minutos; resposta 429 com `Retry-After`. A API confia em 1 salto de proxy (nginx) para ver o endereço real. Cabeçalhos do nginx (A3) e restrições do systemd (A11) ficam como modelo no repositório e roteiro em `publicacao.md`, porque dependem da VPS.
+
+**Consequência.** A API **não sobe** com `JWT_SECRET` de menos de 32 caracteres: conferir o `.env` da VPS antes de atualizar (trocar o segredo encerra as sessões abertas). O limite zera ao reiniciar a API. Ficam em aberto A4, A8, A9 e A10, e a lista "não verificado" do diagnóstico, que exige acesso à VPS.
+
+---
+
+## D036 — Ajustes de uso vindos da orientação: CPF/CNPJ, busca por número, textos
+**Data:** 2026-10-18 · **Situação:** firme (decidido pela autora)
+
+**Contexto.** A orientação de 08/10/2026 apontou melhorias pequenas e concretas: CPF ou CNPJ no cliente, descrição mais clara do arredondamento, busca de orçamento por número e explicar na apresentação que o cadastro aberto é para teste. O achado do 008 (mensagem de quantidade negativa) estava pendente.
+
+**Decisão.** (1) **CPF ou CNPJ opcional** no cliente, validado pelos dígitos verificadores (RN16), guardado só com os dígitos e **fora do PDF** do orçamento por enquanto: a autora pode decidir incluí-lo depois. Não é único. (2) **Busca por número** no orçamento: "2", "#2" ou "nº 2" acha o orçamento 2 além do nome do cliente (RN17). (3) **Textos:** cada regra de arredondamento com exemplo numérico (R$ 2.758,71 vira R$ 2.759,00 ou R$ 2.760,00) e o aviso de que ele só sobe o preço; mensagem de quantidade negativa que diz o problema. (4) A tela de **criar conta** avisa que é acesso de demonstração e pede dados fictícios.
+
+**Alternativas.** Forma de pagamento como módulo e separar registrar de enviar: mantidos como estão (observação em texto; D020), com a duplicação (RF40) como caminho para ajustar orçamento enviado.
+
+**Consequência.** Migração `012` (coluna `documento` com restrição de formato). Promove RF54 a RF57 e a US20. O cálculo do orçamento não muda.
+
+---
+
+## D035 — Painel do mês: como foram os orçamentos, em frases simples
+**Data:** 2026-10-14 · **Situação:** firme (decidido pela autora)
+
+**Contexto.** A orientação de 08/10/2026 sugeriu que o sistema mostrasse ao marceneiro uma visão simples do negócio (quantos orçamentos enviou, quantos foram aprovados). O estado já existe (rascunho, enviado, aprovado, recusado, vencido); falta resumir.
+
+**Decisão.** Uma tela **Painel do mês**, com seletor de mês, que mostra: quantos orçamentos foram enviados, quantos aprovados, recusados, vencidos e aguardando resposta; a **taxa de aprovação** (aprovados ÷ enviados); e o valor e o lucro dos aprovados. O mês é o da **data de emissão** (não existe data de aprovação). Rascunho não conta como enviado. A soma e as taxas moram no domínio (`backend/src/dominio/painel/`), sem recalcular preço: só somam valores que o cálculo do orçamento já gravou (RN14).
+
+**Alternativas.** Gráficos e comparação entre meses: ficam para o TCC II. Novos estados (em produção, entregue): TCC II.
+
+**Consequência.** Sem migração nova. O vencimento automático (RF36) é aplicado antes de contar. Promove RF47 e RF48 e US19. Nada aqui altera preço.
+
+---
+
+## D034 — Fornecedor, histórico de preço e alerta de preço antigo (RF16 promovido)
+**Data:** 2026-10-14 · **Situação:** firme (decidido pela autora)
+
+**Contexto.** O professor sugeriu cadastrar fornecedores ligados aos materiais e guardar o histórico de atualização do preço, com alerta quando o preço estiver velho. A necessidade mínima, nas palavras dele, é saber **de quem vem o preço**. O RF16 (histórico de custo) estava como pós-TCC.
+
+**Decisão.** (1) Cadastro simples de **fornecedor** (nome e telefone). (2) O **material** pode apontar para um fornecedor (opcional). (3) A cada vez que o custo ou o fornecedor do material muda, ou que a pessoa confirma "o preço continua o mesmo", grava-se uma linha de **histórico** (data, custo, fornecedor); nada é apagado. (4) **Alerta de preço antigo:** o preço sem atualizar ou confirmar há mais de **30 dias** aparece com um selo "Preço antigo" e o botão "Continua o mesmo" (RN15). O prazo é fixo; as duas semanas e o um mês da conversa eram exemplos.
+
+**Alternativas.** Vários fornecedores por material e comparação de preços: ficam para o TCC II. A autora informou em 2026-10-14 que o proprietário costuma usar um só fornecedor, o que confirma essa escolha e levou ao **fornecedor padrão** (RF53): um por marcenaria, já marcado ao cadastrar material novo; inativar o fornecedor padrão tira o padrão. Lista de compras por fornecedor e WhatsApp: TCC II. Prazo configurável do alerta: não vale a complexidade agora.
+
+**Consequência.** Migração `011` (tabela de fornecedor, colunas no material e histórico; materiais existentes ganham a primeira linha do histórico). Mudar só nome, descrição ou unidade não grava histórico. Orçamentos já criados continuam com o custo da época (RN08). Fornecedor inativo não pode ser escolhido, mas continua no histórico. Promove o RF16 (agora RF52) e cria RF49–RF51 e US18.
+
+---
+
+## D033 — Alerta de lucro mínimo: o diferencial do trabalho, sem alterar o preço
+**Data:** 2026-10-13 · **Situação:** firme (decidido pela autora); a leitura ainda deve ser validada com o orientador
+
+**Contexto.** Na orientação de 08/10/2026 o professor Muriel sugeriu, como contribuição do TCC, uma visão simplificada de ponto de equilíbrio. A primeira versão (meta mensal e horas de trabalho) foi considerada complicada pela autora, que pediu algo que o marceneiro use de verdade. Pesquisa de mercado: o erro mais comum é fechar preço "no olho" e a margem ir sumindo (Omie); o Sebrae manda o preço cobrir custos variáveis e fixos **e deixar um lucro desejado**, refazendo a conta quando o mercado paga menos; na oficina, o costume é um multiplicador sobre o custo que já embute despesas fixas e lucro.
+
+**Decisão.** O orçamento passa a mostrar o **lucro de verdade** (preço final menos o custo direto total, RN12) e quanto isso representa **do preço de venda** (RN13). Em "Minha marcenaria" a pessoa pode definir um **lucro mínimo** (% do preço, opcional); se o orçamento ficar abaixo, a tela avisa. Serve especialmente quando o marceneiro baixa o percentual para ganhar um cliente. **Não bloqueia nada e não altera o preço.** A conta mora no domínio (`backend/src/dominio/equilibrio/`), em arquivo separado do cálculo do preço.
+
+**Alternativas.** Meta mensal e horas de trabalho: rejeitada, difícil de entender e de preencher, e pouco usada na hora de orçar. Sinal de entrada de 50% e saldo (prática do setor): boa candidata a incremento próprio. Comparar com preço de mercado: sem fonte de dados.
+
+**Atenção ao nome.** Isto **não é** o ponto de equilíbrio completo sugerido pelo orientador (custo da operação, meta mensal, horas e agenda). É uma versão mais simples, que responde "este orçamento está me deixando pouco lucro?". O nome interno "equilibrio" no código e na API é histórico; para a pessoa e na apresentação o recurso é o **alerta de lucro mínimo**, e o ponto de equilíbrio completo é direção do TCC II, a validar com o orientador.
+
+**Consequência.** Migração `010` (coluna opcional `lucro_minimo`; remove as colunas da primeira ideia, que nunca foram publicadas). Sem lucro mínimo, a tela só mostra o lucro e nunca avisa. Orçamento sem itens não tem aviso. O aviso usa o mínimo **atual**, inclusive em orçamentos registrados, e nunca vai para o PDF do cliente (RF42). `calcularOrcamento` e os casos CT01–CT10 não mudam. Promove RF44–RF46 e US17; os valores de exemplo são fictícios.
+
+---
+
 ## D032 — Nomes de material, serviço e cliente gravados em maiúsculas
 **Data:** 2026-10-08 · **Situação:** firme (decidido pela autora)
 

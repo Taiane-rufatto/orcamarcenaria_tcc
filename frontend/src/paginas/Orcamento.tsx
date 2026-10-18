@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { CampoBusca } from '../componentes/CampoBusca'
+import { AvisoEquilibrio } from '../componentes/AvisoEquilibrio'
 import { Memorial } from '../componentes/Memorial'
 import { listarMateriais, listarServicos, type Material, type Servico } from '../servicos/catalogo'
 import { listarClientes, type Cliente } from '../servicos/clientes'
@@ -12,9 +13,9 @@ import {
 
 const UNIDADES = ['un', 'm', 'm²', 'ml', 'ch', 'kg', 'L', 'pç', 'h']
 const REGRAS: Record<RegraArredondamento, string> = {
-  duas_casas: 'Não arredondar (centavos)',
-  real_inteiro: 'Para cima, ao real inteiro',
-  dezena: 'Para cima, à dezena',
+  duas_casas: 'Não arredondar: mantém os centavos',
+  real_inteiro: 'Para cima, ao real: R$ 2.758,71 vira R$ 2.759,00',
+  dezena: 'Para cima, à dezena: R$ 2.758,71 vira R$ 2.760,00',
 }
 type Origem = 'material' | 'servico' | 'avulso'
 
@@ -349,6 +350,11 @@ export function Orcamento() {
         </div>
         <div className="acoes"><button onClick={baixar} disabled={baixando} aria-busy={baixando}>{baixando ? 'Gerando PDF…' : 'Baixar PDF'}</button></div>
       </section>}
+
+      <section className="folha">
+        <h2>Quanto sobra de lucro</h2>
+        <AvisoEquilibrio equilibrio={orcamento.equilibrio} />
+      </section>
 
       <section className="folha">
         <h2>Memorial de cálculo</h2>

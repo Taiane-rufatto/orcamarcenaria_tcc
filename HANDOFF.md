@@ -2,7 +2,9 @@
 
 **Atualizado em:** 2026-10-08 · Última sessão: 014 e 015 integrados e publicados na VPS.
 
-> **Próxima sessão:** 014 e 015 estão integrados em `main` e publicados na VPS (`186396d`). Antes de mandar o link ao orientador: conferir o CT03 no site e revisar a base publicada (dados fictícios, RNF15). O 009 (avaliação de uso) volta quando o termo estiver assinado (material em `evidencias/avaliacao-de-uso/`).
+> **Próxima sessão (2026-10-18):** a branch `spec/018-equilibrio-no-orcamento` está no GitHub com as specs 016 a 022 (repositório público). Foco: percurso de tela, VPS (migrações 010–012, cabeçalhos, `JWT_SECRET` de 32+ caracteres) e PR. **Antes (2026-10-14):** na mesma branch foram feitos o painel do mês (019) e o fornecedor com histórico de preço (020); falta o percurso de tela e aplicar as migrações `010` e `011` na VPS (backup antes). **Antes disso (2026-10-13):** o foco passou a ser a orientação de 08/10: 016 (análise), 017 (diagnóstico de segurança) e 018 (diferencial: lucro de verdade e lucro mínimo; falta conferência da autora e percurso de tela). Ver `ESTADO_ATUAL.md`. A migração `010` ainda não foi aplicada na VPS.
+>
+> **Antes disso:** 014 e 015 estão integrados em `main` e publicados na VPS (`186396d`). Antes de mandar o link ao orientador: conferir o CT03 no site e revisar a base publicada (dados fictícios, RNF15). O 009 (avaliação de uso) volta quando o termo estiver assinado (material em `evidencias/avaliacao-de-uso/`).
 
 Para qualquer nova sessão, agente ou ferramenta assumir o trabalho sem reconstruir contexto pelo histórico de conversa.
 
@@ -25,7 +27,7 @@ Decisões firmes: D001–D032. Nenhuma provisória no momento.
 ## O que **não** foi feito
 
 - Duplicar orçamento (RF40), desconto (RF33) e demais itens do `roadmap.md` §5: pós-TCC.
-- Entrevista: notas não transcritas; Q8–Q10 sem resposta; consentimento (B06) não confirmado — necessário também para a avaliação de uso (009).
+- Entrevista: notas não transcritas; Q8–Q10 sem resposta; consentimento (B06) dispensado pela autora em 2026-10-13.
 - Edição de custo adicional pela tela (a API tem `PUT`; a tela só inclui e remove).
 
 ## Contexto que não está óbvio nos arquivos
@@ -75,5 +77,5 @@ Decisões firmes: D001–D032. Nenhuma provisória no momento.
 
 ## Perguntas a fazer à autora antes de avançar
 
-1. O orientador validou o termo de consentimento? O proprietário assinou (B06)? Sem isso o 009 não abre.
+1. Quando aplicar a avaliação de uso (009) com o proprietário? O termo (B06) não será enviado, por decisão da autora.
 2. Há data para a apresentação de andamento (B07)?

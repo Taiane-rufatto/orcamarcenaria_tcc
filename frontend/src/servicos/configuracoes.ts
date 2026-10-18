@@ -8,11 +8,15 @@ export type DadosMarcenaria = {
 export type Padroes = {
   modoLucro: ModoLucro; percentualLucro: string; regraArredondamento: RegraArredondamento; validadeDias: number
 }
+// Spec 018: lucro mínimo (% do preço de venda) que a marcenaria aceita. Opcional.
 export type Configuracao = {
   marcenaria: DadosMarcenaria
+  equilibrio: { lucroMinimo: string | null }
   padroes: Padroes & { multiplicadorEquivalente: string | null } // calculado pelo servidor (D018)
 }
 
 export const obterConfiguracao = () => requisitar<Configuracao>('/configuracoes')
 export const salvarDadosMarcenaria = (dados: Record<string, string>) => requisitar<Configuracao>('/configuracoes/marcenaria', 'PUT', dados)
 export const salvarPadroes = (padroes: Padroes) => requisitar<Configuracao>('/configuracoes/padroes', 'PUT', padroes)
+export const salvarEquilibrio = (dados: { lucroMinimo: string }) =>
+  requisitar<Configuracao>('/configuracoes/equilibrio', 'PUT', dados)

@@ -1,8 +1,9 @@
 import { randomUUID } from 'node:crypto'
 import { pool } from '../banco/pool'
+import { atualizarMaterial, criarMaterial, listarMateriais, type DadosMaterial } from './material-repositorio'
 
 export type Tipo = 'material' | 'servico'
-type Dados = Record<string, string | undefined>
+type Dados = Record<string, string | null | undefined>
 export type Situacao = 'ativos' | 'inativos' | 'todos'
 
 // Só existem duas tabelas possíveis; o nome nunca vem do cliente, então a interpolação é segura.
@@ -14,6 +15,7 @@ const COLUNAS = {
 const escaparCuringas = (texto: string) => texto.replace(/[\\%_]/g, '\\$&')
 
 export async function listarCatalogo(tipo: Tipo, marcenariaId: string, busca = '', situacao: Situacao = 'ativos') {
+  if (tipo === 'material') return listarMateriais(marcenariaId, busca, situacao) // com fornecedor e data do preço (spec 020)
   const filtros = ['marcenaria_id = $1', `nome ILIKE $2 ESCAPE '\\'`]
   const valores: unknown[] = [marcenariaId, `%${escaparCuringas(busca.trim())}%`]
   if (situacao !== 'todos') { filtros.push('ativo = $3'); valores.push(situacao === 'ativos') }
@@ -21,6 +23,7 @@ export async function listarCatalogo(tipo: Tipo, marcenariaId: string, busca = '
 }
 
 export async function criarCatalogo(tipo: Tipo, marcenariaId: string, dados: Dados) {
+  if (tipo === 'material') return criarMaterial(marcenariaId, dados as unknown as DadosMaterial)
   const c = COLUNAS[tipo]
   const resultado = await pool.query(
     `INSERT INTO ${tipo} (id, marcenaria_id, nome, descricao, ${c.extra}, ${c.valor}) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *`,
@@ -30,6 +33,7 @@ export async function criarCatalogo(tipo: Tipo, marcenariaId: string, dados: Dad
 }
 
 export async function atualizarCatalogo(tipo: Tipo, id: string, marcenariaId: string, dados: Dados) {
+  if (tipo === 'material') return atualizarMaterial(id, marcenariaId, dados as unknown as DadosMaterial)
   const c = COLUNAS[tipo]
   const resultado = await pool.query(
     `UPDATE ${tipo} SET nome=$1, descricao=$2, ${c.extra}=$3, ${c.valor}=$4, atualizado_em=now() WHERE id=$5 AND marcenaria_id=$6 RETURNING *`,

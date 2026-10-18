@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { FiltroLista, RodapeLista } from '../componentes/FiltroLista'
 import { PainelLateral } from '../componentes/PainelLateral'
 import {
-  criarCliente, editarCliente, inativarCliente, listarClientes, reativarCliente, type Cliente,
+  criarCliente, editarCliente, exibirDocumento, inativarCliente, listarClientes, reativarCliente, type Cliente,
 } from '../servicos/clientes'
 import type { Situacao } from '../servicos/catalogo'
 
@@ -46,6 +46,7 @@ export function Clientes() {
       telefone: String(dados.get('telefone') ?? ''),
       email: String(dados.get('email') ?? ''),
       endereco: String(dados.get('endereco') ?? ''),
+      documento: String(dados.get('documento') ?? ''), // vazio = sem documento; a API confere os dígitos
     }
     try {
       if (editando) await editarCliente(editando.id, cliente)
@@ -87,7 +88,7 @@ export function Clientes() {
       {clientes.length === 0 ? <p className="vazio">Nenhum cliente encontrado.</p> : <div className="tabela-rolagem"><table>
         <thead><tr><th>Cliente</th><th>Telefone</th><th>E-mail</th><th>Situação</th><th><span className="sr-only">Ações</span></th></tr></thead>
         <tbody>{clientes.map((cliente) => <tr key={cliente.id} className={cliente.ativo ? '' : 'linha-inativa'}>
-          <td><b>{cliente.nome}</b>{cliente.endereco && <small>{cliente.endereco}</small>}</td>
+          <td><b>{cliente.nome}</b>{cliente.documento && <small>{exibirDocumento(cliente.documento)}</small>}{cliente.endereco && <small>{cliente.endereco}</small>}</td>
           <td data-label="Telefone" className="secundaria">{cliente.telefone ?? '—'}</td>
           <td data-label="E-mail" className="secundaria">{cliente.email ?? '—'}</td>
           <td data-label="Situação"><span className={cliente.ativo ? 'selo' : 'selo inativo'}>{cliente.ativo ? 'Ativo' : 'Inativo'}</span></td>
@@ -105,6 +106,7 @@ export function Clientes() {
         <label>Nome<input name="nome" defaultValue={editando?.nome} required autoFocus /></label>
         <label>Telefone (opcional)<input name="telefone" type="tel" maxLength={30} defaultValue={editando?.telefone ?? ''} /></label>
         <label>E-mail (opcional)<input name="email" type="email" maxLength={200} defaultValue={editando?.email ?? ''} /></label>
+        <label>CPF ou CNPJ (opcional)<input name="documento" inputMode="numeric" maxLength={18} placeholder="Só para o orçamento profissional" defaultValue={editando?.documento ? exibirDocumento(editando.documento) : ''} /></label>
         <label>Endereço (opcional)<input name="endereco" maxLength={300} defaultValue={editando?.endereco ?? ''} /></label>
         {!editando && <p className="ajuda">Enter cadastra e abre um formulário em branco. Esc ou ✕ fecham o painel.</p>}
         {confirmacao && <p role="status" className="salvo">{confirmacao}</p>}

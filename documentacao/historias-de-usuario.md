@@ -147,6 +147,40 @@ Histórias de suporte à pesquisa; não geram funcionalidade para o usuário fin
 
 - **Dado** os dez casos definidos em `qualidade-e-testes.md`, **quando** executo a suíte, **então** todos apresentam diferença nula após o arredondamento e o resultado é registrado na tabela de evidências.
 
+### US20 — Achar e identificar com menos esforço
+**Como** marceneiro, **quero** achar um orçamento pelo número, registrar o CPF ou CNPJ de quem recebe o orçamento e entender o arredondamento, **para** não perder tempo nem errar por falta de clareza.
+`RF54, RF55, RF56, RF57, D036`
+
+- **Dado** o orçamento nº 2, **quando** busco "2", "#2" ou "nº 2", **então** ele aparece, e a busca pelo nome do cliente continua funcionando.
+- **Dado** um cliente, **quando** informo um CPF ou CNPJ com dígito verificador errado, **então** a tela diz "CPF ou CNPJ inválido: confira os números"; vazio continua valendo.
+- **Dado** a escolha do arredondamento, **quando** olho as opções, **então** cada uma traz um exemplo (R$ 2.758,71 vira R$ 2.759,00 ou R$ 2.760,00) e a explicação de que ele só sobe o preço.
+- **Dado** uma quantidade negativa, **quando** incluo o item, **então** a mensagem é "A quantidade não pode ser negativa".
+
+### US19 — Ver como foi o mês
+**Como** marceneiro, **quero** ver quantos orçamentos enviei no mês, quantos foram aprovados e quanto isso rendeu, **para** saber se o meu trabalho de orçar está dando resultado.
+`RF47, RF48, D035`
+
+- **Dado** 5 orçamentos enviados em outubro, dos quais 2 aprovados (R$ 6.960,00 no total, R$ 2.928,90 de lucro), **quando** abro o Painel do mês de outubro, **então** vejo "2 de 5 foram aprovados (40,00%)" e o valor e o lucro dos aprovados.
+- **Dado** um mês sem orçamentos enviados, **quando** o abro, **então** a tela diz que não há orçamento enviado, sem números inventados.
+- **Dado** um orçamento enviado com validade vencida, **quando** abro o painel, **então** ele conta como vencido.
+
+### US18 — Saber de quem vem o preço e se ele está velho
+**Como** marceneiro, **quero** registrar de qual fornecedor vem o preço de cada material e ser lembrado quando o preço estiver velho, **para** não orçar com custo desatualizado.
+`RF16, RF49, RF50, RF51, RF52, D034`
+
+- **Dado** um material com fornecedor, **quando** troco o custo, **então** a data do preço renova e o histórico ganha uma linha com a data, o custo e o fornecedor.
+- **Dado** um material cujo preço não é atualizado há mais de 30 dias, **quando** abro a lista, **então** ele aparece com "Preço antigo" e o botão "Continua o mesmo", que renova a data sem mudar o custo.
+- **Dado** que mudei só o nome do material, **quando** abro o histórico, **então** não há linha nova.
+- **Dado** um fornecedor marcado como padrão, **quando** cadastro um material novo, **então** o fornecedor já vem escolhido e posso trocá-lo.
+
+### US17 — Saber quanto sobra de lucro e ser avisado quando for pouco
+**Como** marceneiro, **quero** ver quanto de lucro sobra em cada orçamento e ser avisado quando ficar abaixo do mínimo que aceito, **para** não fechar, sem perceber, um trabalho que não compensa.
+`RF44, RF45, RF46, D033`
+
+- **Dado** um orçamento de R$ 4.200,00 com custo direto de R$ 2.100,00, **quando** abro o orçamento, **então** a tela mostra lucro de R$ 2.100,00, que é 50,00% do preço de venda.
+- **Dado** um lucro mínimo de 30%, **quando** baixo o markup e o lucro cai para 16,67% do preço, **então** a tela avisa que ficou abaixo do mínimo e o preço continua o que o cálculo deu.
+- **Dado** que não defini lucro mínimo, **quando** abro o orçamento, **então** vejo o lucro e a tela convida a definir o mínimo, sem aviso.
+
 ### US16 — Conduzir a avaliação exploratória de uso
 **Como** pesquisadora, **quero** aplicar o roteiro de cinco tarefas com o proprietário, **para** registrar erros, dúvidas e adequação do fluxo ao processo real.
 `RNF01, OE7`

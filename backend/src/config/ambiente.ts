@@ -16,11 +16,20 @@ function smtp() {
   return { host: SMTP_HOST, porta: Number(SMTP_PORT ?? 465), usuario: SMTP_USUARIO, senha: SMTP_SENHA }
 }
 
+// Achado A7: segredo curto ou o texto do .env.example deixaria os tokens fáceis de falsificar.
+function segredoJwt(): string {
+  const valor = obrigatoria('JWT_SECRET')
+  if (valor.length < 32 || valor.startsWith('troque-por')) {
+    throw new Error('JWT_SECRET fraco: use ao menos 32 caracteres aleatórios (openssl rand -hex 32).')
+  }
+  return valor
+}
+
 export const ambiente = {
   porta: Number(process.env.PORT ?? 3333),
   urlBanco: obrigatoria('DATABASE_URL'),
   origemPermitida: process.env.CORS_ORIGIN ?? 'http://localhost:5173',
-  segredoJwt: obrigatoria('JWT_SECRET'),
+  segredoJwt: segredoJwt(),
   expiracaoJwt: process.env.JWT_EXPIRACAO ?? '8h',
   // Endereço do front-end, usado para montar o link do e-mail de recuperação de senha.
   urlFrontend: process.env.URL_FRONTEND ?? process.env.CORS_ORIGIN ?? 'http://localhost:5173',

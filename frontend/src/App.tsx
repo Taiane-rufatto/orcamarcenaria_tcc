@@ -4,9 +4,11 @@ import { RotaProtegida } from './componentes/RotaProtegida'
 import { Cadastro } from './paginas/Cadastro'
 import { Clientes } from './paginas/Clientes'
 import { Entrar } from './paginas/Entrar'
+import { Fornecedores } from './paginas/Fornecedores'
 import { EsqueciSenha } from './paginas/EsqueciSenha'
 import { Orcamento } from './paginas/Orcamento'
 import { Orcamentos } from './paginas/Orcamentos'
+import { Painel } from './paginas/Painel'
 import { Materiais } from './paginas/Materiais'
 import { MinhaMarcenaria } from './paginas/MinhaMarcenaria'
 import { RedefinirSenha } from './paginas/RedefinirSenha'
@@ -20,11 +22,13 @@ export default function App() {
     <Route path="/redefinir-senha" element={<RedefinirSenha />} />
     <Route element={<RotaProtegida />}>
       <Route element={<Layout />}>
+        <Route path="/painel" element={<Painel />} />
         <Route path="/orcamentos" element={<Orcamentos />} />
         <Route path="/orcamentos/:id" element={<Orcamento />} />
         <Route path="/materiais" element={<Materiais />} />
         <Route path="/servicos" element={<Servicos />} />
         <Route path="/clientes" element={<Clientes />} />
+        <Route path="/fornecedores" element={<Fornecedores />} />
         <Route path="/minha-marcenaria" element={<MinhaMarcenaria />} />
       </Route>
     </Route>

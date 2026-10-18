@@ -1,6 +1,12 @@
 # Estado Atual
 
-**Atualizado em:** 2026-10-08
+**Atualizado em:** 2026-10-18
+
+> **Endurecimento de segurança (021, D037) e ajustes de uso (022, D036), na mesma branch `spec/018-equilibrio-no-orcamento`, que **já está no GitHub** (o repositório é **público**).** 021: limite de tentativas no login, no cadastro e na recuperação de senha, `/saude` sem detalhe, `JWT_SECRET` forte e `npm audit fix` (0 vulnerabilidades); cabeçalhos do nginx e restrições do systemd são **modelos a aplicar à mão na VPS** (`documentacao/publicacao.md`). 022: CPF/CNPJ opcional no cliente (fora do PDF), busca de orçamento por número, exemplos no arredondamento, mensagem de quantidade negativa e aviso de acesso de teste no criar conta. **Testes automatizados verdes** (backend 255, frontend 24). O que foi chamado de "equilíbrio" é, na tela e na apresentação, o **alerta de lucro mínimo**, não o ponto de equilíbrio completo do orientador (D033). Cada spec 016 a 022 tem agora um `tasks.md`. **Faltam:** percurso de tela de 018 a 022, conferência dos casos em planilha, aplicar migrações `010`, `011` e `012` e as configurações de segurança na VPS (conferir antes que o `JWT_SECRET` tem 32 caracteres ou mais), validar o diferencial com o orientador e abrir o PR. Evidência: `evidencias/testes/021-022-seguranca-e-ajustes-de-uso-2026-10-18.md`.
+
+> **Painel do mês (019, D035) e Fornecedor com histórico de preço (020, D034, RF16 promovido), na mesma branch `spec/018-equilibrio-no-orcamento`.** Painel: orçamentos enviados, aprovados, recusados, vencidos, taxa de aprovação e valor e lucro dos aprovados. Fornecedor: cadastro simples, fornecedor no material, histórico a cada troca ou confirmação de preço e selo "Preço antigo" (mais de 30 dias) com o botão "Continua o mesmo". O quadro de lucro do orçamento foi reescrito em frases simples. **Testes automatizados verdes** (backend 209, frontend 21); **faltam o percurso de tela pela autora** e aplicar as migrações `010` e `011` na VPS (backup antes). Evidência: `evidencias/testes/019-020-painel-e-fornecedor-2026-10-14.md`. Menu com 7 itens: conferir a 390 px.
+
+> **Orientação de 08/10/2026 (spec 016 e 017), branch `spec/018-equilibrio-no-orcamento`.** A ata e a transcrição ficam só no computador da autora (`evidencias/orientacao/`, ignorada pelo Git). **016:** análise das sugestões do professor e plano 017–022 (`specs/016-analise-orientacao/analise.md`), com o diferencial (ponto de equilíbrio) trazido para o TCC I (D033). **017:** diagnóstico de segurança, só leitura, nada corrigido (`specs/017-diagnostico-seguranca/diagnostico.md`): achado de gravidade alta = sem limite de tentativas de login. **018:** lucro de verdade e aviso de lucro mínimo no orçamento (a primeira ideia, meta mensal e horas, foi trocada por ser complicada; pesquisa de mercado em D033), **implementado e com testes automatizados verdes** (backend 176, frontend 18); **faltam a conferência dos valores em planilha pela autora e o percurso de tela** para fechar (`evidencias/testes/018-equilibrio-no-orcamento-2026-10-13.md`). Migração `010` aplicada no banco local e no de teste, **ainda não na VPS**. Termo de consentimento (B06): a autora decidiu não enviar.
 
 > **Incremento 011 — Refinamento visual: fechado e integrado em `main` (PRs #11 e #12), em 2026-10-08.** Menu lateral, paleta neutra, listas com painel lateral, orçamento em duas colunas e campo com busca (D026, D027). Ensaio dos dez casos pela tela (Edge + Playwright): 10 de 10 com diferença R$ 0,00; RNF05 a 1366×768 e 390 px verificado (`evidencias/testes/011-refinamento-visual-2026-10-08.md`).
 >
@@ -59,10 +65,12 @@ Incrementos 000 a 008 entregues e integrados em `main` (008 no PR #9); o 011 tam
 
 ## Próximo passo (nesta ordem)
 
+0. **Fechar o 018, o 019 e o 020:** conferir os quatro casos da evidência em planilha, fazer o percurso de tela (passos na evidência), revisar o diff e abrir o PR. Depois, **019 (painel do mês)**, **020 (ajustes de uso e CPF/CNPJ)**; 021 (fornecedor e histórico de preço) e 022 (duplicar) só se houver prazo. Um incremento de **endurecimento de segurança** (limite de tentativas, `npm audit fix`, cabeçalhos no nginx, backup agendado) fica antes de divulgar mais o link. Validar com o professor a leitura simplificada do ponto de equilíbrio e confirmar com ele o formato do TCC I.
+
 1. **Antes de enviar o link ao orientador:** conferir no site publicado o orçamento CT03 (R$ 2.760,00) e revisar a base publicada, que deve ter só dados fictícios (RNF15); comentar com o orientador a entrada do RF07 (D028) e que os nomes do catálogo ficam em maiúsculas (D032).
-2. **Autora validar o termo de consentimento com o orientador** (pontos listados no topo do rascunho) e colher a assinatura do proprietário (B06). Com o termo assinado, abrir o 009 e aplicar `roteiro-e-ficha-da-sessao.md`.
+2. **Avaliação de uso (009):** a autora decidiu não enviar o termo de consentimento (B06 resolvido em 2026-10-13). Decidir quando aplicar `roteiro-e-ficha-da-sessao.md` com o proprietário.
 3. Opcional: relançar o CT01 com **margem** 0% (foi lançado com markup 0%, mesmo resultado) e informar o navegador usado na execução formal.
-4. Transcrever as notas da conversa com o proprietário em `evidencias/entrevista/` e responder Q6–Q10 (B01); confirmar o termo de consentimento (B06).
+4. Transcrever as notas da conversa com o proprietário em `evidencias/entrevista/` e responder Q6–Q10 (B01).
 
 ## Para ver no futuro
 

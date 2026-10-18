@@ -65,7 +65,7 @@ export function Orcamentos() {
     </div>
 
     <div className="filtros filtros-orcamento">
-      <label>Buscar por cliente<input value={filtros.busca} onChange={(e) => filtrar('busca', e.target.value)} placeholder="Nome do cliente" /></label>
+      <label>Buscar por cliente ou número<input value={filtros.busca} onChange={(e) => filtrar('busca', e.target.value)} placeholder="Nome do cliente ou nº do orçamento" /></label>
       <label>Situação
         <select value={filtros.situacao} onChange={(e) => filtrar('situacao', e.target.value)}>
           <option value="">Todas</option>

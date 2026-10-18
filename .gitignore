@@ -27,3 +27,7 @@ Thumbs.db
 # saídas locais que não são evidência
 backend/saida/
 *.pdf.local
+
+# Ata e transcrição de orientação: ficam só no computador da autora
+evidencias/orientacao/*
+!evidencias/orientacao/.gitkeep

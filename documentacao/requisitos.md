@@ -39,7 +39,7 @@ Versão 1.0 · Fonte canônica dos requisitos do projeto. Qualquer mudança aqui
 
 | ID | Requisito | Prioridade | OE | Incremento |
 |---|---|---|---|---|
-| RF08 | O sistema deve permitir cadastrar clientes com nome, telefone, e-mail e endereço, sendo obrigatório apenas o nome. O nome é gravado em maiúsculas (D032). | Essencial | OE4 | 005 |
+| RF08 | O sistema deve permitir cadastrar clientes com nome, telefone, e-mail e endereço, sendo obrigatório apenas o nome. O nome é gravado em maiúsculas (D032). CPF ou CNPJ opcional: ver RF54. | Essencial | OE4 | 005 |
 | RF09 | O sistema deve permitir listar, buscar por nome, editar e inativar clientes. | Essencial | OE4 | 005 |
 | RF10 | O sistema deve impedir a exclusão definitiva de cliente vinculado a orçamento, permitindo apenas a inativação. | Essencial | OE4 | 005 |
 
@@ -52,7 +52,7 @@ Versão 1.0 · Fonte canônica dos requisitos do projeto. Qualquer mudança aqui
 | RF13 | O sistema deve permitir listar materiais com busca por nome e filtro por situação. | Essencial | OE4 | 002 |
 | RF14 | O sistema deve permitir editar o custo unitário de um material sem alterar os valores de orçamentos já registrados (RN08 — congelamento de valores). | Essencial | OE3, OE5 | 003 |
 | RF15 | O sistema deve permitir inativar material, mantendo-o fora da seleção de novos orçamentos e preservando o histórico. | Essencial | OE4 | 002 |
-| RF16 | O sistema deve registrar o histórico de alterações de custo unitário do material (data, valor anterior, valor novo). | Desejável | — | pós-TCC |
+| RF16 | O sistema deve registrar o histórico de alterações de custo unitário do material (data, valor anterior, valor novo). Promovido na D034: ver RF52. | Desejável | — | 020 |
 
 ### 1.4 Catálogo de serviços e mão de obra
 
@@ -93,7 +93,7 @@ Versão 1.0 · Fonte canônica dos requisitos do projeto. Qualquer mudança aqui
 | RF34 | O sistema deve registrar o orçamento com número sequencial por marcenaria, gerado automaticamente. | Essencial | OE5 | 004 |
 | RF35 | O sistema deve manter a situação do orçamento entre: rascunho, enviado, aprovado, recusado e vencido (RN09). | Importante | OE5 | 004 |
 | RF36 | O sistema deve marcar automaticamente como vencido o orçamento cuja data de validade tenha passado e que esteja na situação "enviado". | Importante | OE5 | 004 |
-| RF37 | O sistema deve listar os orçamentos com número, cliente, data, preço final e situação, permitindo busca por cliente e filtro por situação e período. | Essencial | OE5 | 004 |
+| RF37 | O sistema deve listar os orçamentos com número, cliente, data, preço final e situação, permitindo busca por cliente e filtro por situação e período; a busca também aceita o número do orçamento (RF55). | Essencial | OE5 | 004 |
 | RF38 | O sistema deve permitir consultar um orçamento registrado com todos os seus itens e valores originais. | Essencial | OE5 | 004 |
 | RF39 | O sistema deve permitir editar um orçamento em rascunho e bloquear a edição de itens após o envio, permitindo apenas mudança de situação. | Importante | OE5 | 004 |
 | RF40 | O sistema deve permitir duplicar um orçamento existente como novo rascunho. | Desejável | — | pós-TCC |
@@ -105,6 +105,46 @@ Versão 1.0 · Fonte canônica dos requisitos do projeto. Qualquer mudança aqui
 | RF41 | O sistema deve gerar o orçamento em PDF contendo: identificação da marcenaria, dados do cliente, número e data, descrição do projeto, especificações do que está incluído e, se escolhido, itens com quantidade (sem valor por item, D022), preço final por extenso e numérico, validade e observações. | Essencial | OE5 | 006 |
 | RF42 | O PDF deve apresentar os itens sem revelar a composição interna de custo e lucro, exibindo apenas o que o marceneiro optar por mostrar: especificações e preço final, com a opção de incluir a lista de itens só com quantidades (D022). | Importante | OE5, OE7 | 006 |
 | RF43 | O sistema deve permitir baixar o PDF gerado a partir da tela do orçamento. | Essencial | OE5 | 006 |
+
+### 1.9 Lucro de verdade e lucro mínimo (diferencial, D033)
+
+| ID | Requisito | Prioridade | OE | Incremento |
+|---|---|---|---|---|
+| RF44 | O sistema deve permitir informar, em "Minha marcenaria", o lucro mínimo aceito, em porcentagem do preço de venda (maior que 0 e menor que 100, opcional). | Desejável | — | 018 |
+| RF45 | O sistema deve exibir, em cada orçamento com itens, o lucro real (preço final menos custo direto total) e quanto ele representa do preço de venda (RN12, RN13). | Desejável | — | 018 |
+| RF46 | O sistema deve avisar, no orçamento, quando o lucro ficar abaixo do mínimo definido, sem alterar o preço, sem bloquear o registro e sem constar no PDF do cliente. Sem mínimo definido, só informa o lucro. | Desejável | — | 018 |
+
+### 1.10 Painel do mês (D035)
+
+| ID | Requisito | Prioridade | OE | Incremento |
+|---|---|---|---|---|
+| RF47 | O sistema deve exibir, para um mês escolhido (padrão: o atual), quantos orçamentos foram enviados, aprovados, recusados, vencidos e aguardando resposta, e quantos estão em rascunho. | Desejável | — | 019 |
+| RF48 | O sistema deve exibir a taxa de aprovação do mês (aprovados ÷ enviados) e o valor e o lucro dos orçamentos aprovados (RN14). | Desejável | — | 019 |
+
+### 1.11 Fornecedores e histórico de preço (D034)
+
+| ID | Requisito | Prioridade | OE | Incremento |
+|---|---|---|---|---|
+| RF49 | O sistema deve permitir cadastrar fornecedores (nome obrigatório, telefone opcional), buscar, editar, inativar e reativar, sem exclusão. | Desejável | — | 020 |
+| RF50 | O sistema deve permitir indicar, em cada material, o fornecedor do preço (opcional) e exibi-lo na lista de materiais. | Desejável | — | 020 |
+| RF51 | O sistema deve mostrar há quantos dias o preço do material foi atualizado, destacar o preço sem atualização há mais de 30 dias (RN15) e permitir confirmar que ele continua o mesmo. | Desejável | — | 020 |
+| RF52 | O sistema deve registrar, a cada troca de custo ou de fornecedor e a cada confirmação, uma linha de histórico (data, custo, fornecedor) e exibir as últimas no cadastro do material. | Desejável | — | 020 |
+| RF53 | O sistema deve permitir escolher um fornecedor padrão (só ativo, um por marcenaria), que já vem marcado ao cadastrar material novo; inativar o fornecedor padrão tira o padrão. | Desejável | — | 020 |
+
+### 1.12 Ajustes de uso (D036)
+
+| ID | Requisito | Prioridade | OE | Incremento |
+|---|---|---|---|---|
+| RF54 | O sistema deve permitir informar CPF ou CNPJ no cliente (opcional, com ou sem pontuação), recusando números inválidos pelos dígitos verificadores (RN16) e guardando só os dígitos. Não consta no PDF do orçamento. | Desejável | — | 022 |
+| RF55 | O sistema deve permitir buscar orçamento pelo número ("2", "#2" ou "nº 2"), além do nome do cliente (RN17). | Desejável | — | 022 |
+| RF56 | O sistema deve explicar cada regra de arredondamento com um exemplo numérico e informar mensagens de quantidade que digam o problema (negativa, zero ou casas decimais demais). | Desejável | — | 022 |
+| RF57 | A tela de criar conta deve informar que o acesso é de demonstração e pedir dados fictícios. | Desejável | — | 022 |
+
+### 1.13 Segurança do acesso (D037)
+
+| ID | Requisito | Prioridade | OE | Incremento |
+|---|---|---|---|---|
+| RNF27 | A API deve limitar tentativas de login, cadastro, recuperação e redefinição de senha por endereço (e, no login, por e-mail), respondendo 429 com `Retry-After`. Verificação: testes de unidade e de integração. | Importante | — | 021 |
 
 ---
 

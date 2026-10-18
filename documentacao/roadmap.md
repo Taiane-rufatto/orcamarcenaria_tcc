@@ -36,6 +36,11 @@ Prioridade e dependência definem a ordem. Um incremento só é aberto quando o 
 | 013 | Cadastro em sequência: "Salvar e cadastrar outro" no painel de materiais, serviços e clientes (D030) | M3 | 011 | US03, US05, US06 | RF08, RF11, RF17 |
 | 014 | Cadastro pelo teclado: Enter cadastra e continua; Esc ou ✕ fecham o painel (D031, revisa D030) | M3 | 013 | US03, US05, US06 | RF08, RF11, RF17 |
 | 015 | Nomes de material, serviço e cliente em maiúsculas, com migração dos existentes (D032) | M3 | 014 | US03, US05, US06 | RF08, RF11, RF17, RNF26 |
+| 018 | Lucro de verdade e aviso de lucro mínimo no orçamento: o diferencial do trabalho, sem alterar o preço (D033; origem: orientação de 08/10/2026, spec 016, e pesquisa de mercado) | M3 | 015 | US17 | RF44–RF46 |
+| 019 | Painel do mês: orçamentos enviados, aprovados, recusados, vencidos, taxa de aprovação e valor aprovado (D035; origem: orientação de 08/10/2026) | M3 | 018 | US19 | RF47, RF48 |
+| 020 | Fornecedor, histórico de preço do material e alerta de preço antigo (D034; RF16 promovido) | M3 | 018 | US18 | RF16, RF49–RF52 |
+| 021 | Endurecimento de segurança: limite de tentativas, `/saude` sem detalhe, `JWT_SECRET` forte, dependência corrigida (D037; origem: diagnóstico da spec 017) | M3 | 017 | — | RNF27 |
+| 022 | Ajustes de uso: CPF/CNPJ no cliente, busca por número, textos do arredondamento e da quantidade, aviso de acesso de teste (D036; origem: orientação de 08/10/2026) | M3 | 020 | US20 | RF54–RF57 |
 
 ### Observações de sequenciamento
 

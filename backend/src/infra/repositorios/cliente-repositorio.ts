@@ -4,7 +4,7 @@ import { pool } from '../banco/pool'
 
 // Cadastro de clientes (RF08–RF10). Todo SQL filtra por marcenaria_id (AGENTS §5.1).
 export type Situacao = 'ativos' | 'inativos' | 'todos'
-export interface DadosCliente { nome: string; telefone?: string; email?: string; endereco?: string }
+export interface DadosCliente { nome: string; telefone?: string; email?: string; endereco?: string; documento?: string }
 
 const escaparCuringas = (texto: string) => texto.replace(/[\\%_]/g, '\\$&')
 const vazioComoNulo = (valor?: string) => valor || null
@@ -18,17 +18,17 @@ export async function listarClientes(marcenariaId: string, busca = '', situacao:
 
 export async function criarCliente(marcenariaId: string, dados: DadosCliente) {
   const resultado = await pool.query(
-    'INSERT INTO cliente (id, marcenaria_id, nome, telefone, email, endereco) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *',
-    [randomUUID(), marcenariaId, dados.nome, vazioComoNulo(dados.telefone), vazioComoNulo(dados.email), vazioComoNulo(dados.endereco)],
+    'INSERT INTO cliente (id, marcenaria_id, nome, telefone, email, endereco, documento) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *',
+    [randomUUID(), marcenariaId, dados.nome, vazioComoNulo(dados.telefone), vazioComoNulo(dados.email), vazioComoNulo(dados.endereco), vazioComoNulo(dados.documento)],
   )
   return resultado.rows[0]
 }
 
 export async function atualizarCliente(id: string, marcenariaId: string, dados: DadosCliente) {
   const resultado = await pool.query(
-    `UPDATE cliente SET nome=$3, telefone=$4, email=$5, endereco=$6, atualizado_em=now()
+    `UPDATE cliente SET nome=$3, telefone=$4, email=$5, endereco=$6, documento=$7, atualizado_em=now()
      WHERE id=$1 AND marcenaria_id=$2 RETURNING *`,
-    [id, marcenariaId, dados.nome, vazioComoNulo(dados.telefone), vazioComoNulo(dados.email), vazioComoNulo(dados.endereco)],
+    [id, marcenariaId, dados.nome, vazioComoNulo(dados.telefone), vazioComoNulo(dados.email), vazioComoNulo(dados.endereco), vazioComoNulo(dados.documento)],
   )
   return resultado.rows[0] ?? null
 }
