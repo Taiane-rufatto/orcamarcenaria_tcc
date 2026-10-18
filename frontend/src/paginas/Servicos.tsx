@@ -112,7 +112,7 @@ export function Servicos() {
         </label>
         <label>Valor (R$)<input name="valor" inputMode="decimal" placeholder="0,0000" defaultValue={editando?.valor_unitario.replace('.', ',')} required /></label>
         {editando && <p className="ajuda">Orçamentos que já usam este serviço mantêm o valor antigo; o novo vale para os próximos.</p>}
-        <label>Descrição (opcional)<input name="descricao" maxLength={300} defaultValue={editando?.descricao ?? ''} /></label>
+        <label>Quando cobrar (opcional)<input name="descricao" maxLength={300} placeholder="Ex.: montagem na casa do cliente; cobrar quando a obra for fora da cidade" defaultValue={editando?.descricao ?? ''} /></label>
         {!editando && <p className="ajuda">Enter cadastra e abre um formulário em branco. Esc ou ✕ fecham o painel.</p>}
         {confirmacao && <p role="status" className="salvo">{confirmacao}</p>}
         {erro && <p role="alert" className="alerta">{erro}</p>}

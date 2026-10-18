@@ -41,6 +41,7 @@ Prioridade e dependência definem a ordem. Um incremento só é aberto quando o 
 | 020 | Fornecedor, histórico de preço do material e alerta de preço antigo (D034; RF16 promovido) | M3 | 018 | US18 | RF16, RF49–RF52 |
 | 021 | Endurecimento de segurança: limite de tentativas, `/saude` sem detalhe, `JWT_SECRET` forte, dependência corrigida (D037; origem: diagnóstico da spec 017) | M3 | 017 | — | RNF27 |
 | 022 | Ajustes de uso: CPF/CNPJ no cliente, busca por número, textos do arredondamento e da quantidade, aviso de acesso de teste (D036; origem: orientação de 08/10/2026) | M3 | 020 | US20 | RF54–RF57 |
+| 023 | Fornecedor completo: endereço, aviso de preço dentro do orçamento e lista de compras (D038; origem: resumo da orientação feito pela autora) | M3 | 020 | US21 | RF58, RF59 |
 
 ### Observações de sequenciamento
 

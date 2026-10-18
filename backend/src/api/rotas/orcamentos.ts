@@ -70,6 +70,11 @@ rotasOrcamentos.post('/orcamentos/:id/registrar', async (req, res) => {
   res.json(await casos.registrarOrcamento(marcenaria(res), lerId(req.params.id)))
 })
 
+// Spec 023 (RF58): lista interna de compras, só quantidades, agrupada por fornecedor.
+rotasOrcamentos.get('/orcamentos/:id/lista-de-compras', async (req, res) => {
+  res.json(await casos.listaDeCompras(marcenaria(res), lerId(req.params.id)))
+})
+
 rotasOrcamentos.post('/orcamentos/:id/situacao', async (req, res) => {
   const { situacao } = mudancaSituacaoSchema.parse(req.body)
   res.json(await casos.mudarSituacao(marcenaria(res), lerId(req.params.id), situacao))

@@ -3,7 +3,7 @@ import { pool } from '../banco/pool'
 
 // Cadastro de fornecedores (RF49, spec 020). Todo SQL filtra por marcenaria_id (AGENTS §5.1).
 export type Situacao = 'ativos' | 'inativos' | 'todos'
-export interface DadosFornecedor { nome: string; telefone?: string }
+export interface DadosFornecedor { nome: string; telefone?: string; endereco?: string }
 
 const escaparCuringas = (texto: string) => texto.replace(/[\\%_]/g, '\\$&')
 
@@ -22,16 +22,16 @@ export async function listarFornecedores(marcenariaId: string, busca = '', situa
 
 export async function criarFornecedor(marcenariaId: string, dados: DadosFornecedor) {
   const resultado = await pool.query(
-    'INSERT INTO fornecedor (id, marcenaria_id, nome, telefone) VALUES ($1,$2,$3,$4) RETURNING *',
-    [randomUUID(), marcenariaId, dados.nome, dados.telefone || null],
+    'INSERT INTO fornecedor (id, marcenaria_id, nome, telefone, endereco) VALUES ($1,$2,$3,$4,$5) RETURNING *',
+    [randomUUID(), marcenariaId, dados.nome, dados.telefone || null, dados.endereco || null],
   )
   return resultado.rows[0]
 }
 
 export async function atualizarFornecedor(id: string, marcenariaId: string, dados: DadosFornecedor) {
   const resultado = await pool.query(
-    'UPDATE fornecedor SET nome=$3, telefone=$4, atualizado_em=now() WHERE id=$1 AND marcenaria_id=$2 RETURNING *',
-    [id, marcenariaId, dados.nome, dados.telefone || null],
+    'UPDATE fornecedor SET nome=$3, telefone=$4, endereco=$5, atualizado_em=now() WHERE id=$1 AND marcenaria_id=$2 RETURNING *',
+    [id, marcenariaId, dados.nome, dados.telefone || null, dados.endereco || null],
   )
   return resultado.rows[0] ?? null
 }

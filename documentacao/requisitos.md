@@ -140,6 +140,13 @@ Versão 1.0 · Fonte canônica dos requisitos do projeto. Qualquer mudança aqui
 | RF56 | O sistema deve explicar cada regra de arredondamento com um exemplo numérico e informar mensagens de quantidade que digam o problema (negativa, zero ou casas decimais demais). | Desejável | — | 022 |
 | RF57 | A tela de criar conta deve informar que o acesso é de demonstração e pedir dados fictícios. | Desejável | — | 022 |
 
+### 1.14 Fornecedor completo (D038)
+
+| ID | Requisito | Prioridade | OE | Incremento |
+|---|---|---|---|---|
+| RF58 | No orçamento em rascunho, o sistema deve sinalizar o material do catálogo com preço antigo (mais de 30 dias) ou com custo diferente do item, permitindo confirmar que o preço continua o mesmo ou usar o novo custo, sem alterar o valor do item sozinho; e deve oferecer uma lista de compras interna, com os materiais agrupados por fornecedor e só com quantidades, que não consta no PDF do cliente. | Desejável | — | 023 |
+| RF59 | O fornecedor pode ter endereço (opcional, até 300 caracteres). | Desejável | — | 023 |
+
 ### 1.13 Segurança do acesso (D037)
 
 | ID | Requisito | Prioridade | OE | Incremento |

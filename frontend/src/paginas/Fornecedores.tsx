@@ -42,7 +42,7 @@ export function Fornecedores() {
     // Cadastro novo (Enter ou botão) mantém o painel aberto para o próximo; Esc ou ✕ fecham. Na edição, salva e fecha.
     const cadastrarOutro = !editando
     const dados = new FormData(formulario)
-    const fornecedor = { nome: String(dados.get('nome')), telefone: String(dados.get('telefone') ?? '') }
+    const fornecedor = { nome: String(dados.get('nome')), telefone: String(dados.get('telefone') ?? ''), endereco: String(dados.get('endereco') ?? '') }
     try {
       if (editando) await editarFornecedor(editando.id, fornecedor)
       else await criarFornecedor(fornecedor)
@@ -89,7 +89,7 @@ export function Fornecedores() {
       {fornecedores.length === 0 ? <p className="vazio">Nenhum fornecedor encontrado.</p> : <div className="tabela-rolagem"><table>
         <thead><tr><th>Fornecedor</th><th>Telefone</th><th>Situação</th><th><span className="sr-only">Ações</span></th></tr></thead>
         <tbody>{fornecedores.map((fornecedor) => <tr key={fornecedor.id} className={fornecedor.ativo ? '' : 'linha-inativa'}>
-          <td><b>{fornecedor.nome}</b>{fornecedor.padrao && <> <span className="selo">Padrão</span></>}</td>
+          <td><b>{fornecedor.nome}</b>{fornecedor.padrao && <> <span className="selo">Padrão</span></>}{fornecedor.endereco && <small>{fornecedor.endereco}</small>}</td>
           <td data-label="Telefone" className="secundaria">{fornecedor.telefone ?? '—'}</td>
           <td data-label="Situação"><span className={fornecedor.ativo ? 'selo' : 'selo inativo'}>{fornecedor.ativo ? 'Ativo' : 'Inativo'}</span></td>
           <td className="acoes-linha">{fornecedor.ativo ? <>
@@ -106,6 +106,7 @@ export function Fornecedores() {
       <form key={editando?.id ?? 'novo'} onSubmit={salvar} className="formulario-painel">
         <label>Nome<input name="nome" defaultValue={editando?.nome} required autoFocus /></label>
         <label>Telefone (opcional)<input name="telefone" type="tel" maxLength={30} defaultValue={editando?.telefone ?? ''} /></label>
+        <label>Endereço (opcional)<input name="endereco" maxLength={300} defaultValue={editando?.endereco ?? ''} /></label>
         {!editando && <p className="ajuda">Enter cadastra e abre um formulário em branco. Esc ou ✕ fecham o painel.</p>}
         {confirmacao && <p role="status" className="salvo">{confirmacao}</p>}
         {erro && <p role="alert" className="alerta">{erro}</p>}

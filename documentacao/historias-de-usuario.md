@@ -147,6 +147,14 @@ Histórias de suporte à pesquisa; não geram funcionalidade para o usuário fin
 
 - **Dado** os dez casos definidos em `qualidade-e-testes.md`, **quando** executo a suíte, **então** todos apresentam diferença nula após o arredondamento e o resultado é registrado na tabela de evidências.
 
+### US21 — Comprar o material certo, do fornecedor certo
+**Como** marceneiro, **quero** ver no orçamento quais materiais estão com preço velho e ter uma lista do que comprar de cada fornecedor, **para** não orçar com custo desatualizado e comprar de uma vez só.
+`RF58, RF59, D038`
+
+- **Dado** um rascunho com um material de preço com mais de 30 dias, **quando** abro o orçamento, **então** o item mostra "Preço do material com N dias" e o botão "Continua o mesmo", que confirma o preço sem mudar o valor do item.
+- **Dado** que o custo do material mudou no catálogo depois de entrar no orçamento, **quando** abro o rascunho, **então** vejo "O custo do catálogo agora é R$ X" e o botão "Usar o novo custo", que atualiza o item e o preço.
+- **Dado** um orçamento com materiais de dois fornecedores, **quando** abro a lista de compras, **então** vejo um bloco por fornecedor com telefone e quantidades, os sem fornecedor no fim, e posso copiar o texto para o WhatsApp.
+
 ### US20 — Achar e identificar com menos esforço
 **Como** marceneiro, **quero** achar um orçamento pelo número, registrar o CPF ou CNPJ de quem recebe o orçamento e entender o arredondamento, **para** não perder tempo nem errar por falta de clareza.
 `RF54, RF55, RF56, RF57, D036`

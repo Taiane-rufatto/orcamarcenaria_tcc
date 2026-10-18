@@ -3,6 +3,7 @@ import { pool } from '../../infra/banco/pool'
 import { ErroHttp } from '../../api/erros/erro-http'
 import { calcularOrcamento, multiplicadorEquivalente } from '../../dominio/orcamento/calculo'
 import { avaliarEquilibrio } from '../../dominio/equilibrio/equilibrio'
+import { custoDoCatalogoMudou, precoEstaAntigo } from '../../dominio/catalogo/preco-antigo'
 import * as repositorio from '../../infra/repositorios/orcamento-repositorio'
 import { buscarCliente } from '../../infra/repositorios/cliente-repositorio'
 import { lerEquilibrio, lerPadroes } from '../../infra/repositorios/configuracao-repositorio'
@@ -87,6 +88,11 @@ async function montarResposta(c: PoolClient, marcenariaId: string, id: string) {
       descricao: i.descricao, unidade: i.unidade, quantidade: i.quantidade,
       valorUnitario: i.valor_unitario, valorLinha: i.valor_linha,
       valorAjustadoManualmente: i.valor_ajustado_manualmente,
+      // Spec 023: avisos sobre o material do catálogo (nulos no item avulso). Só informam; o valor do item não muda sozinho.
+      materialCustoAtual: (i.material_custo_atual ?? null) as string | null,
+      materialDias: (i.material_dias ?? null) as number | null,
+      precoDoMaterialAntigo: i.material_dias != null && precoEstaAntigo(i.material_dias),
+      custoDoCatalogoMudou: i.material_custo_atual != null && custoDoCatalogoMudou(i.material_custo_atual, i.valor_unitario),
     })),
     custosAdicionais: custos.map((custo) => ({ id: custo.id, descricao: custo.descricao, valor: custo.valor })),
     // Memorial de cálculo (RF31), na ordem de regras-de-calculo.md §5.
@@ -262,4 +268,32 @@ export function listarOrcamentos(marcenariaId: string, filtros: FiltrosListagem)
       situacao: o.situacao as Situacao,
     }))
   })
+}
+
+// ---------- Lista de compras (spec 023, RF58) ----------
+
+// Materiais do orçamento agrupados por fornecedor, para ligar e comprar. É uma saída INTERNA: só quantidades,
+// nunca custo, lucro ou preço, e não faz parte do PDF do cliente (RF42). Os sem fornecedor ficam num grupo à parte, no fim.
+export async function listaDeCompras(marcenariaId: string, id: string) {
+  return emTransacao(async (c) => {
+    if (!await repositorio.lerOrcamento(c, id, marcenariaId)) throw new ErroHttp(404, 'Orçamento não encontrado')
+    const grupos: {
+      fornecedor: { id: string; nome: string; telefone: string | null; endereco: string | null } | null
+      itens: { descricao: string; quantidade: string; unidade: string }[]
+    }[] = []
+    for (const linha of await repositorio.itensParaCompra(c, id, marcenariaId)) {
+      let grupo = grupos.find((g) => (g.fornecedor?.id ?? null) === linha.fornecedor_id)
+      if (!grupo) {
+        grupo = {
+          fornecedor: linha.fornecedor_id
+            ? { id: linha.fornecedor_id, nome: linha.fornecedor_nome!, telefone: linha.fornecedor_telefone, endereco: linha.fornecedor_endereco }
+            : null,
+          itens: [],
+        }
+        grupos.push(grupo)
+      }
+      grupo.itens.push({ descricao: linha.descricao, quantidade: linha.quantidade, unidade: linha.unidade })
+    }
+    return { orcamentoId: id, grupos }
+  }, 'BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY')
 }

@@ -2,8 +2,9 @@ import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { CampoBusca } from '../componentes/CampoBusca'
 import { AvisoEquilibrio } from '../componentes/AvisoEquilibrio'
+import { ListaDeCompras } from '../componentes/ListaDeCompras'
 import { Memorial } from '../componentes/Memorial'
-import { listarMateriais, listarServicos, type Material, type Servico } from '../servicos/catalogo'
+import { confirmarPrecoMaterial, exibirValor, listarMateriais, listarServicos, type Material, type Servico } from '../servicos/catalogo'
 import { listarClientes, type Cliente } from '../servicos/clientes'
 import {
   adicionarCustoAdicional, adicionarItem, alterarCabecalho, alterarItem, consultarOrcamento, exibirData, exibirMoeda, exibirNumero,
@@ -47,6 +48,12 @@ export function Orcamento() {
       .catch((causa) => { if (atual) setErro(causa instanceof Error ? causa.message : 'Não foi possível carregar o orçamento') })
     return () => { atual = false }
   }, [id])
+
+  // Spec 023 (RF58): "o preço continua o mesmo" renova a data do material no catálogo; o item não muda.
+  const confirmarPrecoDoMaterial = (materialId: string) => executar(confirmarPrecoMaterial(materialId).then(() => consultarOrcamento(id)))
+  // "Registrar o novo": o item passa a usar o custo atual do catálogo; o servidor recalcula o orçamento (D019).
+  const usarNovoCusto = (item: DadosOrcamento['itens'][number]) =>
+    executar(alterarItem(id, item.id, item.quantidade, item.materialCustoAtual ?? item.valorUnitario))
 
   // Executa uma alteração; em caso de sucesso, a resposta substitui o orçamento exibido.
   async function executar(acao: Promise<DadosOrcamento>): Promise<boolean> {
@@ -253,7 +260,9 @@ export function Orcamento() {
           <tbody>{orcamento.itens.map((item) => {
             const formulario = `item-${item.id}`
             return <tr key={`${item.id}-${item.quantidade}-${item.valorUnitario}`}>
-              <td>{item.descricao}{item.valorAjustadoManualmente && <small><span className="selo ajustado">Valor ajustado neste orçamento</span></small>}</td>
+              <td>{item.descricao}{item.valorAjustadoManualmente && <small><span className="selo ajustado">Valor ajustado neste orçamento</span></small>}
+                {editavel && item.precoDoMaterialAntigo && item.materialId && <small><span className="selo enviado">Preço do material com {item.materialDias} dias</span> <button type="button" className="discreto" onClick={() => confirmarPrecoDoMaterial(item.materialId!)}>Continua o mesmo</button></small>}
+                {editavel && item.custoDoCatalogoMudou && item.materialCustoAtual && <small><span className="selo enviado">O custo do catálogo agora é {exibirValor(item.materialCustoAtual)}</span> <button type="button" className="discreto" onClick={() => usarNovoCusto(item)}>Usar o novo custo</button></small>}</td>
               <td data-label="Tipo">{item.tipo === 'material' ? 'Material' : 'Serviço'}</td>
               {editavel ? <>
                 <td data-label="Quantidade"><span className="campo-com-unidade">
@@ -300,6 +309,8 @@ export function Orcamento() {
         </form>
         </>}
       </section>
+
+      <ListaDeCompras id={id} versao={orcamento.itens.map((i) => `${i.id}:${i.quantidade}`).join('|')} />
 
       <section className="folha">
         <h2>Custos adicionais</h2>

@@ -143,8 +143,13 @@ export async function lerOrcamento(c: PoolClient, id: string, marcenariaId: stri
     `SELECT o.*, cl.nome AS cliente_nome FROM orcamento o JOIN cliente cl ON cl.id = o.cliente_id
      WHERE o.id=$1 AND o.marcenaria_id=$2`, [id, marcenariaId])).rows[0]
   if (!orcamento) return null
+  // Spec 023: junto de cada item de material do catálogo, o custo atual dele e há quantos dias o preço foi
+  // atualizado, para avisar no rascunho quando o preço está velho ou mudou depois de entrar no orçamento.
   const itens = (await c.query(
-    `SELECT * FROM orcamento_item WHERE ${DO_ORCAMENTO_DA_MARCENARIA} ORDER BY ordem`, [id, marcenariaId])).rows
+    `SELECT i.*, m.custo_unitario AS material_custo_atual,
+            floor(extract(epoch FROM (now() - m.custo_atualizado_em)) / 86400)::int AS material_dias
+     FROM orcamento_item i LEFT JOIN material m ON m.id = i.material_id
+     WHERE ${DO_ORCAMENTO_DA_MARCENARIA.replace('orcamento_id', 'i.orcamento_id')} ORDER BY i.ordem`, [id, marcenariaId])).rows
   const custos = (await c.query(
     `SELECT * FROM orcamento_custo_adicional WHERE ${DO_ORCAMENTO_DA_MARCENARIA} ORDER BY ordem`, [id, marcenariaId])).rows
   return { orcamento, itens, custos }
@@ -266,4 +271,25 @@ export async function listarDoMes(c: PoolClient, marcenariaId: string, mes: stri
     [marcenariaId, mes],
   )
   return rows as { situacao: 'rascunho' | 'enviado' | 'aprovado' | 'recusado' | 'vencido'; preco_final: string; custo_direto_total: string }[]
+}
+
+// ---------- Lista de compras (spec 023) ----------
+
+// Itens de material do orçamento com o fornecedor ATUAL de cada material (não o de quando o item entrou).
+// Item avulso não tem material, então vem sem fornecedor. Só quantidades: nenhum valor sai aqui.
+export async function itensParaCompra(c: PoolClient, id: string, marcenariaId: string) {
+  const { rows } = await c.query(
+    `SELECT i.descricao, i.quantidade, i.unidade,
+            f.id AS fornecedor_id, f.nome AS fornecedor_nome, f.telefone AS fornecedor_telefone, f.endereco AS fornecedor_endereco
+     FROM orcamento_item i
+     LEFT JOIN material m ON m.id = i.material_id
+     LEFT JOIN fornecedor f ON f.id = m.fornecedor_id
+     WHERE i.tipo = 'material' AND ${DO_ORCAMENTO_DA_MARCENARIA.replace('orcamento_id', 'i.orcamento_id')}
+     ORDER BY f.nome NULLS LAST, i.ordem`,
+    [id, marcenariaId],
+  )
+  return rows as {
+    descricao: string; quantidade: string; unidade: string
+    fornecedor_id: string | null; fornecedor_nome: string | null; fornecedor_telefone: string | null; fornecedor_endereco: string | null
+  }[]
 }

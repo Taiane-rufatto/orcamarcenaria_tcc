@@ -6,6 +6,19 @@ Formato: contexto → decisão → consequência → situação (`provisória` e
 
 ---
 
+## D038 — Fornecedor completo: endereço, aviso no orçamento e lista de compras
+**Data:** 2026-10-18 · **Situação:** firme (decidido pela autora)
+
+**Contexto.** O resumo que a autora fez da orientação de 08/10/2026 pede o endereço do fornecedor, o alerta de preço dentro do orçamento (com "continua o mesmo" ou registrar o novo) e uma segunda saída do orçamento: uma lista de compras por fornecedor.
+
+**Decisão.** (1) Endereço opcional no fornecedor. (2) No orçamento em rascunho, cada material do catálogo mostra quando o preço está antigo (mais de 30 dias, RN15) ou quando o custo do catálogo mudou depois de o item entrar, com os botões "Continua o mesmo" e "Usar o novo custo"; o valor do item **nunca** muda sozinho (RN08). (3) **Lista de compras** interna: materiais agrupados por fornecedor atual, só quantidades, com botão "Copiar lista" (texto para WhatsApp); fora do PDF do cliente. (4) O campo de descrição do serviço vira "Quando cobrar", o que a análise da spec 016 marcava como feito sem estar (S2).
+
+**Alternativas.** Vários fornecedores por material e sugestão do mais barato: ficam para o TCC II (o proprietário usa um só). Imprimir a lista e custo estimado por fornecedor: depois, se a autora quiser. Envio automático por WhatsApp: não aprovado pelo professor.
+
+**Consequência.** Migração `013`. Promove RF58, RF59 e a US21. O cálculo do orçamento e o PDF não mudam.
+
+---
+
 ## D037 — Endurecimento de segurança a partir do diagnóstico (spec 021)
 **Data:** 2026-10-18 · **Situação:** firme
 

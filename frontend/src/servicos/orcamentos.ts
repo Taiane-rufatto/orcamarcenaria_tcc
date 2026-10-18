@@ -28,6 +28,9 @@ export type Cabecalho = {
 export type Item = {
   id: string; tipo: TipoItem; descricao: string; unidade: string
   quantidade: string; valorUnitario: string; valorLinha: string; valorAjustadoManualmente: boolean
+  // Spec 023: avisos sobre o material do catálogo, decididos pela API (nulos e falsos no item avulso e no serviço).
+  materialId: string | null; materialCustoAtual: string | null; materialDias: number | null
+  precoDoMaterialAntigo: boolean; custoDoCatalogoMudou: boolean
 }
 
 export type Memorial = {
@@ -77,6 +80,24 @@ export const adicionarCustoAdicional = (id: string, descricao: string, valor: st
   requisitar<Orcamento>(rota(id, '/custos-adicionais'), 'POST', { descricao, valor })
 export const removerCustoAdicional = (id: string, custoId: string) =>
   requisitar<Orcamento>(rota(id, `/custos-adicionais/${custoId}`), 'DELETE')
+
+// Lista de compras (spec 023, RF58): materiais por fornecedor, só quantidades. Saída interna, fora do PDF do cliente.
+export type GrupoDeCompra = {
+  fornecedor: { id: string; nome: string; telefone: string | null; endereco: string | null } | null
+  itens: { descricao: string; quantidade: string; unidade: string }[]
+}
+// Texto pronto para colar no WhatsApp ou numa mensagem: um bloco por fornecedor, uma linha por material.
+// Só quantidades; nenhum valor sai aqui (é uma lista interna, não vai para o cliente).
+export function textoDaLista(grupos: GrupoDeCompra[]): string {
+  return grupos.map((grupo) => [
+    grupo.fornecedor
+      ? `${grupo.fornecedor.nome}${grupo.fornecedor.telefone ? ` · ${grupo.fornecedor.telefone}` : ''}`
+      : 'Sem fornecedor cadastrado',
+    ...grupo.itens.map((item) => `- ${exibirNumero(item.quantidade)} ${item.unidade} ${item.descricao}`),
+  ].join('\n')).join('\n\n')
+}
+
+export const listaDeCompras = (id: string) => requisitar<{ orcamentoId: string; grupos: GrupoDeCompra[] }>(rota(id, '/lista-de-compras'))
 
 export const registrarOrcamento = (id: string) => requisitar<Orcamento>(rota(id, '/registrar'), 'POST')
 export const mudarSituacao = (id: string, situacao: 'aprovado' | 'recusado') =>
