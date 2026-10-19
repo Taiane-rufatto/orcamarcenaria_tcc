@@ -6,6 +6,8 @@ export function PainelLateral({ titulo, aberto, aoFechar, children }: {
   titulo: string; aberto: boolean; aoFechar: () => void; children: ReactNode
 }) {
   const janela = useRef<HTMLDialogElement>(null)
+  // Onde o clique começou: selecionar texto e soltar o mouse fora do painel não pode fechá-lo.
+  const comecouNoFundo = useRef(false)
 
   useEffect(() => {
     const dialogo = janela.current
@@ -15,7 +17,8 @@ export function PainelLateral({ titulo, aberto, aoFechar, children }: {
   }, [aberto])
 
   return <dialog ref={janela} className="painel-lateral" aria-label={titulo} onClose={aoFechar}
-    onClick={(e) => { if (e.target === janela.current) aoFechar() }}>
+    onMouseDown={(e) => { comecouNoFundo.current = e.target === janela.current }}
+    onClick={(e) => { if (e.target === janela.current && comecouNoFundo.current) aoFechar() }}>
     {aberto && <div className="painel-conteudo">
       <div className="painel-topo">
         <h2>{titulo}</h2>

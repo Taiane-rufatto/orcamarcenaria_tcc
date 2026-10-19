@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { useConfirmar } from '../hooks/useConfirmar'
 import { FiltroLista, RodapeLista } from '../componentes/FiltroLista'
 import { PainelLateral } from '../componentes/PainelLateral'
 import {
@@ -14,6 +15,7 @@ const haQuantosDias = (dias: number) => dias === 0 ? 'hoje' : dias === 1 ? 'onte
 const exibirDataHora = (iso: string) => new Date(iso).toLocaleDateString('pt-BR')
 
 export function Materiais() {
+  const { confirmar, dialogo } = useConfirmar()
   const [itens, setItens] = useState<Material[]>([])
   const [busca, setBusca] = useState('')
   const [situacao, setSituacao] = useState<Situacao>('ativos')
@@ -84,7 +86,7 @@ export function Materiais() {
   }
 
   async function inativar(item: Material) {
-    if (!window.confirm(`Inativar "${item.nome}"? O registro é preservado, mas sai da lista de ativos.`)) return
+    if (!await confirmar({ titulo: `Inativar "${item.nome}"?`, texto: 'O registro é preservado, mas sai da lista de ativos.', rotulo: 'Inativar' })) return
     try { await inativarMaterial(item.id); recarregar() }
     catch (causa) { setErro(causa instanceof Error ? causa.message : 'Não foi possível inativar o material') }
   }
@@ -152,12 +154,12 @@ export function Materiais() {
         {editando && <p className="ajuda">Orçamentos que já usam este material mantêm o custo antigo; o novo vale para os próximos.</p>}
         <label>Descrição (opcional)<input name="descricao" maxLength={300} defaultValue={editando?.descricao ?? ''} /></label>
         {!editando && <p className="ajuda">Enter cadastra e abre um formulário em branco. Esc ou ✕ fecham o painel.</p>}
-        {editando && historico.length > 0 && <div>
-          <h3>Histórico de preço</h3>
+        {editando && historico.length > 0 && <details className="historico-preco">
+          <summary>Histórico de preço ({historico.length})</summary>
           <ul className="historico">{historico.map((linha) => <li key={linha.registrado_em}>
             {exibirDataHora(linha.registrado_em)} · {exibirValor(linha.custo_unitario)}{linha.fornecedor_nome && ` · ${linha.fornecedor_nome}`}
           </li>)}</ul>
-        </div>}
+        </details>}
         {confirmacao && <p role="status" className="salvo">{confirmacao}</p>}
         {erro && <p role="alert" className="alerta">{erro}</p>}
         <div className="acoes">
@@ -166,5 +168,6 @@ export function Materiais() {
         </div>
       </form>
     </PainelLateral>
+    {dialogo}
   </main>
 }

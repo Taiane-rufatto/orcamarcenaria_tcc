@@ -283,3 +283,41 @@ td form { display: inline; }
 
 /* Spec 020: histórico de preço no painel do material. */
 .historico { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 4px; font-size: .85rem; color: var(--tinta-suave); }
+
+/* Spec 026: painel do mês em cards, com cor nos pontos importantes. A cor sempre vem junto de um rótulo em texto. */
+.pagina:has(.card-painel) { gap: 24px; }
+.card-painel { display: grid; gap: 12px; line-height: 1.7; }
+.card-painel > h2 { margin-bottom: 0; }
+.card-painel .ajuda { margin-bottom: 0; }
+.indicadores { margin: 4px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; }
+.indicador { display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; border: 1px solid var(--linha); border-left: 4px solid var(--linha-forte); border-radius: var(--raio); background: var(--folha); }
+.indicador dt { font-size: .85rem; font-weight: 600; color: var(--tinta-suave); }
+.indicador dd { margin: 0; font-size: 1.75rem; font-weight: 700; line-height: 1.2; }
+.indicador.positivo { border-left-color: var(--verde); background: var(--verde-claro); }
+.indicador.andamento { border-left-color: var(--laranja); background: var(--laranja-claro); }
+.indicador.negativo { border-left-color: var(--erro); background: var(--erro-fundo); }
+.indicador.neutro { border-left-color: var(--linha-forte); background: var(--neutro-claro); }
+.barra-meta { height: 12px; border-radius: 999px; background: var(--neutro-claro); overflow: hidden; }
+.barra-meta span { display: block; height: 100%; border-radius: 999px; }
+.barra-meta.andamento span { background: var(--laranja); }
+.barra-meta.batida span { background: var(--verde); }
+.tabela-precos th { text-transform: none; letter-spacing: 0; font-size: .85rem; }
+.tabela-precos td.valor, .tabela-precos th.valor { text-align: right; font-variant-numeric: tabular-nums; }
+.tabela-precos tbody tr:last-child td { border-bottom: 0; }
+.variacao { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: .85rem; font-weight: 600; white-space: nowrap; background: var(--neutro-claro); color: var(--tinta-suave); }
+.variacao.subindo { background: var(--erro-fundo); color: var(--erro); }
+.variacao.subindo::before { content: '▲ '; }
+.variacao.caindo { background: var(--verde-claro); color: var(--verde-escuro); }
+.variacao.caindo::before { content: '▼ '; }
+.variacao.estavel::before { content: '= '; }
+
+/* Spec 026: histórico de preço recolhido no painel do material, para o botão Salvar não descer. */
+.historico-preco summary { cursor: pointer; font-weight: 700; font-size: 1.05rem; padding: 4px 0; }
+.historico-preco .historico { max-height: 180px; overflow-y: auto; margin-top: 8px; }
+
+/* Spec 026: confirmação na tela, no lugar do aviso "localhost diz" do navegador. */
+dialog.confirmacao { margin: auto; width: min(420px, calc(100vw - 32px)); padding: 0; border: 1px solid var(--linha); border-radius: 10px; background: var(--folha); color: var(--tinta); box-shadow: 0 16px 40px rgba(23, 38, 29, .2); }
+dialog.confirmacao::backdrop { background: rgba(23, 38, 29, .28); }
+.confirmacao-conteudo { padding: 22px 24px 24px; display: grid; gap: 12px; }
+.confirmacao-conteudo p { color: var(--tinta-suave); line-height: 1.6; }
+.confirmacao-conteudo .acoes { margin-top: 8px; }

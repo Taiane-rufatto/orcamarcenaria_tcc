@@ -47,73 +47,87 @@ export function Painel() {
 
     <section className="folha">
       <label>Mês
-        <input type="month" value={painel?.mes ?? ''} onChange={(e) => e.target.value && setMes(e.target.value)} />
+        <input type="month" value={painel?.mes ?? ''} onChange={(e) => e.target.value && setMes(e.target.value)}
+          onClick={(e) => { try { e.currentTarget.showPicker() } catch { /* navegador sem showPicker: segue o comportamento padrão */ } }} />
       </label>
     </section>
 
     {erro && <p role="alert" className="alerta">{erro}</p>}
     {!painel && !erro && <p>Carregando…</p>}
 
-    {painel && <section className="folha">
+    {painel && <section className="folha card-painel">
       <h2>Meta do mês</h2>
       {painel.meta
         ? <>
-          <p>Sua meta é <strong>{exibirMoeda(painel.meta.meta)}</strong>. Você aprovou <strong>{exibirMoeda(painel.meta.aprovado)}</strong> (<strong>{paraCampo(painel.meta.percentual)}%</strong>).
-            {painel.meta.atingida ? ' Meta batida!' : <> Faltam <strong>{exibirMoeda(painel.meta.falta)}</strong>.</>}</p>
+          <p>Sua meta é {exibirMoeda(painel.meta.meta)}. Você aprovou {exibirMoeda(painel.meta.aprovado)} ({paraCampo(painel.meta.percentual)}%).
+            {painel.meta.atingida ? ' Meta batida!' : <> Faltam {exibirMoeda(painel.meta.falta)}.</>}</p>
+          <div className={`barra-meta ${painel.meta.atingida ? 'batida' : 'andamento'}`} role="progressbar" aria-label="Meta do mês"
+            aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.min(100, Math.round(Number(painel.meta.percentual)))}>
+            <span style={{ width: `${painel.meta.percentual}%` }} />
+          </div>
         </>
         : <p className="ajuda">Defina uma meta do mês em <Link to="/minha-marcenaria">Minha marcenaria</Link> para acompanhar o quanto já foi aprovado.</p>}
     </section>}
 
-    {painel && painel.enviados === 0 && <section className="folha">
+    {painel && painel.enviados === 0 && <section className="folha card-painel">
       <p>Nenhum orçamento enviado neste mês.{painel.rascunhos > 0 && ` Você tem ${painel.rascunhos} em rascunho.`}</p>
     </section>}
 
     {painel && painel.enviados > 0 && <>
-      <section className="folha">
+      <section className="folha card-painel">
         <h2>Aprovação</h2>
-        <p><strong>{painel.aprovados.quantidade} de {painel.enviados}</strong> orçamentos enviados foram aprovados
-          {painel.taxaDeAprovacao !== null && <> (<strong>{paraCampo(painel.taxaDeAprovacao)}%</strong>)</>}.</p>
-        <dl className="resumo">
-          <div><dt>Aprovados (com os em produção e entregues)</dt><dd>{painel.aprovados.quantidade}</dd></div>
-          <div><dt>Em produção</dt><dd>{painel.aprovados.emProducao}</dd></div>
-          <div><dt>Entregues</dt><dd>{painel.aprovados.entregues}</dd></div>
-          <div><dt>Recusados</dt><dd>{painel.recusados}</dd></div>
-          <div><dt>Vencidos, sem resposta</dt><dd>{painel.vencidos}</dd></div>
-          <div><dt>Esperando resposta</dt><dd>{painel.aguardando}</dd></div>
-          {painel.rascunhos > 0 && <div><dt>Rascunhos (ainda não enviados)</dt><dd>{painel.rascunhos}</dd></div>}
+        <p>{painel.aprovados.quantidade} de {painel.enviados} orçamentos enviados foram aprovados
+          {painel.taxaDeAprovacao !== null && <> ({paraCampo(painel.taxaDeAprovacao)}%)</>}.</p>
+        <p className="ajuda">Os aprovados incluem os que estão em produção e os já entregues. Rascunhos ainda não foram enviados.</p>
+        <dl className="indicadores">
+          <div className="indicador positivo"><dt>Aprovados</dt><dd>{painel.aprovados.quantidade}</dd></div>
+          <div className="indicador andamento"><dt>Em produção</dt><dd>{painel.aprovados.emProducao}</dd></div>
+          <div className="indicador positivo"><dt>Entregues</dt><dd>{painel.aprovados.entregues}</dd></div>
+          <div className="indicador negativo"><dt>Recusados</dt><dd>{painel.recusados}</dd></div>
+          <div className="indicador negativo"><dt>Vencidos sem resposta</dt><dd>{painel.vencidos}</dd></div>
+          <div className="indicador andamento"><dt>Esperando resposta</dt><dd>{painel.aguardando}</dd></div>
+          {painel.rascunhos > 0 && <div className="indicador neutro"><dt>Rascunhos</dt><dd>{painel.rascunhos}</dd></div>}
         </dl>
       </section>
 
-      <section className="folha">
+      <section className="folha card-painel">
         <h2>O que entrou</h2>
         {painel.aprovados.quantidade === 0
           ? <p className="ajuda">Nenhum orçamento aprovado neste mês ainda.</p>
           : <>
-            <p>Você aprovou <strong>{exibirMoeda(painel.aprovados.valor)}</strong> em orçamentos, com <strong>{exibirMoeda(painel.aprovados.lucro)}</strong> de lucro
-              {painel.aprovados.percentualDoPreco !== null && <> (<strong>{paraCampo(painel.aprovados.percentualDoPreco)}%</strong> do preço)</>}.</p>
+            <p>Você aprovou {exibirMoeda(painel.aprovados.valor)} em orçamentos, com {exibirMoeda(painel.aprovados.lucro)} de lucro
+              {painel.aprovados.percentualDoPreco !== null && <> ({paraCampo(painel.aprovados.percentualDoPreco)}% do preço)</>}.</p>
           </>}
       </section>
 
-      {hora && <section className="folha">
+      {hora && <section className="folha card-painel">
         <h2>Quanto você cobra pela mão de obra</h2>
-        <p>A mão de obra somou <strong>{exibirMoeda(hora.maoDeObra)}</strong>
-          {hora.percentualDoPreco !== null && <>, que é <strong>{paraCampo(hora.percentualDoPreco)}%</strong> do preço dos orçamentos enviados</>}.</p>
+        <p>A mão de obra somou {exibirMoeda(hora.maoDeObra)}
+          {hora.percentualDoPreco !== null && <>, que é {paraCampo(hora.percentualDoPreco)}% do preço dos orçamentos enviados</>}.</p>
         {hora.valorMedioDaHora !== null
-          ? <p>O valor médio da sua hora de serviço foi <strong>{exibirMoeda(hora.valorMedioDaHora)}</strong>
+          ? <p>O valor médio da sua hora de serviço foi {exibirMoeda(hora.valorMedioDaHora)}
             {hora.valorMedioDaHoraNoMesAnterior !== null && <> (no mês anterior foi {exibirMoeda(hora.valorMedioDaHoraNoMesAnterior)}: {textoDaVariacao(hora.variacaoDaHora, { subindo: 'subiu', caindo: 'caiu', estavel: 'ficou igual' })})</>}.</p>
           : <p className="ajuda">Nenhum serviço cobrado por hora nos orçamentos deste mês.</p>}
       </section>}
     </>}
 
-    {painel && painel.precos.length > 0 && <section className="folha">
+    {painel && painel.precos.length > 0 && <section className="folha card-painel">
       <h2>Preços dos materiais que você mais usa</h2>
-      <p className="ajuda">Nos últimos 90 dias. Se o custo do material sobe, vale rever o que você cobra.</p>
-      <ul className="historico">{painel.precos.map((material) => <li key={material.materialId}>
-        <strong>{material.nome}</strong> · usado em {material.usos} {material.usos === 1 ? 'orçamento' : 'orçamentos'} ·{' '}
-        {textoDaVariacao(material.variacao, { subindo: 'subindo', caindo: 'caindo', estavel: 'estável' })}
-        {material.variacao && material.variacao.tendencia !== 'estavel' && material.custoAnterior !== null &&
-          <> (de {exibirCusto(material.custoAnterior)} para {exibirCusto(material.custoAtual)})</>}
-      </li>)}</ul>
+      <p className="ajuda">Nos últimos 90 dias. O custo no início é o valor de 90 dias atrás (ou o primeiro registrado, se o material é mais novo). Se o custo sobe, vale rever o que você cobra.</p>
+      <div className="tabela-rolagem">
+        <table className="tabela-precos">
+          <thead><tr><th>Material</th><th>Usado em</th><th className="valor">Custo no início</th><th className="valor">Custo agora</th><th>Variação</th></tr></thead>
+          <tbody>{painel.precos.map((material) => <tr key={material.materialId}>
+            <td>{material.nome}</td>
+            <td>{material.usos} {material.usos === 1 ? 'orçamento' : 'orçamentos'}</td>
+            <td className="valor">{material.custoAnterior !== null ? exibirCusto(material.custoAnterior) : '—'}</td>
+            <td className="valor">{exibirCusto(material.custoAtual)}</td>
+            <td><span className={`variacao ${material.variacao?.tendencia ?? 'sem-historico'}`}>
+              {material.variacao ? textoDaVariacao(material.variacao, { subindo: 'Subindo', caindo: 'Caindo', estavel: 'Estável' }) : 'Sem histórico'}
+            </span></td>
+          </tr>)}</tbody>
+        </table>
+      </div>
     </section>}
   </main>
 }

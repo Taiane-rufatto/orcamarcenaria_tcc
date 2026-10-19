@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { useConfirmar } from '../hooks/useConfirmar'
 import { FiltroLista, RodapeLista } from '../componentes/FiltroLista'
 import { PainelLateral } from '../componentes/PainelLateral'
 import {
@@ -8,6 +9,7 @@ import type { Situacao } from '../servicos/catalogo'
 
 // Cadastro de clientes (US06, RF08–RF10), no mesmo formato de materiais e serviços.
 export function Clientes() {
+  const { confirmar, dialogo } = useConfirmar()
   const [clientes, setClientes] = useState<Cliente[]>([])
   const [busca, setBusca] = useState('')
   const [situacao, setSituacao] = useState<Situacao>('ativos')
@@ -62,7 +64,7 @@ export function Clientes() {
 
   // RF10: não há exclusão. O cliente inativo continua ligado aos orçamentos que já tem.
   async function inativar(cliente: Cliente) {
-    if (!window.confirm(`Inativar "${cliente.nome}"? Ele não aparecerá para novos orçamentos, mas os orçamentos que já tem continuam com o nome dele.`)) return
+    if (!await confirmar({ titulo: `Inativar "${cliente.nome}"?`, texto: 'Ele não aparecerá para novos orçamentos, mas os orçamentos que já tem continuam com o nome dele.', rotulo: 'Inativar' })) return
     try { await inativarCliente(cliente.id); recarregar() }
     catch (causa) { setErro(causa instanceof Error ? causa.message : 'Não foi possível inativar o cliente') }
   }
@@ -117,5 +119,6 @@ export function Clientes() {
         </div>
       </form>
     </PainelLateral>
+    {dialogo}
   </main>
 }

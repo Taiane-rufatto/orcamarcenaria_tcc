@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { useConfirmar } from '../hooks/useConfirmar'
 import { FiltroLista, RodapeLista } from '../componentes/FiltroLista'
 import { PainelLateral } from '../componentes/PainelLateral'
 import {
@@ -9,6 +10,7 @@ import type { Situacao } from '../servicos/catalogo'
 
 // Cadastro de fornecedores (RF49, spec 020), no mesmo formato de clientes, materiais e serviços.
 export function Fornecedores() {
+  const { confirmar, dialogo } = useConfirmar()
   const [fornecedores, setFornecedores] = useState<Fornecedor[]>([])
   const [busca, setBusca] = useState('')
   const [situacao, setSituacao] = useState<Situacao>('ativos')
@@ -57,7 +59,7 @@ export function Fornecedores() {
 
   // Não há exclusão: o fornecedor inativo continua no histórico de preços dos materiais.
   async function inativar(fornecedor: Fornecedor) {
-    if (!window.confirm(`Inativar "${fornecedor.nome}"? Ele não aparece para novos preços, mas continua no histórico dos materiais.`)) return
+    if (!await confirmar({ titulo: `Inativar "${fornecedor.nome}"?`, texto: 'Ele não aparece para novos preços, mas continua no histórico dos materiais.', rotulo: 'Inativar' })) return
     try { await inativarFornecedor(fornecedor.id); recarregar() }
     catch (causa) { setErro(causa instanceof Error ? causa.message : 'Não foi possível inativar o fornecedor') }
   }
@@ -116,5 +118,6 @@ export function Fornecedores() {
         </div>
       </form>
     </PainelLateral>
+    {dialogo}
   </main>
 }

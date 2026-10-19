@@ -38,8 +38,8 @@ describe('Painel do mês (RF47, RF48 e RF60 a RF63)', () => {
     expect(screen.getByText(/em orçamentos, com/).textContent).toBe('Você aprovou R$ 6.960,00 em orçamentos, com R$ 2.928,90 de lucro (42,08% do preço).')
     const linhas = screen.getAllByRole('term').map((t) => `${t.textContent} ${t.nextElementSibling?.textContent}`)
     expect(linhas).toEqual([
-      'Aprovados (com os em produção e entregues) 2', 'Em produção 1', 'Entregues 0', 'Recusados 1',
-      'Vencidos, sem resposta 1', 'Esperando resposta 1', 'Rascunhos (ainda não enviados) 1',
+      'Aprovados 2', 'Em produção 1', 'Entregues 0', 'Recusados 1',
+      'Vencidos sem resposta 1', 'Esperando resposta 1', 'Rascunhos 1',
     ])
     expect(screen.getByText(/outubro de 2026/)).toBeTruthy()
   })
@@ -79,12 +79,12 @@ describe('Painel do mês (RF47, RF48 e RF60 a RF63)', () => {
   it('preços dos materiais: subindo, estável e caindo, com os valores de antes e de agora', async () => {
     consultar.mockResolvedValue(outubro)
     mostrar()
-    await waitFor(() => expect(screen.getByText('MDF BRANCO')).toBeTruthy())
-    const itens = screen.getAllByRole('listitem').map((li) => li.textContent)
-    expect(itens).toEqual([
-      'MDF BRANCO · usado em 5 orçamentos · subindo 8,00% (de R$ 289,90 para R$ 313,09)',
-      'FITA DE BORDA · usado em 1 orçamento · estável',
-      'COLA · usado em 2 orçamentos · caindo 10,00% (de R$ 50,00 para R$ 45,00)',
+    await waitFor(() => expect(screen.getByText(/MDF BRANCO/)).toBeTruthy())
+    const linhas = screen.getAllByRole('row').slice(1).map((tr) => Array.from(tr.children).map((c) => c.textContent))
+    expect(linhas).toEqual([
+      ['MDF BRANCO', '5 orçamentos', 'R$ 289,90', 'R$ 313,09', 'Subindo 8,00%'],
+      ['FITA DE BORDA', '1 orçamento', 'R$ 10,00', 'R$ 10,00', 'Estável'],
+      ['COLA', '2 orçamentos', 'R$ 50,00', 'R$ 45,00', 'Caindo 10,00%'],
     ])
   })
 
