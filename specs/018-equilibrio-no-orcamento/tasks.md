@@ -11,5 +11,5 @@ Lista do que a spec pede, para distinguir o que foi feito do que falta. `[x]` fe
 - [x] Documentar D033, RF44–RF46, US17, RN12–RN13
 - [ ] Conferir os 6 casos da evidência em planilha (autora)
 - [ ] Percurso de tela no navegador, a 1366×768 e a 390 px (autora)
-- [ ] Aplicar a migração `010` na VPS, com backup antes
+- [x] Aplicar a migração `010` na VPS, com backup antes (feito em 2026-10-18, junto das migrações 010 a 015)
 - [ ] Revisar o diff e abrir o PR

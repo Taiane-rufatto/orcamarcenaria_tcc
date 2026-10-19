@@ -9,4 +9,4 @@ Lista do que a spec pede, para distinguir o que foi feito do que falta. `[x]` fe
 - [x] Painel: mão de obra, valor médio da hora, preços dos materiais
 - [x] Testes de unidade, de integração (inclusive migração repetida) e de componente; documentar D039, RF60 a RF63, US22
 - [ ] Percurso de tela (autora)
-- [ ] Aplicar a migração `014` na VPS, com backup antes
+- [x] Aplicar a migração `014` na VPS, com backup antes (feito em 2026-10-18, junto das migrações 010 a 015)

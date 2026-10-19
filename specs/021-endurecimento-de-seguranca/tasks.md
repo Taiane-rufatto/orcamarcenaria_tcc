@@ -9,6 +9,8 @@ Lista do que a spec pede, para distinguir o que foi feito do que falta. `[x]` fe
 - [x] Testes de unidade e de integração; limite desligado nos outros testes
 - [x] Modelos de cabeçalhos do nginx e de restrições do systemd + roteiro em `publicacao.md`
 - [x] Documentar D037 e RNF27
-- [ ] Conferir o `JWT_SECRET` da VPS (32 caracteres ou mais) antes de atualizar
-- [ ] Aplicar cabeçalhos do nginx e restrições do systemd na VPS e conferir com `curl -sI`
-- [ ] Conferir na VPS: PostgreSQL só em localhost, grupo de segurança, SSH só por chave, permissão do `.env`
+- [x] Conferir o `JWT_SECRET` da VPS (32 caracteres ou mais) antes de atualizar (64 caracteres, 2026-10-18)
+- [x] Aplicar cabeçalhos do nginx e restrições do systemd na VPS e conferir com `curl -sI` (2026-10-18, por `implantacao/aplicar-endurecimento.sh`; CSP em modo só relatar)
+- [x] Conferir na VPS: PostgreSQL só em localhost, grupo de segurança, permissão do `.env` (2026-10-18; falta conferir SSH só por chave)
+- [ ] Conferir no navegador que a CSP em modo só relatar não bloqueia nada e trocar para `Content-Security-Policy`
+- [ ] Fazer a API escutar só em `127.0.0.1` (hoje escuta em todas as interfaces; o grupo de segurança bloqueia a porta)
