@@ -7,4 +7,4 @@ Lista do que a spec pede, para distinguir o que foi feito do que falta. `[x]` fe
 - [x] Botão "Duplicar para ajustar" e cabeçalho "Ajuste do orçamento nº X"
 - [x] Testes de integração (11); documentar D040, RF40, US23
 - [ ] Percurso de tela (autora)
-- [ ] Aplicar a migração `015` na VPS, com backup antes
+- [x] Aplicar a migração `015` na VPS, com backup antes (feito em 2026-10-18, junto das migrações 010 a 015)

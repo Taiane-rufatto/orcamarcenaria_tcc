@@ -8,4 +8,4 @@ Lista do que a spec pede, para distinguir o que foi feito do que falta. `[x]` fe
 - [x] Campo "Quando cobrar" no serviço (corrige a S2)
 - [x] Testes de integração e de componente; documentar D038, RF58, RF59, US21
 - [ ] Percurso de tela (autora)
-- [ ] Aplicar a migração `013` na VPS, com backup antes
+- [x] Aplicar a migração `013` na VPS, com backup antes (feito em 2026-10-18, junto das migrações 010 a 015)
