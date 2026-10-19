@@ -113,10 +113,10 @@ export function Painel() {
 
     {painel && painel.precos.length > 0 && <section className="folha card-painel">
       <h2>Preços dos materiais que você mais usa</h2>
-      <p className="ajuda">Nos últimos 90 dias. O custo no início é o valor de 90 dias atrás (ou o primeiro registrado, se o material é mais novo). Se o custo sobe, vale rever o que você cobra.</p>
+      <p className="ajuda">Nos últimos 90 dias. Se o custo do material sobe, vale rever o que você cobra.</p>
       <div className="tabela-rolagem">
         <table className="tabela-precos">
-          <thead><tr><th>Material</th><th>Usado em</th><th className="valor">Custo no início</th><th className="valor">Custo agora</th><th>Variação</th></tr></thead>
+          <thead><tr><th>Material</th><th>Usado em</th><th className="valor">Custo antes <span className="dica" tabIndex={0} role="note" aria-label="Preço de 90 dias atrás, ou o primeiro registrado." data-dica="Preço de 90 dias atrás, ou o primeiro registrado.">?</span></th><th className="valor">Custo agora</th><th>Variação</th></tr></thead>
           <tbody>{painel.precos.map((material) => <tr key={material.materialId}>
             <td>{material.nome}</td>
             <td>{material.usos} {material.usos === 1 ? 'orçamento' : 'orçamentos'}</td>

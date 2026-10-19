@@ -37,4 +37,4 @@
 - `PainelLateral.tsx`: o painel de criar e editar só fecha ao clicar no fundo escuro se o clique também começou no fundo. Selecionar texto e soltar o mouse fora do painel não o fecha mais.
 - `Materiais.tsx`: o histórico de preço no painel de editar fica recolhido ("Histórico de preço (N)") e, aberto, rola dentro de uma caixa de altura fixa; assim o botão Salvar alterações não desce com muitas linhas.
 - Confirmações na tela: o aviso "localhost diz" do navegador (`window.confirm`) é trocado por uma janela do próprio sistema (`hooks/useConfirmar.tsx`) em Registrar orçamento e em Inativar material, serviço, cliente e fornecedor. Mesmos textos, com título e botões "Registrar"/"Inativar" e "Cancelar"; Esc ou clique fora cancela.
-- Tabela de preços: a coluna "Custo antes" passa a se chamar "Custo no início", com a explicação de RN19 no texto de apoio (valor de 90 dias atrás, ou o primeiro registrado). A regra não mudou.
+- Tabela de preços: a coluna segue como "Custo antes", com um "?" ao lado que explica a RN19 em uma frase curta ("Preço de 90 dias atrás, ou o primeiro registrado."). A regra não mudou.

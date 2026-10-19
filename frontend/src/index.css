@@ -321,3 +321,8 @@ dialog.confirmacao::backdrop { background: rgba(23, 38, 29, .28); }
 .confirmacao-conteudo { padding: 22px 24px 24px; display: grid; gap: 12px; }
 .confirmacao-conteudo p { color: var(--tinta-suave); line-height: 1.6; }
 .confirmacao-conteudo .acoes { margin-top: 8px; }
+
+/* Spec 026: dica curta ao passar o mouse ou focar no "?", sem depender do atraso do title do navegador. */
+.dica { position: relative; display: inline-grid; place-items: center; width: 16px; height: 16px; margin-left: 4px; border-radius: 50%; background: var(--neutro-claro); color: var(--tinta-suave); font-size: .7rem; font-weight: 700; cursor: help; }
+.dica::after { content: attr(data-dica); position: absolute; right: 0; top: calc(100% + 6px); z-index: 2; width: 190px; padding: 6px 10px; border-radius: var(--raio); background: var(--tinta); color: #fff; font-size: .8rem; font-weight: 400; line-height: 1.4; text-align: left; white-space: normal; display: none; }
+.dica:hover::after, .dica:focus::after { display: block; }
