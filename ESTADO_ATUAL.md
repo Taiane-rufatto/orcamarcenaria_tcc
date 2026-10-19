@@ -1,6 +1,8 @@
 # Estado Atual
 
-**Atualizado em:** 2026-10-18
+**Atualizado em:** 2026-10-19
+
+> **Spec 026 (painel em cards e ajustes visuais), D041, fechada em 2026-10-19 e publicada na VPS (`main` em `cf2093f`, PR #21).** Só tela: painel do mês em cards com cor e tabela de preços dos materiais; Duplicar em card próprio; confirmações na tela; painel lateral que não fecha ao soltar o mouse fora; histórico de preço recolhido. **Ocultos por enquanto (a autora vai estudar):** o aviso e o campo de lucro mínimo (spec 018) e o fornecedor inteiro (tela, campo, coluna e histórico; specs 020 e 023): API e dados continuam, e o vínculo já gravado do material é mantido na edição. **Testes verdes: backend 303, frontend 31.** **Falta:** percurso de tela a 1366 e 390 px (sem captura nesta sessão) e decidir se o "Custo antes" do painel compara com 90 dias atrás (RN19, como hoje) ou também com a última alteração. Evidência: `evidencias/testes/026-painel-em-cards-2026-10-19.md`.
 
 > **Publicado na VPS em 2026-10-18.** O site (`https://54-232-52-91.sslip.io`) roda a `main` (`38bd7b6`), com as migrações `001` a `015` aplicadas (backup antes: `/home/ubuntu/backup-orcamarcenaria-antes-da-main-2026-10-18.sql`); contagens do banco iguais às de antes (3 marcenarias, 4 orçamentos, 9 materiais, 5 clientes). O endurecimento da VPS foi aplicado por `implantacao/aplicar-endurecimento.sh`: cabeçalhos de segurança no nginx (a CSP está em modo **só relatar**: falta conferir no navegador e trocar para valer) e restrições do systemd. Verificado: PostgreSQL só em `127.0.0.1`, `.env` com `600`, `JWT_SECRET` com 64 caracteres, grupo de segurança só com 22 (um IP), 80 e 443. O script `implantacao/liberar-meu-ip-ssh.ps1` troca o IP liberado no SSH quando o IP muda. **Falta:** percurso de tela no site no ar, validar o diferencial com o orientador e confirmar o formato do TCC I.
 >

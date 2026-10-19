@@ -6,6 +6,19 @@ Formato: contexto → decisão → consequência → situação (`provisória` e
 
 ---
 
+## D041 — Painel em cards, ocultação provisória de lucro mínimo e fornecedor
+**Data:** 2026-10-19 · **Situação:** provisória (a autora vai estudar uma forma melhor de ambos)
+
+**Contexto.** Ao usar o sistema, a autora achou o painel do mês difícil de ler (texto corrido, negrito no meio das frases, preços sem valores), o botão Duplicar escondido no card Situação, e quis rever o aviso de lucro mínimo e o vínculo do material com o fornecedor antes da banca.
+
+**Decisão.** Spec 026, só de tela: painel em cards com cor nos pontos importantes e tabela de preços dos materiais; Duplicar em card próprio; confirmações na tela no lugar do `window.confirm`; painel lateral que não fecha ao soltar o mouse fora; histórico de preço recolhido. **Ocultos por enquanto:** o card "Quanto sobra de lucro" e o campo "Lucro mínimo" (spec 018) e a tela de fornecedores, com o campo, a coluna e o histórico (specs 020 e 023). Ao editar um material, o vínculo com o fornecedor que já existe é mantido; material novo nasce sem fornecedor.
+
+**Alternativas.** Apagar API e dados: rejeitada, a autora quer religar. Comparar o preço com a última alteração em vez de 90 dias atrás (RN19): não decidido; fica como proposta (coluna extra) para uma spec futura.
+
+**Consequência.** Nenhuma regra de cálculo, rota ou migração mudou. As specs 018, 020 e 023 ficam com a parte de tela suspensa até a nova versão; para religar, reponha o card, o campo e a rota `/fornecedores` com o link do menu.
+
+---
+
 ## D040 — Duplicar orçamento para ajustar (RF40 promovido)
 **Data:** 2026-10-18 · **Situação:** firme (decidido pela autora; desenho escolhido em 2026-09-28, `roadmap.md` §5.1)
 
