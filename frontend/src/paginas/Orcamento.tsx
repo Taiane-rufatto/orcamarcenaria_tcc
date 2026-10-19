@@ -1,7 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react'
+import { useConfirmar } from '../hooks/useConfirmar'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { CampoBusca } from '../componentes/CampoBusca'
-import { AvisoEquilibrio } from '../componentes/AvisoEquilibrio'
 import { ListaDeCompras } from '../componentes/ListaDeCompras'
 import { Memorial } from '../componentes/Memorial'
 import { confirmarPrecoMaterial, exibirValor, listarMateriais, listarServicos, type Material, type Servico } from '../servicos/catalogo'
@@ -24,6 +24,7 @@ type Origem = 'material' | 'servico' | 'avulso'
 // alteração e troca o orçamento inteiro pela resposta da API, que já vem recalculada pelo servidor (D019).
 // Esta tela não faz contas. Fora de rascunho, é somente leitura: só a situação muda (RF39).
 export function Orcamento() {
+  const { confirmar, dialogo } = useConfirmar()
   const { id = '' } = useParams()
   const navegar = useNavigate()
   const [orcamento, setOrcamento] = useState<DadosOrcamento | null>(null)
@@ -126,7 +127,7 @@ export function Orcamento() {
   // Registrar = enviar (D020): o número é atribuído e a edição trava. A confirmação evita registro por engano.
   // Textos ainda não salvos são gravados antes, para não se perderem.
   async function registrar() {
-    if (!window.confirm('Registrar este orçamento? Ele recebe um número e os itens, valores e textos não poderão mais ser alterados.')) return
+    if (!await confirmar({ titulo: 'Registrar este orçamento?', texto: 'Depois de registrado, ele é marcado como enviado e não pode mais ser alterado. Se precisar mudar algo, é só duplicá-lo.', rotulo: 'Registrar' })) return
     if (textosPendentes && !await salvarTextos()) return
     executar(registrarOrcamento(id))
   }
@@ -350,7 +351,7 @@ export function Orcamento() {
       <section className="folha">
         <h2>Situação</h2>
         {orcamento.situacao === 'rascunho' && <>
-          <p className="ajuda">Ao registrar, o orçamento recebe número e não pode mais ser alterado.</p>
+          <p className="ajuda">Depois de registrado, o orçamento é marcado como enviado e não pode mais ser alterado.</p>
           <div className="acoes"><button onClick={registrar}>Registrar e marcar como enviado</button></div>
         </>}
         {orcamento.situacao === 'enviado' && <>
@@ -374,11 +375,13 @@ export function Orcamento() {
         {orcamento.situacao === 'entregue' && <p className="ajuda">Este orçamento foi entregue ao cliente.</p>}
         {orcamento.situacao === 'recusado' && <p className="ajuda">O cliente recusou este orçamento.</p>}
         {orcamento.situacao === 'vencido' && <p className="ajuda">A validade terminou em {exibirData(orcamento.dataValidade)} sem resposta do cliente.</p>}
-        {!editavel && <>
-          <p className="ajuda">Precisa mudar alguma coisa? Duplique: nasce um rascunho novo igual a este, e este continua como está.</p>
-          <div className="acoes"><button className="secundario" onClick={duplicar}>Duplicar para ajustar</button></div>
-        </>}
       </section>
+
+      {!editavel && <section className="folha">
+        <h2>Duplicar orçamento</h2>
+        <p className="ajuda">Cria uma cópia em rascunho, com os mesmos dados. Este orçamento não muda.</p>
+        <div className="acoes"><button className="secundario" onClick={duplicar}>Duplicar</button></div>
+      </section>}
 
       {!editavel && <section className="folha">
         <h2>PDF para o cliente</h2>
@@ -390,14 +393,10 @@ export function Orcamento() {
       </section>}
 
       <section className="folha">
-        <h2>Quanto sobra de lucro</h2>
-        <AvisoEquilibrio equilibrio={orcamento.equilibrio} />
-      </section>
-
-      <section className="folha">
         <h2>Memorial de cálculo</h2>
         <Memorial memorial={orcamento.memorial} />
       </section>
     </aside>
+    {dialogo}
   </main>
 }

@@ -1,6 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { alterarSenha } from '../servicos/autenticacao'
-import { obterConfiguracao, salvarDadosMarcenaria, salvarEquilibrio, salvarMeta, salvarPadroes, type Configuracao } from '../servicos/configuracoes'
+import { obterConfiguracao, salvarDadosMarcenaria, salvarMeta, salvarPadroes, type Configuracao } from '../servicos/configuracoes'
 import { paraCampo, type ModoLucro, type RegraArredondamento } from '../servicos/orcamentos'
 
 type Mensagem = { texto: string; erro: boolean } | null
@@ -9,7 +9,7 @@ type Mensagem = { texto: string; erro: boolean } | null
 // orçamentos novos e troca de senha. A tela não calcula nada; o multiplicador vem da API.
 export function MinhaMarcenaria() {
   const [configuracao, setConfiguracao] = useState<Configuracao | null>(null)
-  const [mensagens, setMensagens] = useState<{ dados: Mensagem; padroes: Mensagem; equilibrio: Mensagem; meta: Mensagem; senha: Mensagem }>({ dados: null, padroes: null, equilibrio: null, meta: null, senha: null })
+  const [mensagens, setMensagens] = useState<{ dados: Mensagem; padroes: Mensagem; meta: Mensagem; senha: Mensagem }>({ dados: null, padroes: null, meta: null, senha: null })
   const avisar = (secao: keyof typeof mensagens, mensagem: Mensagem) => setMensagens((atuais) => ({ ...atuais, [secao]: mensagem }))
   const erroDe = (causa: unknown, padrao: string) => ({ texto: causa instanceof Error ? causa.message : padrao, erro: true })
 
@@ -46,15 +46,6 @@ export function MinhaMarcenaria() {
     } catch (causa) { avisar('padroes', erroDe(causa, 'Não foi possível salvar os padrões')) }
   }
 
-  async function salvarEquilibrioDoMes(evento: FormEvent<HTMLFormElement>) {
-    evento.preventDefault()
-    const dados = new FormData(evento.currentTarget)
-    try {
-      setConfiguracao(await salvarEquilibrio({ lucroMinimo: String(dados.get('lucroMinimo')) }))
-      avisar('equilibrio', { texto: 'Lucro mínimo salvo. Vale para o aviso de todos os orçamentos.', erro: false })
-    } catch (causa) { avisar('equilibrio', erroDe(causa, 'Não foi possível salvar o lucro mínimo')) }
-  }
-
   async function salvarMetaDoMes(evento: FormEvent<HTMLFormElement>) {
     evento.preventDefault()
     const dados = new FormData(evento.currentTarget)
@@ -79,7 +70,7 @@ export function MinhaMarcenaria() {
     <p role={mensagem.erro ? 'alert' : 'status'} className={mensagem.erro ? 'alerta' : 'aviso'} style={{ marginTop: 16 }}>{mensagem.texto}</p>
 
   if (!configuracao) return <main className="pagina"><h1>Minha marcenaria</h1>{aviso(mensagens.dados) ?? <p>Carregando…</p>}</main>
-  const { marcenaria: m, padroes: p, equilibrio: e, meta } = configuracao
+  const { marcenaria: m, padroes: p, meta } = configuracao
 
   return <main className="pagina">
     <div className="cabecalho-pagina">
@@ -130,20 +121,6 @@ export function MinhaMarcenaria() {
         </p>}
         {aviso(mensagens.padroes)}
         <div className="acoes"><button>Salvar padrões</button></div>
-      </form>
-    </section>
-
-    <section className="folha">
-      <h2>Lucro mínimo</h2>
-      <p className="ajuda">O menor lucro que você aceita em um orçamento, em % do preço. Exemplo: 30. Se um orçamento ficar abaixo, a tela avisa. O preço não muda.</p>
-      <form key={JSON.stringify(e)} onSubmit={salvarEquilibrioDoMes}>
-        <div className="campos">
-          <label>Lucro mínimo (%)
-            <input name="lucroMinimo" inputMode="decimal" placeholder="Ex.: 30" defaultValue={e.lucroMinimo ? paraCampo(e.lucroMinimo) : ''} />
-          </label>
-        </div>
-        {aviso(mensagens.equilibrio)}
-        <div className="acoes"><button>Salvar lucro mínimo</button></div>
       </form>
     </section>
 

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { useConfirmar } from '../hooks/useConfirmar'
 import { FiltroLista, RodapeLista } from '../componentes/FiltroLista'
 import { PainelLateral } from '../componentes/PainelLateral'
 import {
@@ -9,6 +10,7 @@ import {
 const COBRANCA = { hora: 'Por hora', unidade: 'Por unidade' }
 
 export function Servicos() {
+  const { confirmar, dialogo } = useConfirmar()
   const [itens, setItens] = useState<Servico[]>([])
   const [busca, setBusca] = useState('')
   const [situacao, setSituacao] = useState<Situacao>('ativos')
@@ -63,7 +65,7 @@ export function Servicos() {
   }
 
   async function inativar(item: Servico) {
-    if (!window.confirm(`Inativar "${item.nome}"? O registro é preservado, mas sai da lista de ativos.`)) return
+    if (!await confirmar({ titulo: `Inativar "${item.nome}"?`, texto: 'O registro é preservado, mas sai da lista de ativos.', rotulo: 'Inativar' })) return
     try { await inativarServico(item.id); recarregar() }
     catch (causa) { setErro(causa instanceof Error ? causa.message : 'Não foi possível inativar o serviço') }
   }
@@ -122,5 +124,6 @@ export function Servicos() {
         </div>
       </form>
     </PainelLateral>
+    {dialogo}
   </main>
 }
