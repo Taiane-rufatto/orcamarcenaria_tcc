@@ -20,7 +20,6 @@ export function Layout() {
         <NavLink to="/materiais" className={({ isActive }) => isActive ? 'ativo' : ''}>Materiais</NavLink>
         <NavLink to="/servicos" className={({ isActive }) => isActive ? 'ativo' : ''}>Serviços</NavLink>
         <NavLink to="/clientes" className={({ isActive }) => isActive ? 'ativo' : ''}>Clientes</NavLink>
-        <NavLink to="/fornecedores" className={({ isActive }) => isActive ? 'ativo' : ''}>Fornecedores</NavLink>
         <NavLink to="/minha-marcenaria" className={({ isActive }) => isActive ? 'ativo' : ''}>Minha marcenaria</NavLink>
       </nav>
       <button className="botao-sair secundario" onClick={encerrar}>Sair</button>

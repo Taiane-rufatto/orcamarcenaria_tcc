@@ -4,7 +4,6 @@ import { RotaProtegida } from './componentes/RotaProtegida'
 import { Cadastro } from './paginas/Cadastro'
 import { Clientes } from './paginas/Clientes'
 import { Entrar } from './paginas/Entrar'
-import { Fornecedores } from './paginas/Fornecedores'
 import { EsqueciSenha } from './paginas/EsqueciSenha'
 import { Orcamento } from './paginas/Orcamento'
 import { Orcamentos } from './paginas/Orcamentos'
@@ -28,7 +27,7 @@ export default function App() {
         <Route path="/materiais" element={<Materiais />} />
         <Route path="/servicos" element={<Servicos />} />
         <Route path="/clientes" element={<Clientes />} />
-        <Route path="/fornecedores" element={<Fornecedores />} />
+        {/* Tela de fornecedores oculta por enquanto (spec 026): a página e a API continuam no código; para religar, reponha a rota e o link do menu. */}
         <Route path="/minha-marcenaria" element={<MinhaMarcenaria />} />
       </Route>
     </Route>
