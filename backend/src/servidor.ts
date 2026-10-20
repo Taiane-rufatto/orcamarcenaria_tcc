@@ -43,7 +43,7 @@ app.get('/saude', async (_requisicao, resposta) => {
 app.use(tratamentoDeErros)
 
 if (require.main === module) {
-  app.listen(ambiente.porta, () => {
-    console.log(`API ouvindo em http://localhost:${ambiente.porta}`)
+  app.listen(ambiente.porta, ambiente.host, () => {
+    console.log(`API ouvindo em http://${ambiente.host}:${ambiente.porta}`)
   })
 }

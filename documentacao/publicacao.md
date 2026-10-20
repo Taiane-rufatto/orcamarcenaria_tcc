@@ -113,7 +113,7 @@ O grupo de segurança só aceita SSH (porta 22) de **um IP**, para a VPS não fi
 .\implantacao\liberar-meu-ip-ssh.ps1               # libera o IP de agora e remove os antigos
 ```
 
-O script libera o IP novo **antes** de remover os antigos (nunca fica sem acesso), acha o grupo pelo nome (`orcamarcenaria-sg`, região `sa-east-1`) e não mexe nas portas 80 e 443. Precisa do AWS CLI configurado (`aws configure`) com um usuário que possa alterar regras do grupo de segurança. Nenhum IP ou ID de conta fica no repositório, que é público.
+O script libera o IP novo **antes** de remover os antigos (nunca fica sem acesso), acha o grupo pelo nome (`orcamarcenaria-sg`, região `sa-east-1`) e não mexe nas portas 80 e 443. Precisa do AWS CLI configurado (`aws configure`) com um usuário que possa alterar regras do grupo de segurança. O script não guarda IP nem ID de conta; o endereço do site (sslip.io) é público por natureza, mas o IP do SSH, o usuário e o nome da chave ficam fora do repositório, que é público.
 
 ## Atualizar depois de novos commits
 
@@ -140,7 +140,7 @@ Ele guarda uma cópia dos arquivos em `/var/backups/orcamarcenaria-config-<data>
 2. **Serviço da API (A11).** `NoNewPrivileges`, `PrivateTmp`, `ProtectSystem=full` e `ProtectHome` na unidade do systemd. Conferir com `systemctl show orcamarcenaria-api -p NoNewPrivileges -p ProtectSystem`.
 3. **Conferir (não alterar) no servidor:** o PostgreSQL escuta só em `localhost` (`sudo ss -ltn | grep 5432`); o grupo de segurança da AWS libera só as portas 22, 80 e 443; o SSH aceita só chave; o `.env` tem permissão `600`.
 
-*Verificado na VPS em 2026-10-18:* PostgreSQL só em `127.0.0.1`, `.env` com `600`, `JWT_SECRET` com 64 caracteres, grupo de segurança só com 22 (um único IP), 80 e 443, e o script acima aplicado sem erro. A API ainda escuta em todas as interfaces (`*:3333`); o grupo de segurança bloqueia a porta, mas o ideal é escutar só em `127.0.0.1`.
+*Verificado na VPS em 2026-10-18:* PostgreSQL só em `127.0.0.1`, `.env` com `600`, `JWT_SECRET` com 64 caracteres, grupo de segurança só com 22 (um único IP), 80 e 443, e o script acima aplicado sem erro. Naquele dia a API ainda escutava em todas as interfaces (`*:3333`), só com o grupo de segurança bloqueando a porta. Spec 027 (achado F-01 da auditoria): agora ela escuta só em `127.0.0.1` por padrão (variável `HOST` muda isso). Depois de atualizar a VPS, confira com `sudo ss -ltn | grep 3333`: deve aparecer `127.0.0.1:3333`.
 
 ## Cópia de segurança do banco
 

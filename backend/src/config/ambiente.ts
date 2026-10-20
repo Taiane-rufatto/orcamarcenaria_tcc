@@ -1,5 +1,6 @@
 import 'dotenv/config'
 import process from 'node:process'
+import { hostDaApi } from './host'
 
 function obrigatoria(nome: string): string {
   const valor = process.env[nome]
@@ -27,6 +28,7 @@ function segredoJwt(): string {
 
 export const ambiente = {
   porta: Number(process.env.PORT ?? 3333),
+  host: hostDaApi(process.env.HOST),
   urlBanco: obrigatoria('DATABASE_URL'),
   origemPermitida: process.env.CORS_ORIGIN ?? 'http://localhost:5173',
   segredoJwt: segredoJwt(),
