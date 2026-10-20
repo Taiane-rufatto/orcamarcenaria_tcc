@@ -13,7 +13,20 @@ Formato: contexto → decisão → consequência → situação (`provisória` e
 
 **Decisão.** O relatório e as issues ficam só no computador da autora (`docs/security-audit/` no `.gitignore`). Corrigem-se primeiro os achados rápidos (spec 027: F-01 e F-04); o relatório só entra no TCC ou no repositório depois das correções publicadas, com o que foi corrigido registrado. Issues públicas só depois da correção; antes, aviso privado de segurança do GitHub. Para o orientador e a banca, o PDF vai direto, não pelo repositório.
 
-**Consequência.** Os achados que sobram (F-02, F-03, F-05 a F-11) ficam como lista de trabalho a priorizar, sem texto público. A API passa a escutar só em `127.0.0.1` por padrão (variável `HOST`). Nota de ordem: o D041 (spec 026) está na branch `spec/026-painel-em-cards`, ainda sem PR, e entra na `main` junto com ela.
+**Consequência.** Os achados que sobram (F-02, F-03, F-05 a F-11) ficam como lista de trabalho a priorizar, sem texto público. A API passa a escutar só em `127.0.0.1` por padrão (variável `HOST`).
+
+---
+
+## D041 — Painel em cards, ocultação provisória de lucro mínimo e fornecedor
+**Data:** 2026-10-19 · **Situação:** provisória (a autora vai estudar uma forma melhor de ambos)
+
+**Contexto.** Ao usar o sistema, a autora achou o painel do mês difícil de ler (texto corrido, negrito no meio das frases, preços sem valores), o botão Duplicar escondido no card Situação, e quis rever o aviso de lucro mínimo e o vínculo do material com o fornecedor antes da banca.
+
+**Decisão.** Spec 026, só de tela: painel em cards com cor nos pontos importantes e tabela de preços dos materiais; Duplicar em card próprio; confirmações na tela no lugar do `window.confirm`; painel lateral que não fecha ao soltar o mouse fora; histórico de preço recolhido. **Ocultos por enquanto:** o card "Quanto sobra de lucro" e o campo "Lucro mínimo" (spec 018) e a tela de fornecedores, com o campo, a coluna e o histórico (specs 020 e 023). Ao editar um material, o vínculo com o fornecedor que já existe é mantido; material novo nasce sem fornecedor.
+
+**Alternativas.** Apagar API e dados: rejeitada, a autora quer religar. Comparar o preço com a última alteração em vez de 90 dias atrás (RN19): não decidido; fica como proposta (coluna extra) para uma spec futura.
+
+**Consequência.** Nenhuma regra de cálculo, rota ou migração mudou. As specs 018, 020 e 023 ficam com a parte de tela suspensa até a nova versão; para religar, reponha o card, o campo e a rota `/fornecedores` com o link do menu.
 
 ---
 

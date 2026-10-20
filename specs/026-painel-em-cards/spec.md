@@ -2,7 +2,7 @@
 
 **Branch:** `spec/026-painel-em-cards`
 **Data:** 2026-10-19
-**Status:** aberta. Ajuste visual da tela do painel (specs 019 e 024), pedido pela autora.
+**Status:** fechada em 2026-10-19, com uma pendência. Implementada com a autora, ajuste a ajuste (D041); testes automatizados verificados e publicada na VPS (`cf2093f`, PR #21). **Pendente:** percurso de tela a 1366×768 e 390 px pela autora (`evidencias/testes/026-painel-em-cards-2026-10-19.md`).
 
 ## Clarificações
 

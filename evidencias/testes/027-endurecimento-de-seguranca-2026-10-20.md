@@ -9,4 +9,16 @@
 | API real sem `HOST` (porta de teste 3999) | log `API ouvindo em http://127.0.0.1:3999`; `netstat` mostrou só `127.0.0.1:3999`; `/saude` respondeu `api: ok, banco: ok` pelo `127.0.0.1` |
 | `git grep` do IP do SSH (com pontos), do nome da chave e do e-mail da conta | nenhum resultado nos arquivos atuais |
 
-**Pendente:** publicar na VPS (`atualizar.sh main`, depois de integrar em `main`) e conferir lá `sudo ss -ltn | grep 3333` (esperado `127.0.0.1:3333`) e que o site continua funcionando pelo nginx (login, painel, PDF). Até lá, a VPS segue com a API em `*:3333`, protegida só pelo grupo de segurança.
+## Publicação na VPS (2026-10-20)
+
+`atualizar.sh main` rodou sem erro; a VPS passou de `cf2093f` para `8df2aa7`. O `.env` da VPS não define `HOST`, e o nginx já apontava para `127.0.0.1:3333`.
+
+| Verificação | Resultado |
+|---|---|
+| `sudo ss -ltn \| grep 3333` na VPS | antes: `*:3333`; depois: `127.0.0.1:3333` |
+| Serviço `orcamarcenaria-api` | active |
+| `/saude` pela VPS (nginx, HTTPS) e de fora (`https://<site>/api/saude`) | `api: ok, banco: ok` |
+| Site `https://<site>/` de fora | 200 |
+| Porta 3333 direto de fora da VPS | sem resposta (000) |
+
+**Não verificado:** percurso de tela no site (login, painel, PDF) pela autora. Os achados F-02, F-03 e F-05 a F-11 seguem abertos.

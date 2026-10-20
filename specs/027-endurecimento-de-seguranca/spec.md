@@ -2,7 +2,7 @@
 
 **Branch:** `spec/027-endurecimento-de-seguranca`
 **Data:** 2026-10-20
-**Status:** implementada e testada em 2026-10-20; **falta publicar na VPS** e conferir `ss -ltn | grep 3333` lá (`evidencias/testes/027-endurecimento-de-seguranca-2026-10-20.md`).
+**Status:** fechada em 2026-10-20. Implementada, testada e publicada na VPS (`main` em `8df2aa7`); `ss -ltn` mostra `127.0.0.1:3333` e a porta 3333 não responde de fora (`evidencias/testes/027-endurecimento-de-seguranca-2026-10-20.md`).
 
 ## Clarificações
 
