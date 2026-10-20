@@ -6,6 +6,17 @@ Formato: contexto → decisão → consequência → situação (`provisória` e
 
 ---
 
+## D042 — Auditoria de segurança: o relatório fica fora do repositório público
+**Data:** 2026-10-20 · **Situação:** firme
+
+**Contexto.** Em 2026-10-19 foi feita uma auditoria de código (11 achados, nenhum crítico ou alto). O repositório é público, então um relatório com os pontos fracos ainda abertos seria um roteiro para quem quisesse atacar o site.
+
+**Decisão.** O relatório e as issues ficam só no computador da autora (`docs/security-audit/` no `.gitignore`). Corrigem-se primeiro os achados rápidos (spec 027: F-01 e F-04); o relatório só entra no TCC ou no repositório depois das correções publicadas, com o que foi corrigido registrado. Issues públicas só depois da correção; antes, aviso privado de segurança do GitHub. Para o orientador e a banca, o PDF vai direto, não pelo repositório.
+
+**Consequência.** Os achados que sobram (F-02, F-03, F-05 a F-11) ficam como lista de trabalho a priorizar, sem texto público. A API passa a escutar só em `127.0.0.1` por padrão (variável `HOST`).
+
+---
+
 ## D041 — Painel em cards, ocultação provisória de lucro mínimo e fornecedor
 **Data:** 2026-10-19 · **Situação:** provisória (a autora vai estudar uma forma melhor de ambos)
 

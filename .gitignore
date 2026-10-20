@@ -31,3 +31,7 @@ backend/saida/
 # Ata e transcrição de orientação: ficam só no computador da autora
 evidencias/orientacao/*
 !evidencias/orientacao/.gitkeep
+
+# Relatório de auditoria de segurança e artefatos locais de teste: ficam só no computador da autora (repositório público)
+docs/security-audit/
+frontend/.vitest/
