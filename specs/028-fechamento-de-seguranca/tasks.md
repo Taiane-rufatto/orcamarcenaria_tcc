@@ -9,6 +9,6 @@
 - [x] F-11: `npm audit fix` no backend e no frontend; 0 vulnerabilidades em produção
 - [x] Decisão D044 (riscos aceitos: F-03, F-08, parte estrutural do F-07, avisos de ferramentas de desenvolvimento)
 - [x] Backend 312 de 312, frontend 31 de 31, `tsc` e ESLint limpos
-- [ ] Revisão do diff pela autora e merge em `main`
-- [ ] Publicar na VPS: `atualizar.sh main` e `aplicar-endurecimento.sh` (ver spec.md)
+- [x] Merge em `main` (432c1a5, 2026-11-03)
+- [x] Publicado na VPS em 2026-11-03: `atualizar.sh main` e `aplicar-endurecimento.sh`, com backup antes
 - [ ] Conferir no site publicado: entrar, abrir orçamento, baixar PDF, console sem erros de CSP

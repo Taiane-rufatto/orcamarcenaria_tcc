@@ -29,7 +29,8 @@ $ErrorActionPreference = 'Stop'
 
 # Chama o AWS CLI e para no primeiro erro (o PowerShell não faz isso sozinho com programas externos).
 function Aws {
-  $saida = & aws @args
+  # aws.exe de propósito: o PowerShell não diferencia maiúsculas e "aws" chamaria esta própria função, sem parar.
+  $saida = & aws.exe @args
   if ($LASTEXITCODE -ne 0) { throw "O AWS CLI falhou (código $LASTEXITCODE): aws $($args -join ' ')" }
   return $saida
 }
