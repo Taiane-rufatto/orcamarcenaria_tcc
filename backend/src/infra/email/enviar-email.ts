@@ -17,7 +17,9 @@ const transporte = ambiente.smtp && nodemailer.createTransport({
 export async function enviarEmail(email: Email): Promise<void> {
   if (!transporte) {
     emailsNaoEnviados.push(email)
-    console.log(`[e-mail não enviado: SMTP não configurado] Para: ${email.para}\n${email.texto}`)
+    // Spec 028 (F-06): em produção o texto (com o link de recuperação) não vai para o log.
+    if (process.env.NODE_ENV === 'production') console.log('[e-mail não enviado: SMTP não configurado]')
+    else console.log(`[e-mail não enviado: SMTP não configurado] Para: ${email.para}\n${email.texto}`)
     return
   }
   await transporte.sendMail({ from: ambiente.remetente, to: email.para, subject: email.assunto, text: email.texto })

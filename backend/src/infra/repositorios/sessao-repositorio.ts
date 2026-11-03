@@ -35,8 +35,10 @@ export async function criarSessao(
 
 export async function buscarSessaoAtiva(id: string): Promise<Sessao | null> {
   const resultado = await pool.query(
-    `SELECT id, usuario_id, marcenaria_id, expira_em FROM sessao
-     WHERE id = $1 AND encerrada_em IS NULL AND expira_em > now()`,
+    // Spec 028 (F-10): usuário desativado perde a sessão já emitida, sem esperar as 8 horas.
+    `SELECT s.id, s.usuario_id, s.marcenaria_id, s.expira_em FROM sessao s
+     JOIN usuario u ON u.id = s.usuario_id AND u.ativo = true
+     WHERE s.id = $1 AND s.encerrada_em IS NULL AND s.expira_em > now()`,
     [id],
   )
   return resultado.rows[0] ? sessaoDaLinha(resultado.rows[0]) : null

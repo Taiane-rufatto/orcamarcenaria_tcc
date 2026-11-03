@@ -41,11 +41,12 @@ interface Opcoes {
 const MENSAGEM = 'Muitas tentativas. Aguarde alguns minutos e tente de novo.'
 
 // Cada chamada cria o seu próprio contador, para limites diferentes não se misturarem.
-// LIMITE_TENTATIVAS=desligado (só nos testes automatizados) deixa passar tudo.
+// LIMITE_TENTATIVAS=desligado (só nos testes automatizados) deixa passar tudo, exceto em produção (spec 028, F-09):
+// uma variável esquecida no .env da VPS não pode desligar a proteção.
 export function limitarTentativas({ janelaMs, maximo, chave }: Opcoes): RequestHandler {
   const contador = new ContadorDeTentativas(janelaMs, maximo)
   return (requisicao, resposta, proximo) => {
-    if (process.env.LIMITE_TENTATIVAS === 'desligado') return proximo()
+    if (process.env.LIMITE_TENTATIVAS === 'desligado' && process.env.NODE_ENV !== 'production') return proximo()
     const resultado = contador.registrar(chave(requisicao), Date.now())
     if (resultado.permitido) return proximo()
     resposta.setHeader('Retry-After', String(resultado.esperarSegundos))

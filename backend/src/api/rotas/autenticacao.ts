@@ -19,6 +19,8 @@ const limiteDeLoginPorEndereco = limitarTentativas({ janelaMs: 15 * MIN, maximo:
 const limiteDeLoginPorConta = limitarTentativas({ janelaMs: 15 * MIN, maximo: 10, chave: (r) => `entrar|${r.ip}|${emailDoCorpo(r)}` })
 const limiteDeCadastro = limitarTentativas({ janelaMs: 60 * MIN, maximo: 10, chave: (r) => `cadastro|${r.ip}` })
 const limiteDeRecuperacao = limitarTentativas({ janelaMs: 60 * MIN, maximo: 10, chave: (r) => `esqueci|${r.ip}` })
+// Spec 028 (F-05): quem tem a sessão aberta não pode testar a "senha atual" sem parar. Chave: o usuário da sessão.
+const limiteDeTrocaDeSenha = limitarTentativas({ janelaMs: 15 * MIN, maximo: 10, chave: (r) => `senha|${r.res?.locals.autenticacao?.usuarioId ?? r.ip}` })
 const limiteDeRedefinicao = limitarTentativas({ janelaMs: 15 * MIN, maximo: 10, chave: (r) => `redefinir|${r.ip}` })
 
 rotasAutenticacao.post('/cadastro', limiteDeCadastro, async (requisicao, resposta) => {
@@ -35,7 +37,7 @@ rotasAutenticacao.post('/sair', exigirAutenticacao, async (_requisicao, resposta
   resposta.status(204).end()
 })
 
-rotasAutenticacao.put('/senha', exigirAutenticacao, async (requisicao, resposta) => {
+rotasAutenticacao.put('/senha', exigirAutenticacao, limiteDeTrocaDeSenha, async (requisicao, resposta) => {
   const contexto = resposta.locals.autenticacao!
   const usuario = await buscarUsuarioPorId(contexto.usuarioId)
   if (!usuario || usuario.id !== contexto.usuarioId) throw new ErroHttp(401, 'Sessão inválida ou expirada')

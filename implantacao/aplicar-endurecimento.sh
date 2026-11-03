@@ -36,10 +36,9 @@ bloco = '''
     add_header X-Content-Type-Options "nosniff" always;
     add_header X-Frame-Options "DENY" always;
     add_header Referrer-Policy "strict-origin-when-cross-origin" always;
-    # A CSP começa em modo SÓ RELATAR (não bloqueia nada). Depois de abrir o site no navegador e conferir que o console
-    # não mostra bloqueios (fontes do Google, estilos do React, PDF), troque o nome do cabeçalho por
-    # Content-Security-Policy para valer de verdade.
-    add_header Content-Security-Policy-Report-Only "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'" always;
+    # A CSP está em modo BLOQUEIO (spec 028, F-02): conferida no navegador, sem nenhuma violação em cadastro, entrada,
+    # listas, orçamento, painel e recuperação de senha. Se uma tela nova precisar de outra origem, ajuste a diretiva certa.
+    add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'" always;
 '''
 # O primeiro "server_name" do arquivo é o do bloco HTTPS (o certbot põe o redirecionamento do HTTP no segundo bloco).
 m = re.search(r'\n[ \t]*server_name [^;]+;\n', s)
@@ -57,6 +56,23 @@ PY
     nginx -t
     exit 1
   fi
+fi
+
+# ---------- CSP em modo bloqueio (spec 028, F-02) ----------
+# Quem aplicou a versão antiga deste script tem a CSP só relatando; aqui ela passa a valer.
+if grep -q "Content-Security-Policy-Report-Only" "$SITE"; then
+  sed -i 's/Content-Security-Policy-Report-Only/Content-Security-Policy/' "$SITE"
+  if nginx -t 2>/dev/null; then
+    systemctl reload nginx
+    echo "== nginx: a CSP agora bloqueia (era só relatar)"
+  else
+    cp "$COPIAS/$(basename "$SITE")" "$SITE"
+    echo "!! nginx recusou a configuração; arquivo restaurado. A CSP continua só relatando."
+    nginx -t
+    exit 1
+  fi
+else
+  echo "== nginx: a CSP já está em modo bloqueio; nada a fazer"
 fi
 
 # ---------- systemd (A11) ----------

@@ -24,7 +24,8 @@ export async function solicitarRedefinicao(email: string): Promise<void> {
   const token = randomBytes(32).toString('base64url')
   await criarPedido(pool, usuario.id, hashDoToken(token), new Date(Date.now() + validadeMs))
 
-  const link = `${ambiente.urlFrontend}/redefinir-senha?token=${token}`
+  // Spec 028 (F-06): o token vai no fragmento (#), que o navegador não envia ao servidor, então não cai no log do nginx.
+  const link = `${ambiente.urlFrontend}/redefinir-senha#token=${token}`
   // Falha no envio não muda a resposta (senão ela revelaria que o e-mail tem conta); fica no log do servidor.
   await enviarEmail({
     para: usuario.email,
