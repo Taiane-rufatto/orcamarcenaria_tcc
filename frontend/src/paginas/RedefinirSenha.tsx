@@ -1,12 +1,16 @@
-import { useState, type FormEvent } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { useEffect, useState, type FormEvent } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import { PainelAcesso } from '../componentes/PainelAcesso'
 import { redefinirSenha } from '../servicos/autenticacao'
 
-// RF07 (D028): aberta pelo link do e-mail. O token vem no endereço e vale uma vez só.
+// RF07 (D028): aberta pelo link do e-mail. O token vem no fragmento do endereço (#token=...), que não chega ao
+// servidor nem aos logs do nginx (spec 028, F-06), e vale uma vez só. Links antigos, com ?token=, ainda funcionam.
 export function RedefinirSenha() {
-  const [parametros] = useSearchParams()
-  const token = parametros.get('token') ?? ''
+  const { hash, search } = useLocation()
+  const [token] = useState(() =>
+    new URLSearchParams(hash.replace(/^#/, '')).get('token') ?? new URLSearchParams(search).get('token') ?? '')
+  // Depois de lido, o token sai do endereço visível e do histórico do navegador.
+  useEffect(() => { if (token) window.history.replaceState(null, '', window.location.pathname) }, [token])
   const [concluido, setConcluido] = useState(false)
   const [erro, setErro] = useState<string | null>(null)
 

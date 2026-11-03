@@ -37,7 +37,7 @@ const postar = (rota: string, corpo: unknown, token?: string) => fetch(`${baseUr
 })
 const linkPara = (email: string) => {
   const mensagem = emails.filter((e) => e.para === email).at(-1)
-  return mensagem?.texto.match(/redefinir-senha\?token=([\w-]+)/)?.[1]
+  return mensagem?.texto.match(/redefinir-senha#token=([\w-]+)/)?.[1]
 }
 
 describe('recuperação de senha (RF07, D028)', () => {

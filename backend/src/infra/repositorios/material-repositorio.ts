@@ -48,7 +48,7 @@ export async function listarMateriais(marcenariaId: string, busca = '', situacao
   const { rows } = await pool.query(
     `SELECT m.*, f.nome AS fornecedor_nome,
             floor(extract(epoch FROM (now() - m.custo_atualizado_em)) / 86400)::int AS dias_desde_atualizacao
-     FROM material m LEFT JOIN fornecedor f ON f.id = m.fornecedor_id
+     FROM material m LEFT JOIN fornecedor f ON f.id = m.fornecedor_id AND f.marcenaria_id = m.marcenaria_id
      WHERE ${filtros.join(' AND ')} ORDER BY m.nome`,
     valores,
   )
@@ -107,7 +107,7 @@ export async function historicoDoMaterial(id: string, marcenariaId: string) {
   if (dono.rowCount === 0) return null
   const { rows } = await pool.query(
     `SELECT h.custo_unitario, f.nome AS fornecedor_nome, h.registrado_em
-     FROM material_custo_historico h LEFT JOIN fornecedor f ON f.id = h.fornecedor_id
+     FROM material_custo_historico h LEFT JOIN fornecedor f ON f.id = h.fornecedor_id AND f.marcenaria_id = h.marcenaria_id
      WHERE h.material_id=$1 AND h.marcenaria_id=$2 ORDER BY h.registrado_em DESC LIMIT 20`,
     [id, marcenariaId],
   )

@@ -151,7 +151,7 @@ export async function lerOrcamento(c: PoolClient, id: string, marcenariaId: stri
   const itens = (await c.query(
     `SELECT i.*, m.custo_unitario AS material_custo_atual,
             floor(extract(epoch FROM (now() - m.custo_atualizado_em)) / 86400)::int AS material_dias
-     FROM orcamento_item i LEFT JOIN material m ON m.id = i.material_id
+     FROM orcamento_item i LEFT JOIN material m ON m.id = i.material_id AND m.marcenaria_id = $2
      WHERE ${DO_ORCAMENTO_DA_MARCENARIA.replace('orcamento_id', 'i.orcamento_id')} ORDER BY i.ordem`, [id, marcenariaId])).rows
   const custos = (await c.query(
     `SELECT * FROM orcamento_custo_adicional WHERE ${DO_ORCAMENTO_DA_MARCENARIA} ORDER BY ordem`, [id, marcenariaId])).rows
@@ -319,8 +319,8 @@ export async function itensParaCompra(c: PoolClient, id: string, marcenariaId: s
     `SELECT i.descricao, i.quantidade, i.unidade,
             f.id AS fornecedor_id, f.nome AS fornecedor_nome, f.telefone AS fornecedor_telefone, f.endereco AS fornecedor_endereco
      FROM orcamento_item i
-     LEFT JOIN material m ON m.id = i.material_id
-     LEFT JOIN fornecedor f ON f.id = m.fornecedor_id
+     LEFT JOIN material m ON m.id = i.material_id AND m.marcenaria_id = $2
+     LEFT JOIN fornecedor f ON f.id = m.fornecedor_id AND f.marcenaria_id = $2
      WHERE i.tipo = 'material' AND ${DO_ORCAMENTO_DA_MARCENARIA.replace('orcamento_id', 'i.orcamento_id')}
      ORDER BY f.nome NULLS LAST, i.ordem`,
     [id, marcenariaId],
