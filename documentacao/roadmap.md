@@ -44,6 +44,7 @@ Prioridade e dependência definem a ordem. Um incremento só é aberto quando o 
 | 023 | Fornecedor completo: endereço, aviso de preço dentro do orçamento e lista de compras (D038; origem: resumo da orientação feito pela autora) | M3 | 020 | US21 | RF58, RF59 |
 | 024 | Em produção e entregue, painel de saúde do negócio (mão de obra, preços dos materiais) e meta do mês (D039; origem: resumo da orientação feito pela autora) | M3 | 019, 023 | US22 | RF60–RF63 |
 | 025 | Duplicar orçamento para ajustar (RF40; D040; origem: orientação de 08/10/2026 e pedido da autora) | M3 | 024 | US23 | RF40 |
+| 028 | Fechamento dos achados de segurança do TCC I: troca de senha com limite, link de recuperação fora dos logs, isolamento nos JOINs, CSP em bloqueio, sessão de usuário desativado (D044; origem: auditoria de segurança) | M3 | 027 | — | RNF12, RNF27 |
 
 ### Observações de sequenciamento
 

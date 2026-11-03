@@ -6,6 +6,24 @@ Formato: contexto → decisão → consequência → situação (`provisória` e
 
 ---
 
+## D044 — Fechamento dos achados da auditoria de segurança no TCC I (spec 028)
+**Data:** 2026-11-03 · **Situação:** firme
+
+**Contexto.** A auditoria de 2026-10-19 (D042) deixou os achados F-02, F-03 e F-05 a F-11 abertos. Nenhum era crítico ou alto, mas a meta é encerrar o TCC I sem achado sem destino.
+
+**Decisão.**
+1. **Corrigidos no código, com teste:** F-05 (limite na troca de senha e teto de 128 caracteres), F-06 (token do link de recuperação no fragmento da URL e e-mail sem texto no log em produção), F-07 (filtro da marcenaria nos JOINs de material e fornecedor), F-09 (limite de tentativas não desliga em produção), F-10 (sessão só vale com usuário ativo), F-11 (`npm audit fix`; 0 vulnerabilidades em produção).
+2. **Corrigido por configuração:** F-02 (CSP em modo bloqueio), conferido no navegador sem nenhuma violação. Isso também reduz o F-08.
+3. **Risco aceito, documentado:**
+   - **F-03 (cadastro revela se o e-mail já tem conta):** a mensagem clara ajuda quem tem conta e esquece; o cadastro tem limite de 10 por hora por endereço; a recuperação de senha já responde igual para qualquer e-mail. Revisar se o produto passar a ter cadastro por convite ou confirmação por e-mail.
+   - **F-08 (token da sessão em `sessionStorage`):** com a CSP em bloqueio e sem nenhum ponto de injeção de script encontrado, o risco é baixo; o cookie `HttpOnly` exige proteção contra CSRF e mudança de arquitetura e fica para o TCC II.
+   - **F-07, parte estrutural:** não há chave estrangeira composta nem RLS no banco; a barreira é o filtro nas consultas, a conferência do dono antes de gravar e um teste de isolamento por rota. Reavaliar no TCC II.
+   - **Avisos do `minimatch` no ESLint (12 moderados):** ferramenta de desenvolvimento, fora do site; a correção forçada rebaixaria o ESLint.
+
+**Consequência.** Os links de recuperação mudam de `?token=` para `#token=`; os antigos continuam valendo até expirar. A publicação exige rodar `atualizar.sh main` e `aplicar-endurecimento.sh` na VPS e conferir `NODE_ENV=production` no `.env`. O relatório da auditoria segue fora do repositório (D042).
+
+---
+
 ## D042 — Auditoria de segurança: o relatório fica fora do repositório público
 **Data:** 2026-10-20 · **Situação:** firme
 

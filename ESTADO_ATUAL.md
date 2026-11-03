@@ -1,6 +1,8 @@
 # Estado Atual
 
-**Atualizado em:** 2026-10-20
+**Atualizado em:** 2026-11-03
+
+> **Spec 028 (fechamento dos achados de segurança, D044), implementada e testada em 2026-11-03 na branch `spec/028-fechamento-de-seguranca`; falta revisar o diff, integrar e publicar.** Fecha os achados F-02, F-05 a F-07 e F-09 a F-11 da auditoria; F-03, F-08 e a parte estrutural do F-07 ficam como risco aceito e documentado. Backend 312 testes, frontend 31; `npm audit` de produção com 0 vulnerabilidades nos dois. **Para publicar na VPS (com backup):** `atualizar.sh main`, depois `sudo bash implantacao/aplicar-endurecimento.sh` (a CSP passa a bloquear), conferir `NODE_ENV=production` no `.env`, e abrir o site, entrar e baixar um PDF com o console (F12) aberto. Evidência: `evidencias/testes/028-fechamento-de-seguranca-2026-11-03.md`.
 
 > **Spec 027 (endurecimento de segurança, D042), fechada e publicada em 2026-10-20 (`main` em `8df2aa7`).** Da auditoria de segurança de 2026-10-19 (11 achados, nenhum crítico ou alto; relatório só no computador da autora, fora do repositório público): a API passou a escutar só em `127.0.0.1` (F-01) e os documentos perderam IP do SSH, usuário, chave e e-mail da conta (F-04). **Abertos:** F-02 (CSP em modo bloqueio), F-03, F-05 a F-11. Backend 305 testes. Evidência: `evidencias/testes/027-endurecimento-de-seguranca-2026-10-20.md`.
 >
