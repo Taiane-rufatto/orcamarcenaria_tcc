@@ -2,7 +2,7 @@
 
 **Branch:** `spec/029-ajustes-de-uso-e-painel`
 **Data:** 2026-11-17
-**Status:** implementada e verificada por testes automatizados em 2026-11-17 (D045). **Falta o percurso de tela pela autora e a publicação na VPS.**
+**Status:** implementada e verificada por testes automatizados em 2026-11-17 (D045). **Integrada em `main` (PR #24) e publicada na VPS em 2026-11-17. Falta o percurso de tela pela autora.**
 Origem: uso do sistema pela autora, em 2026-11-17, depois da publicação da spec 028, e conversa com o proprietário sobre o significado da meta do mês. Só tela e texto, com uma exceção pequena na API (filtro por várias situações) e uma contagem nova no painel.
 
 ## Contexto

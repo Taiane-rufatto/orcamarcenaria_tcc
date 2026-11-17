@@ -1,6 +1,6 @@
 # Handoff
 
-**Atualizado em:** 2026-11-17 · Última sessão: spec 029 (ajustes de uso e painel) implementada na branch `spec/029-ajustes-de-uso-e-painel`, ainda sem publicar.
+**Atualizado em:** 2026-11-17 · Última sessão: spec 029 (ajustes de uso e painel) integrada em `main` (PR #24) e publicada na VPS em 2026-11-17 (`e517078`).
 
 > **Sessão de 2026-11-17 (spec 029):** o que é caro de redescobrir: (1) **o Vitest falha ("failed to find the runner") quando é iniciado de dentro do Git Bash**, o shell das ferramentas do agente; pelo PowerShell ou pelo terminal do VS Code, `npm test` passa normalmente (327 e 34 testes). Não é variável de ambiente, `PATH`, entrada padrão nem cache; no Git Bash, `--pool=vmThreads` contorna. Não é problema do projeto. (2) O selo "Valor ajustado" vinha de uma coluna gerada que compara o valor do item com `valor_unitario_catalogo`, o custo do **dia em que o item entrou no primeiro orçamento**; `duplicar` copia essa foto antiga. A correção (RN21) é na leitura, em `orcamento.ts`, sem migração. (3) O painel e a meta contam pela **data de emissão** (`listarDoMes`), não pela de aprovação (D045). (4) `backend/tests/unidade/valores-limite.test.ts` (de 16/11) tinha um erro de digitação no VL07 (esperava `2751.00`; o certo é `2750.00`); a autora corrigiu e o arquivo entrou na spec 029. **Pergunta para a autora:** a pasta `qts-calculo-orcamento/` entra no repositório?
 >

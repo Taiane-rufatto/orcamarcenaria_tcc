@@ -2,7 +2,7 @@
 
 **Data:** 2026-11-17 · **Spec:** `specs/029-ajustes-de-uso-e-painel/spec.md` · **Decisão:** D045 · **Requisitos:** RF37, RF51, RF58, RF61, RN20, RN21
 
-> **Situação:** implementado e verificado por testes automatizados. **Pendentes (autora):** percurso de tela e publicação na VPS (sem migração de banco). O incremento ainda **não está fechado**.
+> **Situação:** implementado e verificado por testes automatizados. **Publicado na VPS em 2026-11-17.** **Pendente (autora):** percurso de tela no site no ar. O incremento ainda **não está fechado**.
 
 ## Resultado dos testes automatizados
 
@@ -29,6 +29,16 @@ Casos de `verificar-calculo`: **nenhum valor, fórmula, arredondamento ou totali
 ## Observação sobre o ambiente de testes
 
 Iniciado de dentro do Git Bash (o shell das ferramentas do agente), o `vitest run` falha com "failed to find the runner", mesmo em testes antigos. Pelo PowerShell, `npm test` passa com a configuração padrão (backend 327, frontend 34). Descartados como causa: variáveis de ambiente (`VSCODE_*`, `ELECTRON_RUN_AS_NODE`, `PWD`, `HOME`, `TERM`), `PATH`, entrada padrão, cache do Vitest e opções do Node. No Git Bash, `--pool=vmThreads` contorna. Não é problema do projeto; anotado no `HANDOFF.md`.
+
+## Publicação na VPS (2026-11-17)
+
+| Passo | Resultado |
+|---|---|
+| Acesso | SSH liberado para o IP da autora no grupo de segurança (porta 22), mantendo o IP antigo |
+| Backup antes | `pg_dump` completo (74 KB): `/home/ubuntu/backup-orcamarcenaria-antes-da-029-2026-11-17.sql` |
+| Atualização | `atualizar.sh main`: da `432c1a5` (spec 028) para a `e517078` (PR #24); `npm ci`, build da API e do front, migrações (nenhuma nova: 001 a 015 já aplicadas), reinício da API |
+| Banco | Contagens iguais antes e depois: 9 marcenarias, 9 usuários, 12 clientes, 22 materiais, 23 orçamentos |
+| Verificação | `/api/saude` com `api: ok` e `banco: ok`; serviço ativo; API só em `127.0.0.1:3333` e PostgreSQL só em `127.0.0.1:5432`; sem erros no log; CSP em bloqueio mantida; site serve o `index-D0wSps-7.js` novo, de 17/11 |
 
 ## Pendente: percurso de tela
 
