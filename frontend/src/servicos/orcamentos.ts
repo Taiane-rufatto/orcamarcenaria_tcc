@@ -61,7 +61,8 @@ export type ResumoOrcamento = {
   dataEmissao: string; dataValidade: string; precoFinal: string; situacao: Situacao
 }
 
-export type FiltrosListagem = { busca: string; situacao: Situacao | ''; de: string; ate: string }
+// `situacao` vazia = todas; com itens, só as marcadas (a API recebe a lista separada por vírgula).
+export type FiltrosListagem = { busca: string; situacao: Situacao[]; de: string; ate: string }
 
 export type NovoItem =
   | { origem: 'catalogo'; tipo: TipoItem; catalogoId: string; quantidade: string }
@@ -70,7 +71,7 @@ export type NovoItem =
 const rota = (id: string, resto = '') => `/orcamentos/${id}${resto}`
 
 export const listarOrcamentos = (filtros: FiltrosListagem) =>
-  requisitar<ResumoOrcamento[]>(`/orcamentos?${new URLSearchParams(filtros)}`)
+  requisitar<ResumoOrcamento[]>(`/orcamentos?${new URLSearchParams({ ...filtros, situacao: filtros.situacao.join(',') })}`)
 export const criarOrcamento = (dados: Cabecalho) => requisitar<Orcamento>('/orcamentos', 'POST', dados)
 export const consultarOrcamento = (id: string) => requisitar<Orcamento>(rota(id))
 export const alterarCabecalho = (id: string, dados: Cabecalho) => requisitar<Orcamento>(rota(id), 'PUT', dados)
@@ -97,6 +98,14 @@ export function textoDaLista(grupos: GrupoDeCompra[]): string {
       : 'Sem fornecedor cadastrado',
     ...grupo.itens.map((item) => `- ${exibirNumero(item.quantidade)} ${item.unidade} ${item.descricao}`),
   ].join('\n')).join('\n\n')
+}
+
+// Texto dos materiais do orçamento para colar no WhatsApp ou e-mail: só quantidades, sem fornecedor e sem valores.
+// Serviços ficam de fora (não se compram). Vazio quando não há material.
+export function textoDosMateriais(projeto: string, itens: Pick<Item, 'tipo' | 'descricao' | 'quantidade' | 'unidade'>[]): string {
+  const materiais = itens.filter((item) => item.tipo === 'material')
+  if (materiais.length === 0) return ''
+  return [`Lista de compras · ${projeto}`, ...materiais.map((item) => `- ${exibirNumero(item.quantidade)} ${item.unidade} ${item.descricao}`)].join('\n')
 }
 
 export const listaDeCompras = (id: string) => requisitar<{ orcamentoId: string; grupos: GrupoDeCompra[] }>(rota(id, '/lista-de-compras'))

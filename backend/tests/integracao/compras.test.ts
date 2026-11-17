@@ -120,6 +120,22 @@ describe('aviso de preço do material dentro do orçamento (RF58)', () => {
     expect(novo.itens[0]).toMatchObject({ valorUnitario: '310.0000', custoDoCatalogoMudou: false })
     expect(novo.memorial.subtotalMateriais).toBe('620.00')
   })
+
+  it('item no custo atual do catálogo não aparece como "valor ajustado", mesmo depois de "usar o novo custo" e de duplicar', async () => {
+    const { token, clienteId } = await conta('aviso.sem-ajuste')
+    const { id } = await novoMaterial(token, { nome: 'FITA' })
+    const o = await comMaterial(token, await novoOrcamento(token, clienteId), id, '2')
+    await esperar(chamar(token, `/materiais/${id}`, 'PUT', { nome: 'FITA', unidade: 'ch', custoUnitario: '310,00' }), 200)
+    const item = (await esperar<Orcamento>(chamar(token, `/orcamentos/${o.id}`), 200)).itens[0]
+    expect(item.valorAjustadoManualmente).toBe(false) // só o aviso de custo mudado, sem selo de ajuste
+
+    const novo = await esperar<Orcamento>(chamar(token, `/orcamentos/${o.id}/itens/${item.id}`, 'PUT', { quantidade: item.quantidade, valorUnitario: item.materialCustoAtual }), 200)
+    expect(novo.itens[0]).toMatchObject({ valorUnitario: '310.0000', valorAjustadoManualmente: false })
+
+    // Valor digitado à mão, diferente do catálogo atual, continua sendo ajuste.
+    const manual = await esperar<Orcamento>(chamar(token, `/orcamentos/${o.id}/itens/${item.id}`, 'PUT', { quantidade: item.quantidade, valorUnitario: '250,00' }), 200)
+    expect(manual.itens[0].valorAjustadoManualmente).toBe(true)
+  })
 })
 
 describe('lista de compras (RF58)', () => {

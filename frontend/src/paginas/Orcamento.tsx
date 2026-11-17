@@ -2,13 +2,12 @@ import { useEffect, useState, type FormEvent } from 'react'
 import { useConfirmar } from '../hooks/useConfirmar'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { CampoBusca } from '../componentes/CampoBusca'
-import { ListaDeCompras } from '../componentes/ListaDeCompras'
 import { Memorial } from '../componentes/Memorial'
-import { confirmarPrecoMaterial, exibirValor, listarMateriais, listarServicos, type Material, type Servico } from '../servicos/catalogo'
+import { confirmarPrecoMaterial, EXPLICACAO_PRECO_ANTIGO, exibirValor, listarMateriais, listarServicos, type Material, type Servico } from '../servicos/catalogo'
 import { listarClientes, type Cliente } from '../servicos/clientes'
 import {
   adicionarCustoAdicional, adicionarItem, alterarCabecalho, alterarItem, consultarOrcamento, exibirData, exibirMoeda, exibirNumero,
-  baixarPdf, duplicarOrcamento, mudarSituacao, paraCampo, registrarOrcamento, removerCustoAdicional, removerItem, SITUACOES,
+  baixarPdf, duplicarOrcamento, mudarSituacao, paraCampo, registrarOrcamento, removerCustoAdicional, removerItem, SITUACOES, textoDosMateriais,
   type ModoLucro, type NovoItem, type Orcamento as DadosOrcamento, type RegraArredondamento, type TipoItem,
 } from '../servicos/orcamentos'
 
@@ -38,6 +37,7 @@ export function Orcamento() {
   // Textos para o cliente: controlados aqui para não se perderem ao registrar sem salvar.
   const [textos, setTextos] = useState({ especificacoes: '', observacoes: '' })
   const [baixando, setBaixando] = useState(false)
+  const [avisoCopia, setAvisoCopia] = useState('')
 
   useEffect(() => {
     let atual = true
@@ -84,6 +84,15 @@ export function Orcamento() {
   }
 
   const editavel = orcamento.situacao === 'rascunho'
+  const temMaterial = orcamento.itens.some((item) => item.tipo === 'material')
+
+  // Spec 029: copia só os materiais (quantidades, sem valores) para colar no WhatsApp ou e-mail do fornecedor.
+  async function copiarMateriais() {
+    try {
+      await navigator.clipboard.writeText(textoDosMateriais(orcamento!.descricaoProjeto, orcamento!.itens))
+      setAvisoCopia('✓ Lista copiada')
+    } catch { setAvisoCopia('Não foi possível copiar; tente de novo.') }
+  }
   const textosPendentes = textos.especificacoes !== orcamento.especificacoes || textos.observacoes !== orcamento.observacoes
 
   // Cabeçalho gravado + textos da tela: salvar os textos não mexe nos demais dados.
@@ -274,7 +283,7 @@ export function Orcamento() {
             const formulario = `item-${item.id}`
             return <tr key={`${item.id}-${item.quantidade}-${item.valorUnitario}`}>
               <td>{item.descricao}{item.valorAjustadoManualmente && <small><span className="selo ajustado">Valor ajustado neste orçamento</span></small>}
-                {editavel && item.precoDoMaterialAntigo && item.materialId && <small><span className="selo enviado">Preço do material com {item.materialDias} dias</span> <button type="button" className="discreto" onClick={() => confirmarPrecoDoMaterial(item.materialId!)}>Continua o mesmo</button></small>}
+                {editavel && item.precoDoMaterialAntigo && item.materialId && <small><span className="selo enviado" title={EXPLICACAO_PRECO_ANTIGO}>Preço do material com {item.materialDias} dias</span> <button type="button" className="discreto" onClick={() => confirmarPrecoDoMaterial(item.materialId!)}>Continua o mesmo</button></small>}
                 {editavel && item.custoDoCatalogoMudou && item.materialCustoAtual && <small><span className="selo enviado">O custo do catálogo agora é {exibirValor(item.materialCustoAtual)}</span> <button type="button" className="discreto" onClick={() => usarNovoCusto(item)}>Usar o novo custo</button></small>}</td>
               <td data-label="Tipo">{item.tipo === 'material' ? 'Material' : 'Serviço'}</td>
               {editavel ? <>
@@ -295,6 +304,11 @@ export function Orcamento() {
             </tr>
           })}</tbody>
         </table></div>}
+
+        {temMaterial && <div className="acoes">
+          <button type="button" className="secundario" onClick={copiarMateriais}>Copiar lista de materiais</button>
+          {avisoCopia && <span className="salvo" role="status">{avisoCopia}</span>}
+        </div>}
 
         {editavel && <>
         <h3 className="subtitulo">Incluir item</h3>
@@ -323,7 +337,8 @@ export function Orcamento() {
         </>}
       </section>
 
-      <ListaDeCompras id={id} versao={orcamento.itens.map((i) => `${i.id}:${i.quantidade}`).join('|')} />
+      {/* Lista de compras por fornecedor oculta por enquanto (spec 029), junto com o fornecedor: o componente ListaDeCompras e a API
+          continuam no código; para religar, reponha <ListaDeCompras id={id} versao={...} /> aqui. No lugar, o botão "Copiar lista de materiais" no card de Itens. */}
 
       <section className="folha">
         <h2>Custos adicionais</h2>

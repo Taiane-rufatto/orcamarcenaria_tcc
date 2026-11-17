@@ -12,7 +12,7 @@ export type PainelDoMes = {
   recusados: number
   vencidos: number
   // `quantidade` inclui os que estão em produção e os já entregues: todo orçamento que o cliente aprovou.
-  aprovados: { quantidade: number; valor: string; lucro: string; percentualDoPreco: string | null; emProducao: number; entregues: number }
+  aprovados: { quantidade: number; valor: string; lucro: string; percentualDoPreco: string | null; soAprovados: number; emProducao: number; entregues: number }
   taxaDeAprovacao: string | null
   meta: { meta: string; aprovado: string; percentual: string; falta: string; atingida: boolean } | null
   cobranca: {

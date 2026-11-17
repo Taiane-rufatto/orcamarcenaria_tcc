@@ -13,9 +13,13 @@ export function Orcamentos() {
   const [erroNovo, setErroNovo] = useState('')
   const navegar = useNavigate()
   const [orcamentos, setOrcamentos] = useState<ResumoOrcamento[] | null>(null)
-  const [filtros, setFiltros] = useState<FiltrosListagem>({ busca: '', situacao: '', de: '', ate: '' })
+  const [filtros, setFiltros] = useState<FiltrosListagem>({ busca: '', situacao: [], de: '', ate: '' })
   const [erroLista, setErroLista] = useState('')
-  const filtrar = (campo: keyof FiltrosListagem, valor: string) => setFiltros((atuais) => ({ ...atuais, [campo]: valor }))
+  const filtrar = (campo: 'busca' | 'de' | 'ate', valor: string) => setFiltros((atuais) => ({ ...atuais, [campo]: valor }))
+  // Cada situação liga e desliga; nenhuma marcada mostra todas.
+  const alternarSituacao = (s: Situacao) => setFiltros((atuais) => ({
+    ...atuais, situacao: atuais.situacao.includes(s) ? atuais.situacao.filter((x) => x !== s) : [...atuais.situacao, s],
+  }))
   const [clientes, setClientes] = useState<Cliente[] | null>(null)
   const [validadeDias, setValidadeDias] = useState<number | null>(null)
   const [criando, setCriando] = useState(false)
@@ -66,14 +70,12 @@ export function Orcamentos() {
 
     <div className="filtros filtros-orcamento">
       <label>Buscar por cliente ou número<input value={filtros.busca} onChange={(e) => filtrar('busca', e.target.value)} placeholder="Nome do cliente ou nº do orçamento" /></label>
-      <label>Situação
-        <select value={filtros.situacao} onChange={(e) => filtrar('situacao', e.target.value)}>
-          <option value="">Todas</option>
-          {(Object.keys(SITUACOES) as Situacao[]).map((s) => <option key={s} value={s}>{SITUACOES[s]}</option>)}
-        </select>
-      </label>
       <label>Emitido a partir de<input type="date" value={filtros.de} onChange={(e) => filtrar('de', e.target.value)} /></label>
       <label>Emitido até<input type="date" value={filtros.ate} onChange={(e) => filtrar('ate', e.target.value)} /></label>
+    </div>
+    <div className="chips chips-orcamento" role="group" aria-label="Situação">
+      {(Object.keys(SITUACOES) as Situacao[]).map((s) => <button key={s} type="button" className="chip"
+        aria-pressed={filtros.situacao.includes(s)} onClick={() => alternarSituacao(s)}>{SITUACOES[s]}</button>)}
     </div>
     {erroLista && <p role="alert" className="alerta">{erroLista}</p>}
 

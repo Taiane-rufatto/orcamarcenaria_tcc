@@ -3,7 +3,7 @@ import { useConfirmar } from '../hooks/useConfirmar'
 import { FiltroLista, RodapeLista } from '../componentes/FiltroLista'
 import { PainelLateral } from '../componentes/PainelLateral'
 import {
-  confirmarPrecoMaterial, criarMaterial, editarMaterial, exibirValor, historicoMaterial, inativarMaterial, listarMateriais,
+  confirmarPrecoMaterial, criarMaterial, editarMaterial, EXPLICACAO_PRECO_ANTIGO, exibirValor, historicoMaterial, inativarMaterial, listarMateriais,
   reativarMaterial, type LinhaHistorico, type Material, type Situacao,
 } from '../servicos/catalogo'
 
@@ -96,6 +96,7 @@ export function Materiais() {
       <div>
         <h1>Materiais</h1>
         <p>Chapas, ferragens e insumos que você usa nos orçamentos, com o custo de cada unidade.</p>
+        <p className="ajuda">{EXPLICACAO_PRECO_ANTIGO}</p>
       </div>
       <button onClick={() => abrir(null)}>+ Novo material</button>
     </div>
@@ -112,7 +113,7 @@ export function Materiais() {
           <td className="valor" data-label="Custo unitário">{exibirValor(item.custo_unitario)}</td>
           <td data-label="Preço atualizado">
             {haQuantosDias(item.dias_desde_atualizacao)}
-            {item.preco_antigo && item.ativo && <> <span className="selo enviado">Preço antigo</span> <button className="discreto" onClick={() => confirmarPreco(item)}>Continua o mesmo</button></>}
+            {item.preco_antigo && item.ativo && <> <span className="selo enviado" title={EXPLICACAO_PRECO_ANTIGO}>Preço antigo</span> <button className="discreto" onClick={() => confirmarPreco(item)}>Continua o mesmo</button></>}
           </td>
           <td data-label="Situação"><span className={item.ativo ? 'selo' : 'selo inativo'}>{item.ativo ? 'Ativo' : 'Inativo'}</span></td>
           <td className="acoes-linha">{item.ativo ? <>

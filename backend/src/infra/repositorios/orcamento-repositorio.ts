@@ -181,7 +181,7 @@ export type Situacao = 'rascunho' | 'enviado' | 'aprovado' | 'recusado' | 'venci
 
 export interface FiltrosListagem {
   busca?: string
-  situacao?: Situacao
+  situacao?: Situacao[] // várias situações juntas; ausente = todas
   de?: string
   ate?: string
 }
@@ -214,7 +214,7 @@ export async function listarOrcamentos(c: PoolClient, marcenariaId: string, filt
       condicoes.push(`(${porNome} OR o.numero = $${valores.length})`)
     } else condicoes.push(porNome)
   }
-  if (filtros.situacao) filtrar('o.situacao = ?', filtros.situacao)
+  if (filtros.situacao?.length) filtrar('o.situacao = ANY(?::text[])', filtros.situacao)
   if (filtros.de) filtrar('o.data_emissao >= ?', filtros.de)
   if (filtros.ate) filtrar('o.data_emissao <= ?', filtros.ate)
   const resultado = await c.query(

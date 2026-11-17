@@ -69,9 +69,15 @@ export const custoAdicionalSchema = z.object({
 // Campo de filtro vazio ("") vale como ausente, para a tela poder enviar o formulário inteiro.
 const opcional = <T extends z.ZodType>(schema: T) => z.preprocess((v) => (v === '' ? undefined : v), schema.optional())
 
+// Uma ou mais situações, separadas por vírgula ("aprovado,em_producao"); vazio ou ausente = todas. Cada uma precisa ser válida.
+const situacoesDoFiltro = z.preprocess(
+  (v) => (typeof v === 'string' ? v.split(',').map((s) => s.trim()).filter(Boolean) : v),
+  z.array(z.enum(['rascunho', 'enviado', 'aprovado', 'recusado', 'vencido', 'em_producao', 'entregue'], 'Situação inválida')).max(7).optional(),
+).transform((lista) => (lista && lista.length > 0 ? [...new Set(lista)] : undefined))
+
 export const filtrosListagemSchema = z.object({
   busca: opcional(z.string()),
-  situacao: opcional(z.enum(['rascunho', 'enviado', 'aprovado', 'recusado', 'vencido', 'em_producao', 'entregue'], 'Situação inválida')),
+  situacao: situacoesDoFiltro,
   de: opcional(data),
   ate: opcional(data),
 })

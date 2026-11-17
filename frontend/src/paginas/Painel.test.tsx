@@ -10,7 +10,7 @@ vi.mock('../servicos/painel', () => ({ consultarPainel: consultar }))
 
 const outubro: PainelDoMes = {
   mes: '2026-10', rascunhos: 1, enviados: 5, aguardando: 1, recusados: 1, vencidos: 1,
-  aprovados: { quantidade: 2, valor: '6960.00', lucro: '2928.90', percentualDoPreco: '42.08', emProducao: 1, entregues: 0 },
+  aprovados: { quantidade: 2, valor: '6960.00', lucro: '2928.90', percentualDoPreco: '42.08', soAprovados: 1, emProducao: 1, entregues: 0 },
   taxaDeAprovacao: '40.00',
   meta: { meta: '10000.00', aprovado: '6960.00', percentual: '69.60', falta: '3040.00', atingida: false },
   cobranca: {
@@ -37,9 +37,10 @@ describe('Painel do mês (RF47, RF48 e RF60 a RF63)', () => {
     expect(screen.getByText(/orçamentos enviados foram aprovados/).textContent).toBe('2 de 5 orçamentos enviados foram aprovados (40,00%).')
     expect(screen.getByText(/em orçamentos, com/).textContent).toBe('Você aprovou R$ 6.960,00 em orçamentos, com R$ 2.928,90 de lucro (42,08% do preço).')
     const linhas = screen.getAllByRole('term').map((t) => `${t.textContent} ${t.nextElementSibling?.textContent}`)
+    // Os grupos não se misturam: os seis primeiros somam os enviados (1+1+0+1+1+1 = 5) e rascunho fica de fora.
     expect(linhas).toEqual([
-      'Aprovados 2', 'Em produção 1', 'Entregues 0', 'Recusados 1',
-      'Vencidos sem resposta 1', 'Esperando resposta 1', 'Rascunhos 1',
+      'Somente aprovados 1', 'Aprovados e em produção 1', 'Aprovados e entregues 0',
+      'Esperando resposta 1', 'Recusados 1', 'Vencidos sem resposta 1', 'Rascunhos (não enviados) 1',
     ])
     expect(screen.getByText(/outubro de 2026/)).toBeTruthy()
   })
@@ -47,8 +48,9 @@ describe('Painel do mês (RF47, RF48 e RF60 a RF63)', () => {
   it('meta: mostra o quanto foi aprovado e quanto falta; batida, diz que bateu; sem meta, convida a definir', async () => {
     consultar.mockResolvedValue(outubro)
     mostrar()
-    await waitFor(() => expect(screen.getByText(/Sua meta é/)).toBeTruthy())
-    expect(screen.getByText(/Sua meta é/).textContent).toBe('Sua meta é R$ 10.000,00. Você aprovou R$ 6.960,00 (69,60%). Faltam R$ 3.040,00.')
+    await waitFor(() => expect(screen.getByText(/Sua meta de vendas é/)).toBeTruthy())
+    expect(screen.getByText(/Sua meta de vendas é/).textContent).toBe('Sua meta de vendas é R$ 10.000,00. Você fechou R$ 6.960,00 em orçamentos aprovados (69,60%). Faltam R$ 3.040,00.')
+    expect(screen.getByText(/independentemente de pagamento/)).toBeTruthy()
     cleanup()
 
     consultar.mockResolvedValue({ ...outubro, meta: { meta: '4000.00', aprovado: '6960.00', percentual: '174.00', falta: '0.00', atingida: true } })
@@ -91,7 +93,7 @@ describe('Painel do mês (RF47, RF48 e RF60 a RF63)', () => {
   it('mês sem envios: avisa que não há orçamento enviado e cita os rascunhos', async () => {
     consultar.mockResolvedValue({
       ...outubro, enviados: 0, aguardando: 0, recusados: 0, vencidos: 0, rascunhos: 2, taxaDeAprovacao: null, precos: [],
-      aprovados: { quantidade: 0, valor: '0.00', lucro: '0.00', percentualDoPreco: null, emProducao: 0, entregues: 0 },
+      aprovados: { quantidade: 0, valor: '0.00', lucro: '0.00', percentualDoPreco: null, soAprovados: 0, emProducao: 0, entregues: 0 },
     })
     mostrar()
     await waitFor(() => expect(screen.getByText(/Nenhum orçamento enviado neste mês/)).toBeTruthy())

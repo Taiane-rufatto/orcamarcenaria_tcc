@@ -21,7 +21,7 @@ describe('RN14 — resumo do mês', () => {
       rascunhos: 1,
       enviados: 5,
       aguardando: 1,
-      aprovados: { quantidade: 2, valor: '6960.00', lucro: '2928.90', percentualDoPreco: '42.08', emProducao: 0, entregues: 0 },
+      aprovados: { quantidade: 2, valor: '6960.00', lucro: '2928.90', percentualDoPreco: '42.08', soAprovados: 2, emProducao: 0, entregues: 0 },
       recusados: 1,
       vencidos: 1,
       taxaDeAprovacao: '40.00',
@@ -35,20 +35,20 @@ describe('RN14 — resumo do mês', () => {
       { situacao: 'entregue', precoFinal: '1000.00', custoDiretoTotal: '700.00' },
       { situacao: 'recusado', precoFinal: '500.00', custoDiretoTotal: '400.00' },
     ])
-    expect(resumo.aprovados).toEqual({ quantidade: 3, valor: '7960.00', lucro: '3228.90', percentualDoPreco: '40.56', emProducao: 1, entregues: 1 })
+    expect(resumo.aprovados).toEqual({ quantidade: 3, valor: '7960.00', lucro: '3228.90', percentualDoPreco: '40.56', soAprovados: 1, emProducao: 1, entregues: 1 })
     expect(resumo).toMatchObject({ enviados: 4, taxaDeAprovacao: '75.00', aguardando: 0 })
   })
 
   it('rascunho não conta como enviado e não entra em nenhuma soma', () => {
     const resumo = resumirMes([{ situacao: 'rascunho', precoFinal: '999.00', custoDiretoTotal: '1.00' }])
     expect(resumo).toMatchObject({ rascunhos: 1, enviados: 0, taxaDeAprovacao: null })
-    expect(resumo.aprovados).toEqual({ quantidade: 0, valor: '0.00', lucro: '0.00', percentualDoPreco: null, emProducao: 0, entregues: 0 })
+    expect(resumo.aprovados).toEqual({ quantidade: 0, valor: '0.00', lucro: '0.00', percentualDoPreco: null, soAprovados: 0, emProducao: 0, entregues: 0 })
   })
 
   it('mês sem orçamentos: tudo zerado e sem taxa', () => {
     expect(resumirMes([])).toEqual({
       rascunhos: 0, enviados: 0, aguardando: 0,
-      aprovados: { quantidade: 0, valor: '0.00', lucro: '0.00', percentualDoPreco: null, emProducao: 0, entregues: 0 },
+      aprovados: { quantidade: 0, valor: '0.00', lucro: '0.00', percentualDoPreco: null, soAprovados: 0, emProducao: 0, entregues: 0 },
       recusados: 0, vencidos: 0, taxaDeAprovacao: null,
     })
   })

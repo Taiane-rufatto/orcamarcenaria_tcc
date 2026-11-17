@@ -49,7 +49,7 @@ async function esperar<T>(resposta: Promise<Response>, status: number): Promise<
 type Variacao = { percentual: string; tendencia: 'subindo' | 'estavel' | 'caindo' } | null
 type Painel = {
   mes: string; rascunhos: number; enviados: number; aguardando: number; recusados: number; vencidos: number
-  aprovados: { quantidade: number; valor: string; lucro: string; percentualDoPreco: string | null; emProducao: number; entregues: number }
+  aprovados: { quantidade: number; valor: string; lucro: string; percentualDoPreco: string | null; soAprovados: number; emProducao: number; entregues: number }
   taxaDeAprovacao: string | null
   meta: { meta: string; aprovado: string; percentual: string; falta: string; atingida: boolean } | null
   cobranca: { maoDeObra: string; percentualDoPreco: string | null; valorMedioDaHora: string | null; valorMedioDaHoraNoMesAnterior: string | null; variacaoDaHora: Variacao }
@@ -99,7 +99,7 @@ describe('painel do mês (RF47, RF48)', () => {
     const { token } = await conta('painel.vazio')
     expect(await esperar<Painel>(chamar(token, '/painel?mes=2026-10'), 200)).toMatchObject({
       mes: '2026-10', rascunhos: 0, enviados: 0, aguardando: 0, recusados: 0, vencidos: 0,
-      aprovados: { quantidade: 0, valor: '0.00', lucro: '0.00', percentualDoPreco: null, emProducao: 0, entregues: 0 }, taxaDeAprovacao: null,
+      aprovados: { quantidade: 0, valor: '0.00', lucro: '0.00', percentualDoPreco: null, soAprovados: 0, emProducao: 0, entregues: 0 }, taxaDeAprovacao: null,
       meta: null, cobranca: { maoDeObra: '0.00', percentualDoPreco: null, valorMedioDaHora: null, variacaoDaHora: null },
     })
   })
@@ -117,7 +117,7 @@ describe('painel do mês (RF47, RF48)', () => {
 
     expect(await esperar<Painel>(chamar(token, '/painel?mes=2026-10'), 200)).toMatchObject({
       mes: '2026-10', rascunhos: 1, enviados: 2, aguardando: 0, recusados: 1, vencidos: 0,
-      aprovados: { quantidade: 1, valor: '4200.00', lucro: '2100.00', percentualDoPreco: '50.00', emProducao: 0, entregues: 0 },
+      aprovados: { quantidade: 1, valor: '4200.00', lucro: '2100.00', percentualDoPreco: '50.00', soAprovados: 1, emProducao: 0, entregues: 0 },
       taxaDeAprovacao: '50.00',
     })
     expect((await esperar<Painel>(chamar(token, '/painel?mes=2026-09'), 200)).aprovados.valor).toBe('19998.00')
@@ -183,7 +183,7 @@ describe('em produção e entregue (spec 024)', () => {
 
     expect(await esperar<Painel>(chamar(token, '/painel?mes=2026-10'), 200)).toMatchObject({
       enviados: 3, taxaDeAprovacao: '100.00',
-      aprovados: { quantidade: 3, valor: '7200.00', emProducao: 1, entregues: 1 },
+      aprovados: { quantidade: 3, valor: '7200.00', soAprovados: 1, emProducao: 1, entregues: 1 },
     })
     const ids = async (situacao: string) => (await esperar<{ id: string }[]>(chamar(token, `/orcamentos?situacao=${situacao}`), 200)).map((r) => r.id)
     expect(await ids('em_producao')).toEqual([b.id])

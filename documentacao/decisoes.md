@@ -6,6 +6,26 @@ Formato: contexto → decisão → consequência → situação (`provisória` e
 
 ---
 
+## D045 — Ajustes de uso: meta de vendas pela emissão, selo de valor ajustado, lista de materiais e filtro de situação (spec 029)
+**Data:** 2026-11-17 · **Situação:** firme (meta confirmada com o proprietário); o visual aguarda o percurso de tela
+
+**Contexto.** Usando o sistema depois da spec 028, a autora achou confuso: a lista de compras "por fornecedor" com o fornecedor oculto (D041); o selo "Valor ajustado" em item que já estava no preço do catálogo; a "meta do mês" sem dizer o que mede; o card "Aprovados" ao lado de "Em produção" e "Entregues", que parece uma soma; o prazo do "Preço antigo" sem explicação; e o filtro de situação que aceitava só uma opção.
+
+**Decisão.**
+1. **Meta de vendas, não de recebimento.** O proprietário confirmou que a meta é sobre o que se vende. O sistema não controla pagamento nem entrega financeira, então o painel diz "meta de vendas" e "independentemente de pagamento".
+2. **O mês da meta é o da emissão do orçamento** (como o painel já fazia, RN18 e RN20), e **não** o da aprovação. A autora decidiu não registrar a data de aprovação, nem como melhoria do TCC II. Consequência assumida: um orçamento emitido em outubro e aprovado em novembro conta em outubro; produção e entrega em outro mês não mudam o mês do orçamento.
+3. **Lista de compras vira "Copiar lista de materiais"** no card Itens: só materiais, sem fornecedor e sem valores, com o projeto no cabeçalho. A seção por fornecedor fica oculta junto do fornecedor (componente e API mantidos). "Abrir no WhatsApp" e cotação por fornecedor ficam para o TCC II (o envio automático por WhatsApp não foi aprovado pelo professor, D038).
+4. **Selo "Valor ajustado" (RN21):** só quando o valor do item difere do custo **atual** do catálogo. A correção é na leitura, sem migração; vale também para os orçamentos já gravados.
+5. **Painel:** os cards se dividem em "Entram na meta de vendas" (somente aprovados, em produção, entregues) e "Não entram" (esperando resposta, recusados, vencidos, rascunhos); a API devolve `soAprovados` para a tela não subtrair.
+6. **Filtro de situação com várias opções** (RF37): `?situacao=a,b`; botões que ligam e desligam; nenhum ligado = todas.
+7. **Prazo do preço antigo explicado** na tela (mais de 30 dias, RN15). O texto da tela repete o prazo da API: se um mudar, o outro também.
+
+**Alternativas.** Contar a meta pelo mês da aprovação: exigiria guardar a data de aprovação (migração); descartado pela autora. Meta de lucro: faria o painel ajudar mais, mas o proprietário pensa em venda; fica como direção do TCC II junto do ponto de equilíbrio (D033). Ocultar só o texto "Sem fornecedor cadastrado": deixaria a lista inútil sem como religar.
+
+**Consequência.** Sem migração e sem mudança em fórmula, preço ou memorial (AGENTS §4.3 não se aplica). RF37, RF51, RF58 e RF61 e as regras RN20 e RN21 foram atualizados. Nenhum dado gravado muda.
+
+---
+
 ## D044 — Fechamento dos achados da auditoria de segurança no TCC I (spec 028)
 **Data:** 2026-11-03 · **Situação:** firme
 

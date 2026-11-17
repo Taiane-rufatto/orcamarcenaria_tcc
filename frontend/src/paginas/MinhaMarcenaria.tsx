@@ -51,7 +51,7 @@ export function MinhaMarcenaria() {
     const dados = new FormData(evento.currentTarget)
     try {
       setConfiguracao(await salvarMeta(String(dados.get('metaDoMes'))))
-      avisar('meta', { texto: 'Meta do mês salva. Ela aparece no Painel do mês.', erro: false })
+      avisar('meta', { texto: 'Meta de vendas salva. Ela aparece no Painel do mês.', erro: false })
     } catch (causa) { avisar('meta', erroDe(causa, 'Não foi possível salvar a meta do mês')) }
   }
 
@@ -125,11 +125,11 @@ export function MinhaMarcenaria() {
     </section>
 
     <section className="folha">
-      <h2>Meta do mês</h2>
-      <p className="ajuda">Opcional. Quanto você quer aprovar em orçamentos por mês, em reais. O Painel do mês mostra quanto já foi aprovado e quanto falta. Não muda nenhum preço.</p>
+      <h2>Meta de vendas do mês</h2>
+      <p className="ajuda">Opcional. Quanto você quer vender por mês, em reais, somando os orçamentos aprovados. O Painel do mês mostra quanto já foi fechado e quanto falta. Não considera pagamentos e não muda nenhum preço.</p>
       <form key={JSON.stringify(meta)} onSubmit={salvarMetaDoMes}>
         <div className="campos">
-          <label>Meta do mês (R$)
+          <label>Meta de vendas do mês (R$)
             <input name="metaDoMes" inputMode="decimal" placeholder="Ex.: 10000,00" defaultValue={meta.metaDoMes ? paraCampo(meta.metaDoMes) : ''} />
           </label>
         </div>

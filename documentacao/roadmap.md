@@ -36,6 +36,8 @@ Prioridade e dependência definem a ordem. Um incremento só é aberto quando o 
 | 013 | Cadastro em sequência: "Salvar e cadastrar outro" no painel de materiais, serviços e clientes (D030) | M3 | 011 | US03, US05, US06 | RF08, RF11, RF17 |
 | 014 | Cadastro pelo teclado: Enter cadastra e continua; Esc ou ✕ fecham o painel (D031, revisa D030) | M3 | 013 | US03, US05, US06 | RF08, RF11, RF17 |
 | 015 | Nomes de material, serviço e cliente em maiúsculas, com migração dos existentes (D032) | M3 | 014 | US03, US05, US06 | RF08, RF11, RF17, RNF26 |
+| 016 | Análise da orientação de 08/10/2026: sugestões do professor avaliadas e plano 017–022 (spec 016; só documento) | M3 | 015 | — | — |
+| 017 | Diagnóstico de segurança, só leitura (spec 017; origem: orientação de 08/10/2026) | M3 | 016 | — | RNF27 |
 | 018 | Lucro de verdade e aviso de lucro mínimo no orçamento: o diferencial do trabalho, sem alterar o preço (D033; origem: orientação de 08/10/2026, spec 016, e pesquisa de mercado) | M3 | 015 | US17 | RF44–RF46 |
 | 019 | Painel do mês: orçamentos enviados, aprovados, recusados, vencidos, taxa de aprovação e valor aprovado (D035; origem: orientação de 08/10/2026) | M3 | 018 | US19 | RF47, RF48 |
 | 020 | Fornecedor, histórico de preço do material e alerta de preço antigo (D034; RF16 promovido) | M3 | 018 | US18 | RF16, RF49–RF52 |
@@ -44,7 +46,10 @@ Prioridade e dependência definem a ordem. Um incremento só é aberto quando o 
 | 023 | Fornecedor completo: endereço, aviso de preço dentro do orçamento e lista de compras (D038; origem: resumo da orientação feito pela autora) | M3 | 020 | US21 | RF58, RF59 |
 | 024 | Em produção e entregue, painel de saúde do negócio (mão de obra, preços dos materiais) e meta do mês (D039; origem: resumo da orientação feito pela autora) | M3 | 019, 023 | US22 | RF60–RF63 |
 | 025 | Duplicar orçamento para ajustar (RF40; D040; origem: orientação de 08/10/2026 e pedido da autora) | M3 | 024 | US23 | RF40 |
+| 026 | Painel em cards e ajustes visuais; oculta o aviso de lucro mínimo e o fornecedor, sem apagar API nem dados (D041) | M3 | 025 | — | RNF02, RNF26 |
+| 027 | Endurecimento de segurança: API só em 127.0.0.1 e documentos sem dados do servidor (D042; origem: auditoria de 19/10/2026) | M3 | 021 | — | RNF27 |
 | 028 | Fechamento dos achados de segurança do TCC I: troca de senha com limite, link de recuperação fora dos logs, isolamento nos JOINs, CSP em bloqueio, sessão de usuário desativado (D044; origem: auditoria de segurança) | M3 | 027 | — | RNF12, RNF27 |
+| 029 | Ajustes de uso e painel: copiar lista de materiais, selo de valor ajustado pelo custo atual, explicação do preço antigo, meta de vendas pela emissão, painel em dois grupos e filtro de situação com várias opções (D045; origem: uso pela autora e conversa com o proprietário) | M3 | 028 | US20–US22 | RF37, RF51, RF58, RF61 |
 
 ### Observações de sequenciamento
 
@@ -89,6 +94,8 @@ Registrado para a seção de trabalhos futuros e para dar destino às ideias que
 - Cálculo de aproveitamento de chapa / plano de corte
 - Rateio de custos indiretos por hora produtiva
 - Envio do orçamento por e-mail ou link
+- "Abrir no WhatsApp" a partir da lista de materiais e cotação por fornecedor (a cópia já existe, D045; o envio automático não foi aprovado, D038)
+- Meta de vendas por lucro ou com custo fixo da oficina (ponto de equilíbrio completo, D033). A data de aprovação **não** será registrada (D045): a meta conta pelo mês da emissão
 - Recuperação de senha (RF07) — trazida para o 012 (D028)
 - Cadastro em tabela com várias linhas de uma vez e importação de planilha de materiais (fora do 013, D030)
 - Painel com indicadores de aprovação e ticket médio

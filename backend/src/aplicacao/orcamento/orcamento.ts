@@ -89,7 +89,10 @@ async function montarResposta(c: PoolClient, marcenariaId: string, id: string) {
       id: i.id, tipo: i.tipo, materialId: i.material_id, servicoId: i.servico_id,
       descricao: i.descricao, unidade: i.unidade, quantidade: i.quantidade,
       valorUnitario: i.valor_unitario, valorLinha: i.valor_linha,
-      valorAjustadoManualmente: i.valor_ajustado_manualmente,
+      // "Ajustado" é o valor digitado diferente do catálogo. Se o item já está no custo ATUAL do catálogo (por exemplo, depois
+      // de "Usar o novo custo"), não é ajuste, mesmo que o custo do catálogo tenha sido outro quando o item entrou (spec 029).
+      valorAjustadoManualmente: i.valor_ajustado_manualmente
+        && (i.material_custo_atual == null || custoDoCatalogoMudou(i.material_custo_atual, i.valor_unitario)),
       // Spec 023: avisos sobre o material do catálogo (nulos no item avulso). Só informam; o valor do item não muda sozinho.
       materialCustoAtual: (i.material_custo_atual ?? null) as string | null,
       materialDias: (i.material_dias ?? null) as number | null,
