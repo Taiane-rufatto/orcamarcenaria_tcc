@@ -8,8 +8,7 @@
 
 | Verificação | Resultado |
 |---|---|
-| Suíte do backend inteira (`vitest run --pool=vmThreads`) | **30 arquivos, 326 de 327 testes passam.** A única falha é `tests/unidade/valores-limite.test.ts` (VL07), arquivo **não versionado e fora desta spec**: o título diz "2749,99 sobe para 2750,00", o sistema devolve `2750.00` (certo) e a expectativa escrita é `'2751.00'`. É erro de digitação no teste, não no cálculo. |
-| Backend sem esse arquivo | 29 arquivos passam, incluindo CT01–CT10 |
+| Suíte do backend inteira (`npm test`, PowerShell) | **30 arquivos, 327 testes passam**, incluindo CT01–CT10 e `valores-limite.test.ts` (o VL07 tinha um erro de digitação no teste, `'2751.00'` em vez de `'2750.00'`; a autora corrigiu, o cálculo estava certo). |
 | Suíte do frontend | **8 arquivos, 34 testes passam**; lint e build limpos |
 | `tsc` do backend | sem erros |
 
@@ -29,7 +28,7 @@ Casos de `verificar-calculo`: **nenhum valor, fórmula, arredondamento ou totali
 
 ## Observação sobre o ambiente de testes
 
-Nesta máquina o `vitest run` padrão falhou com "failed to find the runner", mesmo em testes antigos e sem relação com a mudança. Funciona com `--pool=vmThreads` (backend e frontend). Cache limpo, sem efeito. Anotado no `HANDOFF.md`.
+Iniciado de dentro do Git Bash (o shell das ferramentas do agente), o `vitest run` falha com "failed to find the runner", mesmo em testes antigos. Pelo PowerShell, `npm test` passa com a configuração padrão (backend 327, frontend 34). Descartados como causa: variáveis de ambiente (`VSCODE_*`, `ELECTRON_RUN_AS_NODE`, `PWD`, `HOME`, `TERM`), `PATH`, entrada padrão, cache do Vitest e opções do Node. No Git Bash, `--pool=vmThreads` contorna. Não é problema do projeto; anotado no `HANDOFF.md`.
 
 ## Pendente: percurso de tela
 
