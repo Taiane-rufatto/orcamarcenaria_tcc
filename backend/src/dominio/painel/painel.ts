@@ -29,6 +29,7 @@ export interface ResumoMes {
     valor: string
     lucro: string
     percentualDoPreco: string | null
+    soAprovados: number // dos aprovados, quantos ainda estão só aprovados (nem em produção, nem entregues)
     emProducao: number // dos aprovados, quantos estão em produção
     entregues: number // dos aprovados, quantos já foram entregues
   }
@@ -57,6 +58,7 @@ export function resumirMes(linhas: LinhaPainel[]): ResumoMes {
       valor: duas(valor),
       lucro: duas(lucro),
       percentualDoPreco: valor.gt(0) ? duas(lucro.div(valor).times(CEM)) : null,
+      soAprovados: conta('aprovado').length,
       emProducao: conta('em_producao').length,
       entregues: conta('entregue').length,
     },

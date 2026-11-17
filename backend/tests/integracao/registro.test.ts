@@ -185,6 +185,11 @@ describe('registro e acompanhamento', () => {
     expect(await ids('busca=%25')).toEqual([]) // "%" é texto, não curinga
     expect(await ids('situacao=rascunho')).toEqual([carla.id, ana.id])
     expect(await ids('situacao=enviado')).toEqual([bruno.id])
+    // Várias situações juntas (spec 029): separadas por vírgula; repetida conta uma vez; uma inválida recusa tudo.
+    expect(await ids('situacao=rascunho,enviado')).toEqual([carla.id, bruno.id, ana.id])
+    expect(await ids('situacao=enviado,enviado')).toEqual([bruno.id])
+    expect(await ids('situacao=enviado,aprovado')).toEqual([bruno.id])
+    expect((await chamar(token, '/orcamentos?situacao=enviado,qualquer')).status).toBe(400)
     expect(await ids('de=2026-11-01&ate=2026-11-30')).toEqual([bruno.id])
     expect(await ids('de=2026-11-01')).toEqual([carla.id, bruno.id])
     expect(await ids('busca=&situacao=&de=&ate=')).toHaveLength(3) // campos vazios valem como ausentes

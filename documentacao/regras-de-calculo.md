@@ -201,6 +201,8 @@ aviso      = percentual < lucro_minimo             (só se o mínimo foi informa
 
 **RN15 — Preço antigo.** O custo de um material está antigo quando a última atualização ou confirmação foi há **mais de 30 dias** (30 dias ainda não é antigo). Só avisa; nunca muda custo nem orçamento. Implementação em `backend/src/dominio/catalogo/preco-antigo.ts`.
 
+**RN21 — Valor ajustado (spec 029).** Um item de material mostra "valor ajustado neste orçamento" quando o valor do item é diferente do valor do catálogo gravado na inclusão **e**, se o material ainda existe, diferente do custo **atual** do catálogo. Item que já está no custo atual não é ajuste, mesmo que o catálogo tenha sido outro quando ele entrou (por exemplo, depois de "Usar o novo custo" ou de duplicar). Só muda o que a tela mostra: o valor do item, o preço e o memorial não mudam.
+
 ### 6.2 CPF/CNPJ e busca por número (spec 022) — também fora do preço
 
 **RN16 — CPF ou CNPJ.** Aceita com ou sem pontuação; só vale com 11 dígitos (CPF) ou 14 (CNPJ), com os dois dígitos verificadores corretos (soma ponderada, resto da divisão por 11: resto menor que 2 vira 0, senão 11 menos o resto) e sem sequência repetida (111.111.111-11). Guarda só os dígitos. Só confere se o número é plausível; não consulta a Receita. Implementação em `backend/src/dominio/cliente/documento.ts`. Exemplos públicos de material didático: CPF 529.982.247-25 e CNPJ 11.222.333/0001-81.
@@ -213,7 +215,7 @@ aviso      = percentual < lucro_minimo             (só se o mínimo foi informa
 
 **RN19 — Variação de preço.** `percentual = arred2((atual − anterior) ÷ anterior × 100)`; "subindo" se positivo, "caindo" se negativo e "estável" se 0,00% (tendência pelo percentual já arredondado). Sem valor anterior (ou zero), não compara. Serve ao custo dos materiais (de 90 dias atrás, ou o primeiro registrado do histórico, até o custo atual; os 10 mais usados nos orçamentos enviados dos últimos 90 dias) e ao valor médio da hora (contra o mês anterior). Exemplos: de 289,90 para 313,09 é +8,00%; de 50,00 para 45,00 é −10,00%.
 
-**RN20 — Meta do mês.** `percentual = arred2(aprovado ÷ meta × 100)` (passa de 100 quando a meta é superada); `falta = meta − aprovado`, nunca negativa; `atingida` quando o aprovado alcança a meta. "Aprovado" inclui em produção e entregue (RN09). Sem meta (nula ou zero), não há progresso. Só compara: não é previsão e não muda preço. Exemplo: 6.960,00 de 10.000,00 = 69,60%, faltam 3.040,00.
+**RN20 — Meta de vendas do mês.** `percentual = arred2(aprovado ÷ meta × 100)` (passa de 100 quando a meta é superada); `falta = meta − aprovado`, nunca negativa; `atingida` quando o aprovado alcança a meta. "Aprovado" inclui em produção e entregue (RN09). Sem meta (nula ou zero), não há progresso. O mês é o da **emissão** do orçamento, não o da aprovação (D045), e pagamento não é considerado. Só compara: não é previsão e não muda preço. Exemplo: 6.960,00 de 10.000,00 = 69,60%, faltam 3.040,00.
 
 ## 7. Fora destas regras (registrado, não implementado no MVP)
 

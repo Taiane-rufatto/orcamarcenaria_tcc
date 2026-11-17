@@ -190,7 +190,8 @@ dialog.painel-lateral::backdrop { background: rgba(23, 38, 29, .28); }
 .selo.em_producao { background: var(--laranja-claro); color: var(--laranja-escuro); }
 .selo.entregue { background: var(--verde-claro); color: var(--verde-escuro); }
 .selo.recusado, .selo.vencido { background: var(--neutro-claro); color: var(--tinta-suave); }
-.filtros-orcamento { grid-template-columns: 2fr 1fr 1fr 1fr; }
+.filtros-orcamento { grid-template-columns: 2fr 1fr 1fr; }
+.chips-orcamento { flex-wrap: wrap; margin-bottom: 14px; }
 .resumo { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
 .resumo dt { font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; color: var(--tinta-suave); font-weight: 700; }
 .resumo dd { margin: 3px 0 0; }

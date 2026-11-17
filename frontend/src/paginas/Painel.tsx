@@ -56,17 +56,18 @@ export function Painel() {
     {!painel && !erro && <p>Carregando…</p>}
 
     {painel && <section className="folha card-painel">
-      <h2>Meta do mês</h2>
+      <h2>Meta de vendas do mês</h2>
       {painel.meta
         ? <>
-          <p>Sua meta é {exibirMoeda(painel.meta.meta)}. Você aprovou {exibirMoeda(painel.meta.aprovado)} ({paraCampo(painel.meta.percentual)}%).
+          <p>Sua meta de vendas é {exibirMoeda(painel.meta.meta)}. Você fechou {exibirMoeda(painel.meta.aprovado)} em orçamentos aprovados ({paraCampo(painel.meta.percentual)}%).
             {painel.meta.atingida ? ' Meta batida!' : <> Faltam {exibirMoeda(painel.meta.falta)}.</>}</p>
-          <div className={`barra-meta ${painel.meta.atingida ? 'batida' : 'andamento'}`} role="progressbar" aria-label="Meta do mês"
+          <div className={`barra-meta ${painel.meta.atingida ? 'batida' : 'andamento'}`} role="progressbar" aria-label="Meta de vendas do mês"
             aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.min(100, Math.round(Number(painel.meta.percentual)))}>
             <span style={{ width: `${painel.meta.percentual}%` }} />
           </div>
+          <p className="ajuda">Soma os orçamentos aprovados emitidos neste mês, independentemente de pagamento.</p>
         </>
-        : <p className="ajuda">Defina uma meta do mês em <Link to="/minha-marcenaria">Minha marcenaria</Link> para acompanhar o quanto já foi aprovado.</p>}
+        : <p className="ajuda">Defina uma meta de vendas do mês em <Link to="/minha-marcenaria">Minha marcenaria</Link> para acompanhar o quanto já foi fechado em orçamentos aprovados.</p>}
     </section>}
 
     {painel && painel.enviados === 0 && <section className="folha card-painel">
@@ -78,15 +79,18 @@ export function Painel() {
         <h2>Aprovação</h2>
         <p>{painel.aprovados.quantidade} de {painel.enviados} orçamentos enviados foram aprovados
           {painel.taxaDeAprovacao !== null && <> ({paraCampo(painel.taxaDeAprovacao)}%)</>}.</p>
-        <p className="ajuda">Os aprovados incluem os que estão em produção e os já entregues. Rascunhos ainda não foram enviados.</p>
+        <h3 className="subtitulo">Entram na meta de vendas</h3>
         <dl className="indicadores">
-          <div className="indicador positivo"><dt>Aprovados</dt><dd>{painel.aprovados.quantidade}</dd></div>
-          <div className="indicador andamento"><dt>Em produção</dt><dd>{painel.aprovados.emProducao}</dd></div>
-          <div className="indicador positivo"><dt>Entregues</dt><dd>{painel.aprovados.entregues}</dd></div>
+          <div className="indicador positivo"><dt>Somente aprovados</dt><dd>{painel.aprovados.soAprovados}</dd></div>
+          <div className="indicador andamento"><dt>Aprovados e em produção</dt><dd>{painel.aprovados.emProducao}</dd></div>
+          <div className="indicador positivo"><dt>Aprovados e entregues</dt><dd>{painel.aprovados.entregues}</dd></div>
+        </dl>
+        <h3 className="subtitulo">Não entram na meta de vendas</h3>
+        <dl className="indicadores">
+          <div className="indicador andamento"><dt>Esperando resposta</dt><dd>{painel.aguardando}</dd></div>
           <div className="indicador negativo"><dt>Recusados</dt><dd>{painel.recusados}</dd></div>
           <div className="indicador negativo"><dt>Vencidos sem resposta</dt><dd>{painel.vencidos}</dd></div>
-          <div className="indicador andamento"><dt>Esperando resposta</dt><dd>{painel.aguardando}</dd></div>
-          {painel.rascunhos > 0 && <div className="indicador neutro"><dt>Rascunhos</dt><dd>{painel.rascunhos}</dd></div>}
+          {painel.rascunhos > 0 && <div className="indicador neutro"><dt>Rascunhos (não enviados)</dt><dd>{painel.rascunhos}</dd></div>}
         </dl>
       </section>
 

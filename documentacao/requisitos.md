@@ -93,7 +93,7 @@ Versão 1.0 · Fonte canônica dos requisitos do projeto. Qualquer mudança aqui
 | RF34 | O sistema deve registrar o orçamento com número sequencial por marcenaria, gerado automaticamente. | Essencial | OE5 | 004 |
 | RF35 | O sistema deve manter a situação do orçamento entre: rascunho, enviado, aprovado, recusado e vencido (RN09). | Importante | OE5 | 004 |
 | RF36 | O sistema deve marcar automaticamente como vencido o orçamento cuja data de validade tenha passado e que esteja na situação "enviado". | Importante | OE5 | 004 |
-| RF37 | O sistema deve listar os orçamentos com número, cliente, data, preço final e situação, permitindo busca por cliente e filtro por situação e período; a busca também aceita o número do orçamento (RF55). | Essencial | OE5 | 004 |
+| RF37 | O sistema deve listar os orçamentos com número, cliente, data, preço final e situação, permitindo busca por cliente, filtro por uma ou mais situações ao mesmo tempo (spec 029) e por período; a busca também aceita o número do orçamento (RF55). | Essencial | OE5 | 004 |
 | RF38 | O sistema deve permitir consultar um orçamento registrado com todos os seus itens e valores originais. | Essencial | OE5 | 004 |
 | RF39 | O sistema deve permitir editar um orçamento em rascunho e bloquear a edição de itens após o envio, permitindo apenas mudança de situação. | Importante | OE5 | 004 |
 | RF40 | O sistema deve permitir duplicar um orçamento já enviado como novo rascunho, sem número, com os dados e os valores congelados do original, emissão de hoje e validade da configuração, guardando a referência ao original. O original não muda. | Desejável | — | 025 |
@@ -127,7 +127,7 @@ Versão 1.0 · Fonte canônica dos requisitos do projeto. Qualquer mudança aqui
 |---|---|---|---|---|
 | RF49 | O sistema deve permitir cadastrar fornecedores (nome obrigatório, telefone opcional), buscar, editar, inativar e reativar, sem exclusão. | Desejável | — | 020 |
 | RF50 | O sistema deve permitir indicar, em cada material, o fornecedor do preço (opcional) e exibi-lo na lista de materiais. | Desejável | — | 020 |
-| RF51 | O sistema deve mostrar há quantos dias o preço do material foi atualizado, destacar o preço sem atualização há mais de 30 dias (RN15) e permitir confirmar que ele continua o mesmo. | Desejável | — | 020 |
+| RF51 | O sistema deve mostrar há quantos dias o preço do material foi atualizado, destacar o preço sem atualização há mais de 30 dias (RN15), explicar na tela esse prazo e permitir confirmar que ele continua o mesmo. | Desejável | — | 020 |
 | RF52 | O sistema deve registrar, a cada troca de custo ou de fornecedor e a cada confirmação, uma linha de histórico (data, custo, fornecedor) e exibir as últimas no cadastro do material. | Desejável | — | 020 |
 | RF53 | O sistema deve permitir escolher um fornecedor padrão (só ativo, um por marcenaria), que já vem marcado ao cadastrar material novo; inativar o fornecedor padrão tira o padrão. | Desejável | — | 020 |
 
@@ -145,7 +145,7 @@ Versão 1.0 · Fonte canônica dos requisitos do projeto. Qualquer mudança aqui
 | ID | Requisito | Prioridade | OE | Incremento |
 |---|---|---|---|---|
 | RF60 | O sistema deve permitir marcar o orçamento aprovado como "em produção" e como "entregue" (ou direto como entregue), sem voltar atrás. Os dois contam como aprovados nos indicadores. | Desejável | — | 024 |
-| RF61 | O sistema deve permitir definir, em "Minha marcenaria", a meta de faturamento do mês (opcional, maior que zero, até 2 casas) e mostrar no painel o valor aprovado, o percentual e quanto falta (RN20). | Desejável | — | 024 |
+| RF61 | O sistema deve permitir definir, em "Minha marcenaria", a meta de vendas do mês (opcional, maior que zero, até 2 casas) e mostrar no painel o valor dos orçamentos aprovados emitidos no mês, o percentual e quanto falta (RN20), sem considerar pagamento (D045). | Desejável | — | 024 |
 | RF62 | O painel deve mostrar a mão de obra dos orçamentos enviados (soma e participação no preço) e o valor médio da hora de serviço, comparado com o mês anterior (RN18, RN19). | Desejável | — | 024 |
 | RF63 | O painel deve mostrar os materiais mais usados nos últimos 90 dias e se o custo de cada um está subindo, estável ou caindo, a partir do histórico de custo (RN19). | Desejável | — | 024 |
 
@@ -153,7 +153,7 @@ Versão 1.0 · Fonte canônica dos requisitos do projeto. Qualquer mudança aqui
 
 | ID | Requisito | Prioridade | OE | Incremento |
 |---|---|---|---|---|
-| RF58 | No orçamento em rascunho, o sistema deve sinalizar o material do catálogo com preço antigo (mais de 30 dias) ou com custo diferente do item, permitindo confirmar que o preço continua o mesmo ou usar o novo custo, sem alterar o valor do item sozinho; e deve oferecer uma lista de compras interna, com os materiais agrupados por fornecedor e só com quantidades, que não consta no PDF do cliente. | Desejável | — | 023 |
+| RF58 | No orçamento em rascunho, o sistema deve sinalizar o material do catálogo com preço antigo (mais de 30 dias) ou com custo diferente do item, permitindo confirmar que o preço continua o mesmo ou usar o novo custo, sem alterar o valor do item sozinho; e deve oferecer uma lista de compras interna, só com os materiais e suas quantidades, que se copia para colar em mensagem e não consta no PDF do cliente (spec 029; a versão agrupada por fornecedor está oculta, D041). | Desejável | — | 023 |
 | RF59 | O fornecedor pode ter endereço (opcional, até 300 caracteres). | Desejável | — | 023 |
 
 ### 1.13 Segurança do acesso (D037)

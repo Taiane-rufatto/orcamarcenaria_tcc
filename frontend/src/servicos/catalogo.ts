@@ -6,6 +6,8 @@ export type Material = {
   id: string; nome: string; descricao: string | null; unidade: string; custo_unitario: string; ativo: boolean
   fornecedor_id: string | null; fornecedor_nome: string | null; dias_desde_atualizacao: number; preco_antigo: boolean
 }
+// Explica o selo "Preço antigo" (spec 029). O prazo de 30 dias é decidido pela API (PRAZO_PRECO_ANTIGO_DIAS, RN15): se mudar lá, mude aqui.
+export const EXPLICACAO_PRECO_ANTIGO = 'O custo aparece como antigo quando não é atualizado nem confirmado há mais de 30 dias. "Continua o mesmo" confirma que o preço segue valendo e reinicia a contagem.'
 export type LinhaHistorico = { custo_unitario: string; fornecedor_nome: string | null; registrado_em: string }
 export type Servico = { id: string; nome: string; descricao: string | null; tipo_cobranca: 'hora' | 'unidade'; valor_unitario: string; ativo: boolean }
 export type DadosMaterial = { nome: string; descricao?: string; unidade: string; custoUnitario: string; fornecedorId?: string }
