@@ -10,4 +10,4 @@ Lista do que a spec pede, para distinguir o que foi feito do que falta. `[x]` fe
 - [x] Filtro de situação com várias opções (API e botões)
 - [x] Testes (backend e frontend); documentar D045, RF37, RF51, RF58, RF61, RN20, RN21
 - [ ] Percurso de tela (autora)
-- [ ] Publicar na VPS, com backup antes (sem migração de banco nesta spec)
+- [x] Publicar na VPS, com backup antes (feito em 2026-11-17; sem migração de banco nesta spec)

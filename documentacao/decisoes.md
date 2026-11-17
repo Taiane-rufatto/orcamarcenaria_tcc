@@ -6,6 +6,23 @@ Formato: contexto → decisão → consequência → situação (`provisória` e
 
 ---
 
+## D046 — Dependências de desenvolvimento: minimatch corrigido; picomatch sem correção publicada
+**Data:** 2026-11-17 · **Situação:** firme; reavaliar quando o `picomatch` tiver versão corrigida
+
+**Contexto.** Ao publicar a spec 029, o `npm ci` na VPS mostrou 15 vulnerabilidades no front (8 moderadas e 7 altas), e o backend tem 5 altas só nas ferramentas de desenvolvimento. O `npm audit --omit=dev` (o que vai para o site) está em **0 nos dois projetos**. Os avisos vêm de ferramentas que só rodam no computador e no build: vite, vitest, ESLint e o `typescript-eslint`.
+
+**Decisão.**
+1. **`minimatch` (8 moderados, DoS por amplificação de globs): corrigido** com `overrides` no `frontend/package.json` fixando `minimatch` em `^11.0.9`. Conferido: ESLint sem erros, 34 testes e build iguais. Isso substitui o risco aceito do D044 para o `minimatch`.
+2. **`picomatch` (12 altos no front e 5 no backend, ReDoS em extglobs repetidos, GHSA-fc5q-39xc-vjpf): risco aceito.** O aviso vale para toda a faixa `<=4.0.7` e a 4.0.7 é a versão mais nova publicada: **não há versão corrigida para instalar.** Só afeta ferramentas de desenvolvimento, que usam padrões de busca escritos por nós, nunca texto digitado por usuário do site; não entra em produção (`npm audit --omit=dev` em 0).
+3. **Não usar `npm audit fix --force`.** Ele "corrige" rebaixando o vite e o vitest para versões antigas (vite 6.2.7, vitest 3.1.4), o que quebra a configuração atual sem resolver a causa.
+4. **A verificação de segurança das dependências é o `npm audit --omit=dev`**, nos dois projetos. O `npm audit` completo continua mostrando o `picomatch` até sair a correção.
+
+**Alternativas.** Trocar vite e vitest por ferramentas que não usem `picomatch`: refazer a base de testes e do build a poucos dias da defesa, para um risco que não chega ao site. Rebaixar as versões: descartado (item 3).
+
+**Consequência.** Nenhum código do sistema mudou. O `npm ci` na VPS continua mostrando o aviso do `picomatch`, o que é esperado. Reavaliar com `npm view picomatch version` e `npm audit` antes da banca e a cada atualização de dependências.
+
+---
+
 ## D045 — Ajustes de uso: meta de vendas pela emissão, selo de valor ajustado, lista de materiais e filtro de situação (spec 029)
 **Data:** 2026-11-17 · **Situação:** firme (meta confirmada com o proprietário); o visual aguarda o percurso de tela
 
